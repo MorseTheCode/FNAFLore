@@ -1,0 +1,56 @@
+#CuteCat {
+position:absolute;
+right:0px;
+bottom:0px;
+background-image: url("../../../../wp-content/uploads/2016/04/ONaFCat01.png");
+width:102px;
+height:150px;
+animation: CatFade 120s linear 1;
+animation-fill-mode: forwards;
+-webkit-animation: CatFade 120s linear 1;
+-webkit-animation-fill-mode: forwards;
+z-index:1;
+}
+
+@keyframes CatFade {
+    0% { opacity: 1; }
+    75% { opacity: 1; }
+    100% { opacity: 0; }
+}
+
+@-webkit-keyframes CatFade {
+    0% { opacity: 1; }
+    75% { opacity: 1; }
+    100% { opacity: 0; }
+}
+
+#DeadCat {
+position:absolute;
+right:0px;
+bottom:0px;
+background-image: url("../../../../wp-content/uploads/2016/04/ONaFCat02.png");
+width:102px;
+height:150px;
+}
+
+#JonochromeChar {
+position:absolute;
+right:0px;
+bottom:0px;
+background-image: url("../../../../wp-content/uploads/2016/04/JonochromeChar.png");
+width:60px;
+height:70px;
+animation: JonochromeCharAni 1.3s steps(8, end) infinite;
+-webkit-animation: JonochromeCharAni 1.3s steps(8, end) infinite;
+cursor:pointer;
+}
+
+@keyframes JonochromeCharAni {
+    0% { background-position: 0px 0px; }
+    100% { background-position: -480px 0px; }
+}
+
+@-webkit-keyframes JonochromeCharAni {
+    0% { background-position: 0px 0px; }
+    100% { background-position: -480px 0px; }
+}
