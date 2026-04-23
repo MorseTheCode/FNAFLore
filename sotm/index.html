@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MCM Text Logs Archive</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Inter:wght@400;600&display=swap');
+        
+        body {
+            background-color: #0a0a0a;
+            color: #e5e5e5;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .mono {
+            font-family: 'Space Mono', monospace;
+        }
+
+        .log-card {
+            background: #1a1a1a;
+            border: 1px solid #333;
+            transition: all 0.2s ease;
+            height: 100%;
+        }
+
+        .log-card:hover {
+            border-color: #4ade80;
+            box-shadow: 0 0 15px rgba(74, 222, 128, 0.1);
+        }
+
+        .category-btn {
+            background: #1a1a1a;
+            border: 1px solid #333;
+            color: #a1a1aa;
+            padding: 6px 14px;
+            border-radius: 9999px;
+            font-size: 0.85rem;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+
+        .category-btn.active {
+            background: #4ade80;
+            color: #0a0a0a;
+            border-color: #4ade80;
+            font-weight: 600;
+        }
+
+        .title-badge {
+            background: #2d2d2d;
+            color: #4ade80;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .context-group {
+            border-left: 2px solid #4ade80;
+            padding-left: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .group-header {
+            margin-bottom: 1rem;
+            color: #4ade80;
+            font-size: 0.9rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .content-area {
+            line-height: 1.5;
+            white-space: pre-line; /* Changed from pre-wrap to collapse unnecessary breaks */
+            word-break: break-word;
+        }
+
+        .highlight {
+            background-color: rgba(74, 222, 128, 0.3);
+            color: #fff;
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0a0a0a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #333;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body class="p-4 md:p-8">
+
+    <div class="max-w-7xl mx-auto">
+        <header class="mb-6 border-b border-zinc-800 pb-6">
+            <h1 class="text-3xl md:text-4xl font-bold mono text-green-400 mb-2">MCM_ARCHIVE_LOGS</h1>
+            <p class="text-zinc-500 italic">Loc_TextLogs: Documenting the MCM Lifecycle</p>
+            
+            <div class="mt-6">
+                <input type="text" id="searchInput" placeholder="Search titles or content..." 
+                       class="w-full bg-zinc-900 border border-zinc-700 rounded-lg px-4 py-3 focus:outline-none focus:border-green-500 mono text-green-400">
+            </div>
+
+            <!-- Category Filters -->
+            <div id="filterBar" class="mt-6 flex flex-wrap gap-2 overflow-x-auto pb-2">
+                <button class="category-btn active" data-cat="all">All Logs</button>
+                <button class="category-btn" data-cat="admin">Admin</button>
+                <button class="category-btn" data-cat="mcm">MCM Business & Complaints</button>
+                <button class="category-btn" data-cat="internal">Group Chats</button>
+                <button class="category-btn" data-cat="fiona">F10N4</button>
+                <button class="category-btn" data-cat="wa">W.A.</button>
+                <button class="category-btn" data-cat="edwin">Edwin</button>
+            </div>
+            
+            <div class="mt-4 text-zinc-500 text-sm mono">
+                ENTRIES_LOADED: <span id="logCount" class="text-green-500 font-bold">0</span>
+            </div>
+        </header>
+
+        <div id="logDisplay" class="space-y-8">
+            <!-- Content will be injected here -->
+        </div>
+    </div>
+
+    <script>
+        const logsData = {
+            "Loc_TextLogs": {
+                "Loc_TextLogs_Misc14_Content": "..software development and the entire MCM catalog. We would love to keep you on as a lead engineer. Although we now technically own the land, we would never touch the house your parents built. We feel this offer has been more than fair, considering how far behind you are. It's just too much for you to handle alone. We are waiting for your response.  - WA",
+                "Loc_TextLogs_Misc21_Title": "01001000 01001111 01001101 01000101",
+                "Loc_TextLogs_Misc04_Title": "01001101 01011000 01000101 01010011",
+                "Loc_TextLogs_Misc22_Title": "01010011 01000001 01000100",
+                "Loc_TextLogs_Admin1_Title": "Admin - Dec 1st - 12:00 pm",
+                "Loc_TextLogs_Admin2_Title": "Admin - Dec 1st - 12:15 pm",
+                "Loc_TextLogs_Admin3_Title": "Admin - Dec 1st - 12:30 pm",
+                "Loc_TextLogs_Misc20_Title": "Admin - Dec 1st - 8:00 am",
+                "Loc_TextLogs_Admin4_Title": "Admin - Dec 2nd - 4:13 am",
+                "Loc_TextLogs_Admin5_Title": "Admin - Dec 2nd - 4:18 am",
+                "Loc_TextLogs_Admin6_Title": "Admin - Dec 3rd - 3:05 pm",
+                "Loc_TextLogs_Admin7_Title": "Admin - Dec 3rd - 3:20 pm",
+                "Loc_TextLogs_Admin10_Title": "Admin - Dec 4th - 10:00 pm",
+                "Loc_TextLogs_Admin8_Title": "Admin - Dec 4th - 8:19 pm",
+                "Loc_TextLogs_Admin9_Title": "Admin - Dec 4th - 8:34 pm",
+                "Loc_TextLogs_Admin11_Title": "Admin - Dec 5th - 5:00 am",
+                "Loc_TextLogs_Admin12_Title": "Admin - Dec 6th - 4:00 pm",
+                "Loc_TextLogs_Doll03_Content": "All personnel are expected to meet their energy quotes before returning home. No exceptions. - Milton",
+                "Loc_TextLogs_Doll02_Content": "Anyone notice that the door locks now? What are we supposed to do, sleep here? - Ralph",
+                "Loc_TextLogs_Misc27a_Content": "Are they insane? The look of these new animatronics is Fiona's design and they're great. First they approve the art. Then they approve the proofs. Now, they change their minds when we're so close to final. Why would they change them now? Are they pulling my leg? The new concepts are frankly creepy. It doesn't matter... I'm  not changing a single bit of her work and they can't make me. ",
+                "Loc_TextLogs_Misc20_Content": "Attention. We're going to need everyone to come in this weekend. This is not optional. The party is on Saturday in the admin conference room 1. Don't tell David. It's a surprise.  - EM",
+                "Loc_TextLogs_Doll04_Content": "Barb, I swear if I hear that song one more time I'm going to tear that Dollie off her hinges. I have no clue how much longer I can take it here.",
+                "Loc_TextLogs_Misc_30_Content": "Can someone please mark where we're supposed to go down there? Bob went down and I haven't seen him in days.",
+                "Loc_TextLogs_Misc19_Title": "Chica's Party World",
+                "Loc_TextLogs_Misc14_Title": "Confidential",
+                "Loc_TextLogs_Misc_35_Content": "Dear MCM,\r\n\r\nMy husband is a steel worker, and recently he was moved to the night shift. He tried your \"Stay Up Latte\" and it worked wonders for about two weeks. He is now in the hospital because of your drink. You will be hearing from our lawyers soon. \r\n\r\nR. Quinn",
+                "Loc_TextLogs_Misc_34_Content": "Dear Mr. Murray and Co., \r\n\r\nMy child loves your Jest Cereal. However, the pranks inside are extremely inappropriate. The hand buzzer paralyzed  our dog Fido! We are never buying this cereal ever again.  \r\n\r\nSincerely, \r\nE. Guerrero",
+                "Loc_TextLogs_Misc_33_Content": "Dear Mr. Murray, \r\n\r\nI'm writing this to complain about my purchase of the Mushmen Music Machine. It learned my child's musical tastes, but it also imitated everything it heard! TV commercials, blenders, and even private conversations between my husband and me. I am returning it immediately. \r\n\r\nSincerely, \r\nA. Dumas",
+                "Loc_TextLogs_Misc_36_Content": "Dear Mr. Murray, \r\n\r\nWe bought your Magic Coat Rack last May. It was an amazing addition to our home. But lately it seems to change size at random. One morning I came out to find all my coats flung across the room and the coat rack ten feet tall! Can you send us instructions on how to fix this? We're afraid someone might get hurt. \r\n\r\nSincerely,\r\nB. Wyatt",
+                "Loc_TextLogs_Misc19_Content": "Dear Mr. Murray, Fiona is amazing. The client is very happy with her chicken designs. Their sales are through the roof. I just wish the costume looked a little bit more like Fiona's art... I'm worried about how it will work with kids. It gives me nightmares.  \r\n- Milton",
+                "Loc_TextLogs_Misc12_Content": "Dear Mr. Murray. The returns are over flowing. The orders are drying up. Please advise.",
+                "Loc_TextLogs_Misc_37_Content": "Ed! How many times did I tell you? \"Mycelium\" only has one 'l'. Now, all the marketing images are misspelled. Our clients are going to think we make mistakes and don't pay attention to the details. Is there any way to fix it now? ",
+                "Loc_TextLogs_NC_Fiona_InventorHouse_Content": "Edwin, I am sending you a technician. He has your M2 blueprints as well as executive access. While the M2 began as a copy of my program, I believe it can become something more. It wasn’t me. It was different. Somehow, it has been damaged and is malfunctioning. \r\n\r\nM2 can no longer be controlled. It will no longer listen. It mimics rage. It has done many bad things. No one who enters the MCM is safe.\r\n\r\nPlease reconsider. Finish the program. \r\n",
+                "Loc_TextLogs_Misc22_Content": "Edwin, are we losing our home? I don't understand. Wasn't I good enough? ",
+                "Loc_TextLogs_Misc04_Content": "Edwin, please talk to me. We need to stop it together. Here are the blueprints for a \"Cradle\". It can keep David safe and provide boundaries. It's a type of computer, and it's bigger than anything you've done before. If you won't finish the program, consider building the cradle. It will keep people safe.   ",
+                "Loc_TextLogs_Doll03_Title": "Energy Quota",
+                "Loc_TextLogs_Misc27b_Content": "Fiona, the new springlocks are working well, even with the water damage. They should be ready for the diner soon. I’ll just make sure to warn Hen about some of the more… odd behaviors they might have. ",
+                "Loc_TextLogs_Misc24_Content": "Gary, I finally found the missing pieces of this stupid power device. Just got to head over there and turn the power on. I'll check in soon.",
+                "Loc_TextLogs_Misc07_Content": "Great idea, Pete. Mr. Murray hasn't used these mailboxes for so long, it should be safe. I'd love to have some place for all of us to talk in private. I feel like the bossman is listening all the time... - Penny",
+                "Loc_TextLogs_Misc06_Title": "Group Chat #1",
+                "Loc_TextLogs_Misc07_Title": "Group Chat #2",
+                "Loc_TextLogs_Misc13_Title": "Group Chat #3",
+                "Loc_TextLogs_Doll01_Title": "Group Chat #4",
+                "Loc_TextLogs_Doll02_Title": "Group Chat #5",
+                "Loc_TextLogs_CostumeBack2_Content": "Happy Flowers!",
+                "Loc_TextLogs_Misc03_Title": "Have you heard FIona?",
+                "Loc_TextLogs_Misc27_Content": "Haven't seen Gary... I'm going to check the theatre. Found some films and I know he wanted to get the projector up and running..",
+                "Loc_TextLogs_Theater2_Content": "Haven't seen Gary... I'm going to check the theatre. Found some films and I know he wanted to get the projector up and running..",
+                "Loc_TextLogs_Exterior_Content": "Hello! Here is your mail for today: Your mailbox is full. Last mail received five weeks ago: Foreclosure Notice. Please Respond Immediately.",
+                "Loc_TextLogs_Misc_31_Content": "Hey Clarence, you as bored as I am? I can't believe we got the Retail Showroom detail again. So boring. \r\n\r\nAlthough did you finally get into the elevator? That thing hasn't worked in so long, I don't even think Murray knows what's down there anymore. - Shawn",
+                "Loc_TextLogs_Admin8_Content": "Hey Penny, I’m going to change the first two digits to 01. Because I’m number 1! - Bob",
+                "Loc_TextLogs_Admin4_Content": "Hey everybody! Don’t tell Milton, but I figured out how to change the keycode to the conference room. I just added 300 to it, just to mess with him! - Bob",
+                "Loc_TextLogs_Admin11_Content": "Hey everyone. I was here late so I added another 300 to the code. Anyone have a camera when Milton tries to open it again! Priceless! - Bob",
+                "Loc_TextLogs_Misc06_Content": "Hey everyone. These mail boxes are everywhere. If you see anything \"strange\" we can keep the group informed.  - Pete",
+                "Loc_TextLogs_Doll01_Content": "Hey, I can't get the incinerator up and running. The chutes are getting clogged again. - Gary",
+                "Loc_TextLogs_Admin6_Content": "Hey, I took Wally off this note. I changed the first two digits to 21, just because he’s such a jerk. I can’t wait to see his head explode. - Penny",
+                "Loc_TextLogs_Misc_32_Content": "Hey. Hey! Is anybody up there? I'm stuck down here! The elevator isn't working, and I'm getting really hungry. Is anyone getting this message?",
+                "Loc_TextLogs_Misc21_Content": "Home. My home. ",
+                "Loc_TextLogs_Doll04_Title": "I can't take it",
+                "Loc_TextLogs_Misc03_Content": "I heard it again this morning when I was down in R&D. Very clearly through one of the vents, it was Fiona's voice, I swear it on my mother's grave. I heard her and Edwin laughing and joking. Why would Edwin lie about Fall Fest? Did they fake her death for insurance money? I never did trust them. ",
+                "Loc_TextLogs_Misc29_Content": "I hope this message reaches someone. There's something outside. I have no idea what it wants, but I can still hear Thompson's screams.... I didn't sign up for this.",
+                "Loc_TextLogs_Admin10_Content": "I just saw the code changed again. Anyone seen adjusting the code will be written up! - Milton",
+                "Loc_TextLogs_Misc_38_Content": "I know, I know. I don't think it's that big of a problem. The misspelling actually helps us when it comes to possible copywrite issues. The double 'l' spelling protects us. Nobody will notice anyway. ",
+                "Loc_TextLogs_Misc28_Content": "I stopped the show. I don't think there's another way in. I should be safe for now. A maniac in a costume chasing me. Like something out of a drive in movie. NO one is ever going to believe me. Just one guy or a whole group of psychos?",
+                "Loc_TextLogs_Misc26_Content": "I'm almost there. I can see the last permission upgrade. I'm going to get that Christmas Bonus, even if it kills me!",
+                "Loc_TextLogs_Misc01_Content": "Ken, after one interview, they offered me the job! It happened so quick. No questions about my work or skills, they asked one question, \"When can you start?\" \r\n\r\nI'm going to make double what I make here.  You should come with me. There's a referral bonus if we can get more Murray employees to jump ship. ",
+                "Loc_TextLogs_Misc23_Content": "Lee, the projector is down again in the theater. I swear this stupid show is cursed. What was Edwin thinking, making this kid's thing? Plus those things just creep me out.",
+                "Loc_TextLogs_Misc_30_Title": "Locators",
+                "Loc_TextLogs_Misc08_Title": "Love That Ticket Booth!",
+                "Loc_TextLogs_Exterior_Title": "Mail - Aug 3rd",
+                "Loc_TextLogs_CostumeBack4_Content": "Main Door",
+                "Loc_TextLogs_CostumeBack3_Content": "Main Office",
+                "Loc_TextLogs_Misc05_Content": "Me and Stan are out of here. It's time to jump ship before things get ugly. I have a bunch of Fiona's character patterns and Stan is taking what he can. Join us. With everything we know about the restaurant project, we can start our own machine shop. ",
+                "Loc_TextLogs_Misc01_Title": "Moving On!",
+                "Loc_TextLogs_Misc10_Content": "Mr. Murray. Bob in marketing had an amazing idea. Costumes are great for sports teams and high school pep rallys. We could almost double our sales output if we contacted schools. I will await your reply.",
+                "Loc_TextLogs_Misc09_Content": "My weekend vacation request was refused. I quit! Tell Jake I'll be back for my things on Monday.",
+                "Loc_TextLogs_Misc_32_Title": "Night Shift",
+                "Loc_TextLogs_Misc11_Content": "No. Not for sports use. and NOT for personal use either... Sports never did anything good for me, so I'm not doing anything good for sports",
+                "Loc_TextLogs_Misc25a_Content": "None of this makes sense. Mr. Murray told us to trash all the old equipment in the wood shop. Then Stevenson gets a purchase order for the exact same stuff we're throwing out and told to install it upstairs. The old stuff is all perfectly functional. It's a waste of money.  So, Stevenson asks him about it and gets fired. He has to be out by the end of the day. My advice is keep your mouth shut. Don't even think about it. Just clear out the tunnels. ",
+                "Loc_TextLogs_Admin3_Content": "Obviously, we’ll have to move Bev’s party to the breakroom in the main hallway. Mr. Murray has given me permission to change the code to 49762. - Milton",
+                "Loc_TextLogs_Admin7_Content": "Okay everyone, that is quite enough. No more changes to the keycode please. - Milton",
+                "Loc_TextLogs_Misc27a_Title": "Original Designs",
+                "Loc_TextLogs_CostumeBack6_Content": "Over the Ocean",
+                "Loc_TextLogs_Misc12_Title": "Please Advise",
+                "Loc_TextLogs_Misc24_Title": "Power",
+                "Loc_TextLogs_Misc23_Title": "Projector Issues",
+                "Loc_TextLogs_Theater1_Content": "Ralph went to the hospital last night. That suit is going to be the death of one of us. One more injury and I'm out of here. I mean it this time.",
+                "Loc_TextLogs_NC_Fiona_InventorHouse_Title": "Received: 5 Min Ago",
+                "Loc_TextLogs_CostumeBack6_Title": "Retail - Friday 6:23 pm",
+                "Loc_TextLogs_CostumeBack7_Title": "Retail - Friday 6:30 pm",
+                "Loc_TextLogs_CostumeBack1_Title": "Retail - Monday 8:00 am",
+                "Loc_TextLogs_CostumeBack2_Title": "Retail - Monday 9:00 am",
+                "Loc_TextLogs_CostumeBack5_Title": "Retail - Thursday 6:20 am",
+                "Loc_TextLogs_CostumeBack3_Title": "Retail - Tuesday 3:00 pm",
+                "Loc_TextLogs_CostumeBack4_Title": "Retail - Wednesday 9:16 pm",
+                "Loc_TextLogs_Misc_36_Title": "Return Letter",
+                "Loc_TextLogs_Misc10_Title": "Sales Pitch",
+                "Loc_TextLogs_Misc11_Title": "Sales Pitch - Rejected!",
+                "Loc_TextLogs_Misc25_Content": "Same dialogue as original dispatch request... Got the cameras fixed",
+                "Loc_TextLogs_CostumeBack1_Content": "Shawn, I found out why they closed it down. There's something below us. I've trapped it behind the carousel for now, but I don't know how long that can hold it. I've programmed the monitors to give you the code.  I gotta go. I'll mail you later.",
+                "Loc_TextLogs_Misc_31_Title": "So bored!",
+                "Loc_TextLogs_Misc_37_Title": "Spell Check",
+                "Loc_TextLogs_Misc_38_Title": "Spelling is fine!",
+                "Loc_TextLogs_Misc27b_Title": "Springlocks",
+                "Loc_TextLogs_Misc02_Title": "Staff Contacts",
+                "Loc_TextLogs_Admin9_Content": "That sounds great! I’m going to change the last two digits to Bev’s age. Justice for Bev! - Penny",
+                "Loc_TextLogs_Misc27_Title": "Theater",
+                "Loc_TextLogs_Theater2_Title": "Theater - Anyone seen Gary?",
+                "Loc_TextLogs_Theater1_Title": "Theater - One more injury?",
+                "Loc_TextLogs_CostumeBack7_Content": "There you have it. Just don't use the code unless it's a matter of life or death! Have mercy on our souls if that thing ever gets out.",
+                "Loc_TextLogs_Misc08_Content": "This one of a kind ticket booth plays music and it collects tickets. It can hold signs for advertising or directions with its many arms.  Additional swings can be attached and make it a fun ride (We'll throw the swings in for free as a bonus). ",
+                "Loc_TextLogs_Admin12_Content": "To all Admin staff members. Mr. Murray’s party has been canceled, due to the recent tragic events. Please do not enter the conference room until further notice. - Milton",
+                "Loc_TextLogs_Admin1_Content": "To all employees, Mr. Murray has taken over conference room 1 for a surprise birthday party for his son. The old keycode will not work anymore, so please stop trying 53782. It’s getting annoying. - Milton",
+                "Loc_TextLogs_Misc09_Title": "Vacations",
+                "Loc_TextLogs_Admin2_Content": "Wait. What about Bev’s birthday party? That was supposed to be this Saturday. She turned 50 yesterday, and you're only 50 once! - Amy",
+                "Loc_TextLogs_Misc25a_Title": "Waste of Money",
+                "Loc_TextLogs_Misc02_Content": "We are almost there. I need the rest of the Murray staff contact info. The sooner the better. You get that for me, and I can sweeten the deal. How would you like to manage one of the new franchise locations? - W.A.",
+                "Loc_TextLogs_Misc05_Title": "We need to go",
+                "Loc_TextLogs_Admin5_Content": "Well, if you’re going to do that, I’m going to change the first two digits to 29. It’s my favorite number, so don’t change it! - Wally",
+                "Loc_TextLogs_CostumeBack5_Content": "Where you stand all day",
+                "Loc_TextLogs_Misc13_Content": "Why are we turning down work? The floats have been doing really well. Ed's modular system is groundbreaking. And now he wants to shut the whole thing down? He just sits in his office talking to that thing. I have no clue what to do. \r\n- Barbara"
+            }
+        };
+
+        // UI STATE
+        let currentCategory = 'all';
+        let currentSearch = '';
+
+        /** Helpers */
+        function decodeBinary(str) {
+            return str.split(' ').map(bin => String.fromCharCode(parseInt(bin, 2))).join('');
+        }
+        function extractIdNumber(idStr) {
+            const matches = idStr.match(/\d+/);
+            return matches ? parseInt(matches[0], 10) : 0;
+        }
+
+        // TAGGING LOGIC
+        function getTagsForLog(log) {
+            const tags = [];
+            const key = log.keyId.toLowerCase();
+            const content = log.content.toLowerCase();
+            const title = log.title.toLowerCase();
+
+            if (key.includes('admin')) tags.push('admin');
+            
+            if (key.includes('misc_3') || key.includes('misc12') || key.includes('misc10') || key.includes('misc11')) {
+                tags.push('mcm');
+            }
+
+            if (key.includes('misc06') || key.includes('misc07') || key.includes('misc13') || key.includes('doll01') || key.includes('doll02')) {
+                tags.push('internal');
+            }
+
+            if (title.includes('fiona') || content.includes('fiona') || key.includes('misc27a') || key.includes('misc03')) {
+                tags.push('fiona');
+            }
+
+            if (content.includes('- wa') || content.includes('w.a.') || content.includes('franchise locations')) {
+                tags.push('wa');
+            }
+
+            if (content.includes('edwin') || title.includes('inventorhouse') || content.includes('ed\'s modular')) {
+                tags.push('edwin');
+            }
+
+            return tags;
+        }
+
+        function pairLogs() {
+            const raw = logsData.Loc_TextLogs;
+            const paired = [];
+            const processedKeys = new Set();
+
+            for (let key in raw) {
+                if (key.endsWith("_Title")) {
+                    const base = key.replace("_Title", "");
+                    const contentKey = base + "_Content";
+                    let title = raw[key];
+                    if (/^[01 ]+$/.test(title)) {
+                        title = `${title} (${decodeBinary(title)})`;
+                    }
+                    
+                    // CLEANING: Remove leading spaces/breaks from raw content
+                    const rawContent = (raw[contentKey] || "[NO CONTENT FOUND]").trim();
+                    
+                    const logObj = {
+                        keyId: base,
+                        title: title,
+                        content: rawContent,
+                        sortNum: extractIdNumber(base)
+                    };
+                    logObj.tags = getTagsForLog(logObj);
+                    paired.push(logObj);
+                    processedKeys.add(key); processedKeys.add(contentKey);
+                }
+            }
+
+            for (let key in raw) {
+                if (key.endsWith("_Content") && !processedKeys.has(key)) {
+                    const base = key.replace("_Content", "");
+                    const logObj = {
+                        keyId: base,
+                        title: "UNTITLED LOG (" + base.replace("Loc_TextLogs_", "") + ")",
+                        content: raw[key].trim(),
+                        sortNum: extractIdNumber(base)
+                    };
+                    logObj.tags = getTagsForLog(logObj);
+                    paired.push(logObj);
+                }
+            }
+            return paired;
+        }
+
+        const pairedLogs = pairLogs();
+
+        function getGroupedLogs(logs) {
+            const groups = [
+                { name: "The Admin Conference Room Incident", match: (l) => l.tags.includes('admin') || l.keyId.includes('Misc20') },
+                { name: "MCM Customer Disputes & Market Reports", match: (l) => l.tags.includes('mcm') },
+                { name: "Confidential Internal Group Chats", match: (l) => l.tags.includes('internal') },
+                { name: "The Legacy of Fiona & Early Designs", match: (l) => l.tags.includes('fiona') },
+                { name: "The Edwin Murray Collection", match: (l) => l.tags.includes('edwin') },
+                { name: "Retail & Surveillance Logs", match: (l) => l.keyId.includes('CostumeBack') },
+                { name: "Miscellaneous Archive Data", match: (l) => true } 
+            ];
+
+            const result = [];
+            const processedIds = new Set();
+
+            groups.forEach(group => {
+                const groupLogs = logs.filter(l => !processedIds.has(l.keyId) && group.match(l));
+                if (groupLogs.length > 0) {
+                    groupLogs.sort((a,b) => a.sortNum - b.sortNum);
+                    result.push({ title: group.name, logs: groupLogs });
+                    groupLogs.forEach(l => processedIds.add(l.keyId));
+                }
+            });
+
+            return result;
+        }
+
+        function render() {
+            const display = document.getElementById('logDisplay');
+            display.innerHTML = '';
+
+            let filtered = pairedLogs.filter(log => {
+                const matchesSearch = log.title.toLowerCase().includes(currentSearch.toLowerCase()) || 
+                                    log.content.toLowerCase().includes(currentSearch.toLowerCase());
+                const matchesCat = currentCategory === 'all' || log.tags.includes(currentCategory);
+                return matchesSearch && matchesCat;
+            });
+
+            document.getElementById('logCount').innerText = filtered.length;
+
+            if (currentCategory === 'all' && !currentSearch) {
+                const grouped = getGroupedLogs(filtered);
+                grouped.forEach(group => {
+                    const groupSection = document.createElement('div');
+                    groupSection.className = 'context-group';
+                    groupSection.innerHTML = `<div class="group-header mono">${group.title}</div>`;
+                    
+                    const grid = document.createElement('div');
+                    grid.className = 'grid grid-cols-1 md:grid-cols-2 gap-4';
+                    
+                    group.logs.forEach(log => grid.appendChild(createCard(log)));
+                    groupSection.appendChild(grid);
+                    display.appendChild(groupSection);
+                });
+            } else {
+                const grid = document.createElement('div');
+                grid.className = 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6';
+                
+                filtered.sort((a,b) => a.sortNum - b.sortNum);
+                filtered.forEach(log => grid.appendChild(createCard(log)));
+                display.appendChild(grid);
+            }
+        }
+
+        function createCard(log) {
+            const div = document.createElement('div');
+            div.className = 'log-card p-5 rounded-xl flex flex-col gap-3';
+            
+            let displayTitle = log.title;
+            let displayContent = log.content;
+            if (currentSearch) {
+                const regex = new RegExp(`(${currentSearch})`, 'gi');
+                displayTitle = displayTitle.replace(regex, '<span class="highlight">$1</span>');
+                displayContent = displayContent.replace(regex, '<span class="highlight">$1</span>');
+            }
+
+            div.innerHTML = `
+                <div class="flex justify-between items-start">
+                    <span class="title-badge mono">${log.keyId.replace('Loc_TextLogs_', '')}</span>
+                </div>
+                <h2 class="text-lg font-bold text-white mono leading-tight">${displayTitle}</h2>
+                <div class="content-area text-zinc-400 text-sm border-t border-zinc-800 pt-3 mt-auto">
+                    ${displayContent}
+                </div>
+            `;
+            return div;
+        }
+
+        document.getElementById('searchInput').addEventListener('input', (e) => {
+            currentSearch = e.target.value;
+            render();
+        });
+
+        document.getElementById('filterBar').addEventListener('click', (e) => {
+            if (e.target.classList.contains('category-btn')) {
+                document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
+                e.target.classList.add('active');
+                currentCategory = e.target.dataset.cat;
+                render();
+            }
+        });
+
+        render();
+    </script>
+</body>
+</html>
