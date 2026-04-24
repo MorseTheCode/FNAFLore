@@ -138,17 +138,19 @@
 <body class="pb-8">
 
     <div class="max-w-7xl mx-auto px-4 md:px-8">
-        <header class="sticky top-0 z-50 bg-[#0a0a0a] pt-4 md:pt-8 mb-6 border-b border-zinc-800 pb-6">
+        <div class="pt-4 md:pt-8 mb-4">
             <h1 class="text-3xl md:text-4xl font-bold mono text-green-400 mb-2">MCM_ARCHIVE_LOGS</h1>
             <p class="text-zinc-500 italic">Loc_TextLogs & Audio Captures: Documenting the MCM Lifecycle</p>
-            
-            <div class="mt-6">
+        </div>
+        
+        <header class="sticky top-0 z-50 bg-[#0a0a0a] pt-2 mb-6 border-b border-zinc-800 pb-4">
+            <div>
                 <input type="text" id="searchInput" placeholder="Search titles, content, or locations..." 
                        class="w-full bg-zinc-900 border border-zinc-700 rounded-lg px-4 py-3 focus:outline-none focus:border-green-500 mono text-green-400">
             </div>
 
             <!-- Category Filters -->
-            <div id="filterBar" class="mt-6 flex flex-wrap gap-2 overflow-x-auto pb-2">
+            <div id="filterBar" class="mt-4 flex flex-wrap gap-2 overflow-x-auto pb-2">
                 <button class="category-btn active" data-cat="all">All Logs</button>
                 <button class="category-btn" data-cat="text">Text Logs</button>
                 <button class="category-btn" data-cat="audio">Audio Logs</button>
