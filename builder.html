@@ -12,8 +12,6 @@
             background-color: #0a0a0a;
             color: #e5e5e5;
             font-family: 'Inter', sans-serif;
-            background-image: radial-gradient(circle at 50% 50%, #1a1a1a 0%, #0a0a0a 100%);
-            min-height: 100vh;
         }
         .mono { font-family: 'Space Mono', monospace; }
         
@@ -530,39 +528,11 @@
                 const legacyAudio = extractArray('audioLogs');
                 const legacyText = extractArray('textLogs');
 
-                // Smart Legacy Tag Recovery (Rebuilds tags based on your original JS functions)
-                const recoverTags = (logObj) => {
-                    const tags = [];
-                    const searchStr = ((logObj.id || '') + " " + (logObj.title || '') + " " + (logObj.content || '')).toLowerCase();
-                    const key = (logObj.id || '').toLowerCase();
-                    const loc = (logObj.location || '');
-
-                    appData.categories.forEach(cat => {
-                        const cId = cat.id;
-                        // FNAF categories matching
-                        if (cId === 'fnaf1' && loc === 'FNAF 1') tags.push(cId);
-                        if (cId === 'fnaf2' && loc === 'FNAF 2') tags.push(cId);
-                        if (cId === 'fnaf3' && loc === 'FNAF 3') tags.push(cId);
-
-                        // SOTM categories matching
-                        if (cId === 'admin' && searchStr.includes('admin')) tags.push(cId);
-                        if (cId === 'mcm' && (key.includes('misc_3') && !['misc_31', 'misc_32'].includes(key) || key.includes('misc12') || key.includes('misc10') || key.includes('misc11') || key === 'misc19')) tags.push(cId);
-                        if (cId === 'internal' && (key.includes('misc06') || key.includes('misc07') || key.includes('misc13') || key.includes('doll01') || key.includes('doll02') || searchStr.includes('theater') || ['misc03', 'misc05', 'misc24', 'misc25a', 'doll03', 'doll04'].includes(key))) tags.push(cId);
-                        if (cId === 'fiona' && (['misc04', 'misc21', 'misc22', 'nc_fiona_inventorhouse'].includes(key) || (!['misc03', 'misc05', 'misc19', 'misc27a', 'misc27b'].includes(key) && searchStr.includes('fiona')))) tags.push(cId);
-                        if (cId === 'wa' && (searchStr.includes('w.a.') || searchStr.includes('franchise') || ['misc01', 'misc02', 'misc14'].includes(key))) tags.push(cId);
-                        if (cId === 'edwin' && (!['admin12', 'misc03', 'misc04', 'misc13', 'misc22', 'misc23', 'nc_fiona_inventorhouse'].includes(key) && (searchStr.includes('edwin') || searchStr.includes('inventorhouse') || searchStr.includes("ed's modular") || searchStr.includes('ed,') || ['misc27a', 'misc27b'].includes(key)))) tags.push(cId);
-                        if (cId === 'recovery' && ['misc26', 'misc28', 'misc29'].includes(key)) tags.push(cId);
-                        if (cId === 'sleepymoon' && (key.includes('costumeback') || ['misc_31', 'misc_32'].includes(key))) tags.push(cId);
-                    });
-                    
-                    return [...new Set(tags)]; // return unique array
-                };
-
                 if (legacyAudio) {
                     legacyAudio.forEach((l, i) => {
                         appData.logs.push({
                             id: `AL_${Date.now()}_${i}`, title: l.title || '', location: l.location || '',
-                            content: l.content || '', isAudio: true, audioUrl: l.audioUrl || '', tags: l.tags && l.tags.length > 0 ? l.tags : recoverTags(l)
+                            content: l.content || '', isAudio: true, audioUrl: l.audioUrl || '', tags: l.tags || []
                         });
                     });
                 }
@@ -570,7 +540,7 @@
                     legacyText.forEach((l, i) => {
                         appData.logs.push({
                             id: l.id || `TL_${Date.now()}_${i}`, title: l.title || '', location: l.location || '',
-                            content: l.content || '', isAudio: false, audioUrl: '', tags: l.tags && l.tags.length > 0 ? l.tags : recoverTags(l)
+                            content: l.content || '', isAudio: false, audioUrl: '', tags: l.tags || []
                         });
                     });
                 }
@@ -579,7 +549,7 @@
                 document.getElementById('pageSubtitle').value = appData.subtitle;
                 renderCategories();
                 renderLogs();
-                alert("Legacy HTML imported successfully! Categories have been auto-recovered based on original scripts.");
+                alert("Legacy HTML imported successfully! You may need to re-assign categories to some logs.");
             } catch (err) {
                 alert("Error parsing file. Ensure it's a valid archive HTML.");
                 console.error(err);
@@ -616,13 +586,7 @@
     <script src="https://cdn.tailwindcss.com"><\/script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Inter:wght@400;600&display=swap');
-        body { 
-            background-color: #0a0a0a; 
-            color: #e5e5e5; 
-            font-family: 'Inter', sans-serif;
-            background-image: radial-gradient(circle at 50% 50%, #1a1a1a 0%, #0a0a0a 100%);
-            min-height: 100vh;
-        }
+        body { background-color: #0a0a0a; color: #e5e5e5; font-family: 'Inter', sans-serif; }
         .mono { font-family: 'Space Mono', monospace; }
         .log-card { background: #1a1a1a; border: 1px solid #333; transition: all 0.2s ease; height: 100%; display: flex; flex-direction: column; }
         .log-card:hover { border-color: #4ade80; box-shadow: 0 0 15px rgba(74, 222, 128, 0.1); }
@@ -673,7 +637,7 @@
             <p class="text-zinc-500 italic">${exportData.subtitle.replace(/</g, "&lt;")}</p>
         </div>
         
-        <header class="sticky top-0 z-50 pt-2 mb-6 border-b border-zinc-800 pb-4" style="background-color: #0a0a0a;">
+        <header class="sticky top-0 z-50 bg-[#0a0a0a] pt-2 mb-6 border-b border-zinc-800 pb-4">
             <div>
                 <input type="text" id="searchInput" placeholder="Search titles, content, or locations..." 
                        class="w-full bg-zinc-900 border border-zinc-700 rounded-lg px-4 py-3 focus:outline-none focus:border-green-500 mono text-green-400">
