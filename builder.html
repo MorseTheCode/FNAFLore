@@ -72,9 +72,25 @@
         ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-track { background: #0a0a0a; }
         ::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
+        
+        .scanline {
+            width: 100%;
+            height: 100px;
+            z-index: 9999;
+            position: fixed;
+            pointer-events: none;
+            background: linear-gradient(0deg, rgba(0,0,0,0) 0%, rgba(74,222,128,0.1) 50%, rgba(0,0,0,0) 100%);
+            opacity: 0.1;
+            animation: scanline 8s linear infinite;
+        }
+        @keyframes scanline {
+            0% { top: -100px; }
+            100% { top: 100%; }
+        }
     </style>
 </head>
-<body class="p-4 md:p-8">
+<body class="p-4 md:p-8 relative">
+    <div class="scanline"></div>
 
     <div class="max-w-6xl mx-auto">
         <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
@@ -608,25 +624,24 @@
         ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-track { background: #0a0a0a; }
         ::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
-        @keyframes crt-scan {
-            0% { top: -10%; }
-            100% { top: 110%; }
-        }
-        .crt-line {
-            position: fixed;
-            left: 0;
+        .scanline {
             width: 100%;
-            height: 4px;
-            background: rgba(74, 222, 128, 0.5);
-            box-shadow: 0 0 20px rgba(74, 222, 128, 0.8), 0 0 40px rgba(74, 222, 128, 0.4);
-            animation: crt-scan 6s linear infinite;
-            pointer-events: none;
+            height: 100px;
             z-index: 9999;
+            position: fixed;
+            pointer-events: none;
+            background: linear-gradient(0deg, rgba(0,0,0,0) 0%, rgba(74,222,128,0.1) 50%, rgba(0,0,0,0) 100%);
+            opacity: 0.1;
+            animation: scanline 8s linear infinite;
+        }
+        @keyframes scanline {
+            0% { top: -100px; }
+            100% { top: 100%; }
         }
     </style>
 </head>
-<body class="pb-8">
-    <div class="crt-line"></div>
+<body class="pb-8 relative">
+    <div class="scanline"></div>
     <div class="max-w-7xl mx-auto px-4 md:px-8 relative">
         <div class="pt-6 md:pt-10 mb-4">
             <a href="index.html" class="inline-flex items-center gap-2 text-zinc-400 hover:text-green-400 transition-colors mono text-sm mb-6">
