@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Archive Builder Console</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Inter:wght@400;600&display=swap');
+        
+        body {
+            background-color: #0a0a0a;
+            color: #e5e5e5;
+            font-family: 'Inter', sans-serif;
+        }
+        .mono { font-family: 'Space Mono', monospace; }
+        
+        .panel {
+            background: #121212;
+            border: 1px solid #27272a;
+            border-radius: 0.75rem;
+        }
+
+        .input-field {
+            width: 100%;
+            background: #18181b;
+            border: 1px solid #3f3f46;
+            color: #e5e5e5;
+            padding: 0.5rem 0.75rem;
+            border-radius: 0.5rem;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.875rem;
+        }
+        .input-field:focus {
+            outline: none;
+            border-color: #4ade80;
+        }
+        
+        .btn {
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.875rem;
+        }
+        .btn-primary { background: #4ade80; color: #0a0a0a; }
+        .btn-primary:hover { background: #22c55e; }
+        .btn-secondary { background: #27272a; color: #e5e5e5; border: 1px solid #3f3f46; }
+        .btn-secondary:hover { background: #3f3f46; }
+        .btn-danger { background: #7f1d1d; color: #fca5a5; }
+        .btn-danger:hover { background: #991b1b; }
+
+        .log-item {
+            background: #1a1a1a;
+            border: 1px solid #333;
+            border-left: 4px solid #333;
+            transition: border-color 0.2s;
+        }
+        .log-item.audio { border-left-color: #a855f7; }
+        .log-item.text { border-left-color: #4ade80; }
+
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #0a0a0a; }
+        ::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
+    </style>
+</head>
+<body class="p-4 md:p-8">
+
+    <div class="max-w-6xl mx-auto">
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
+            <div>
+                <a href="index.html" class="inline-flex items-center gap-2 text-zinc-400 hover:text-green-400 transition-colors mono text-sm mb-4">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+                    RETURN_TO_HUB
+                </a>
+                <h1 class="text-3xl font-bold mono text-green-400">ARCHIVE_BUILDER_CONSOLE</h1>
+                <p class="text-zinc-500 italic">Generate and Edit Archive Databanks</p>
+            </div>
+            <div class="flex gap-3">
+                <label class="btn btn-secondary flex items-center gap-2 cursor-pointer">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                    Import HTML
+                    <input type="file" id="importFile" accept=".html" class="hidden">
+                </label>
+                <button onclick="exportHTML()" class="btn btn-primary flex items-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                    Export / Create HTML
+                </button>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            
+            <!-- Left Panel: Settings & Categories -->
+            <div class="space-y-6">
+                <div class="panel p-6">
+                    <h2 class="text-xl font-bold mono text-white mb-4 border-b border-zinc-800 pb-2">Page Settings</h2>
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-zinc-400 text-xs mb-1 mono">Header Title</label>
+                            <input type="text" id="pageHeader" class="input-field" placeholder="e.g. SOTM_ARCHIVES" oninput="updateData()">
+                        </div>
+                        <div>
+                            <label class="block text-zinc-400 text-xs mb-1 mono">Subtitle</label>
+                            <input type="text" id="pageSubtitle" class="input-field" placeholder="e.g. Documenting Audio Captures..." oninput="updateData()">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel p-6">
+                    <div class="flex justify-between items-center mb-4 border-b border-zinc-800 pb-2">
+                        <h2 class="text-xl font-bold mono text-white">Categories (Filters)</h2>
+                        <button onclick="addCategory()" class="text-green-400 hover:text-green-300">+</button>
+                    </div>
+                    <div id="categoriesContainer" class="space-y-3">
+                        <!-- Categories injected here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Panel: Logs -->
+            <div class="lg:col-span-2 panel p-6 flex flex-col" style="min-height: 600px;">
+                <div class="flex justify-between items-center mb-4 border-b border-zinc-800 pb-2">
+                    <h2 class="text-xl font-bold mono text-white">Media Logs (<span id="logCount">0</span>)</h2>
+                    <button onclick="addLog()" class="btn btn-secondary text-xs py-1">Add New Log</button>
+                </div>
+                
+                <div id="logsContainer" class="space-y-4 flex-grow overflow-y-auto pr-2">
+                    <!-- Logs injected here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Application Logic -->
+    <script>
+        let appData = {
+            header: "NEW_ARCHIVE_DATABASE",
+            subtitle: "Classified Internal Logs",
+            categories: [
+                { id: "admin", label: "Admin" },
+                { id: "staff", label: "Staff Chat" }
+            ],
+            logs: []
+        };
+
+        // Init
+        document.getElementById('pageHeader').value = appData.header;
+        document.getElementById('pageSubtitle').value = appData.subtitle;
+        renderCategories();
+        renderLogs();
+
+        // Data Update Helpers
+        function updateData() {
+            appData.header = document.getElementById('pageHeader').value || "UNTITLED_ARCHIVE";
+            appData.subtitle = document.getElementById('pageSubtitle').value || "";
+        }
+
+        // --- Categories Management ---
+        function renderCategories() {
+            const container = document.getElementById('categoriesContainer');
+            container.innerHTML = '';
+            
+            appData.categories.forEach((cat, index) => {
+                const div = document.createElement('div');
+                div.className = 'flex gap-2 items-center';
+                div.innerHTML = `
+                    <input type="text" value="${cat.id}" class="input-field w-1/3 text-xs" placeholder="ID (e.g. edwin)" onchange="updateCat(${index}, 'id', this.value)">
+                    <input type="text" value="${cat.label}" class="input-field w-2/3 text-xs" placeholder="Display Label" onchange="updateCat(${index}, 'label', this.value)">
+                    <button onclick="removeCategory(${index})" class="text-red-500 hover:text-red-400 px-2">×</button>
+                `;
+                container.appendChild(div);
+            });
+            renderLogs(); // Re-render logs to update tag checkboxes
+        }
+
+        function addCategory() {
+            appData.categories.push({ id: `cat_${Date.now().toString().slice(-4)}`, label: "New Category" });
+            renderCategories();
+        }
+
+        function updateCat(index, field, value) {
+            appData.categories[index][field] = value;
+            renderCategories();
+        }
+
+        function removeCategory(index) {
+            const catId = appData.categories[index].id;
+            appData.categories.splice(index, 1);
+            // Remove this tag from all logs
+            appData.logs.forEach(log => {
+                log.tags = log.tags.filter(t => t !== catId);
+            });
+            renderCategories();
+        }
+
+        // --- Logs Management ---
+        function createDefaultLog() {
+            return {
+                id: `LOG_${Date.now()}`,
+                title: "",
+                location: "",
+                content: "",
+                isAudio: false,
+                tags: []
+            };
+        }
+
+        function addLog() {
+            appData.logs.unshift(createDefaultLog());
+            renderLogs();
+        }
+
+        function removeLog(id) {
+            appData.logs = appData.logs.filter(l => l.id !== id);
+            renderLogs();
+        }
+
+        function updateLog(id, field, value, isCheckbox = false) {
+            const log = appData.logs.find(l => l.id === id);
+            if (!log) return;
+            
+            if (isCheckbox) {
+                if (value) {
+                    if (!log.tags.includes(field)) log.tags.push(field);
+                } else {
+                    log.tags = log.tags.filter(t => t !== field);
+                }
+            } else {
+                log[field] = value;
+                if (field === 'isAudio') {
+                    renderLogs(); // refresh border colors
+                }
+            }
+        }
+
+        function renderLogs() {
+            const container = document.getElementById('logsContainer');
+            container.innerHTML = '';
+            document.getElementById('logCount').innerText = appData.logs.length;
+
+            appData.logs.forEach(log => {
+                const div = document.createElement('div');
+                div.className = `log-item p-4 rounded-lg flex flex-col gap-3 ${log.isAudio ? 'audio' : 'text'}`;
+                
+                // Tag checkboxes HTML
+                const tagsHtml = appData.categories.map(cat => `
+                    <label class="inline-flex items-center gap-1 text-xs text-zinc-400 cursor-pointer">
+                        <input type="checkbox" class="accent-green-500" 
+                               ${log.tags.includes(cat.id) ? 'checked' : ''} 
+                               onchange="updateLog('${log.id}', '${cat.id}', this.checked, true)">
+                        ${cat.label}
+                    </label>
+                `).join('');
+
+                div.innerHTML = `
+                    <div class="flex justify-between items-start gap-4">
+                        <div class="flex-grow grid grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-zinc-500 text-[10px] uppercase mb-1">Title (Leave blank for random symbols)</label>
+                                <input type="text" class="input-field" value="${log.title}" placeholder="e.g. Night 1 or Incident Report" oninput="updateLog('${log.id}', 'title', this.value)">
+                            </div>
+                            <div>
+                                <label class="block text-zinc-500 text-[10px] uppercase mb-1">Location (Optional)</label>
+                                <input type="text" class="input-field" value="${log.location}" placeholder="e.g. Admin Wing" oninput="updateLog('${log.id}', 'location', this.value)">
+                            </div>
+                        </div>
+                        <div class="flex flex-col gap-2 items-end">
+                            <button onclick="removeLog('${log.id}')" class="btn btn-danger text-xs py-1">Delete</button>
+                            <select class="input-field text-xs py-1 px-2 w-auto" onchange="updateLog('${log.id}', 'isAudio', this.value === 'true')">
+                                <option value="false" ${!log.isAudio ? 'selected' : ''}>Text Log</option>
+                                <option value="true" ${log.isAudio ? 'selected' : ''}>Audio Log</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-zinc-500 text-[10px] uppercase mb-1">Content</label>
+                        <textarea class="input-field min-h-[100px] resize-y" placeholder="Enter transcript or log text here..." oninput="updateLog('${log.id}', 'content', this.value)">${log.content}</textarea>
+                    </div>
+                    <div class="flex flex-wrap gap-3 p-2 bg-zinc-900 rounded border border-zinc-800">
+                        <span class="text-xs text-zinc-500 mr-2 uppercase block w-full mb-1">Assign to Sections:</span>
+                        ${tagsHtml || '<span class="text-xs text-zinc-600 italic">No categories defined.</span>'}
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        // --- File Import (Modern & Legacy) ---
+        document.getElementById('importFile').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(evt) {
+                const html = evt.target.result;
+                parseImportedHTML(html);
+                this.value = ''; // reset input
+            };
+            reader.readAsText(file);
+        });
+
+        function parseImportedHTML(html) {
+            // 1. Try to find the modern JSON data island
+            const dataIslandMatch = html.match(/<script id="archive-data" type="application\/json">([\s\S]*?)<\/script>/);
+            
+            if (dataIslandMatch && dataIslandMatch[1]) {
+                try {
+                    appData = JSON.parse(dataIslandMatch[1]);
+                    document.getElementById('pageHeader').value = appData.header;
+                    document.getElementById('pageSubtitle').value = appData.subtitle;
+                    renderCategories();
+                    renderLogs();
+                    alert("Successfully imported archive data!");
+                    return;
+                } catch (e) {
+                    console.error("Failed to parse embedded JSON", e);
+                }
+            }
+
+            // 2. Fallback: Legacy Parser for classic.html & sotm.html
+            console.log("Attempting legacy parse...");
+            try {
+                const headerMatch = html.match(/<h1[^>]*>(.*?)<\/h1>/);
+                const subMatch = html.match(/<p[^>]*italic[^>]*>(.*?)<\/p>/);
+                
+                appData.header = headerMatch ? headerMatch[1].replace(/<[^>]+>/g, '') : "IMPORTED_ARCHIVE";
+                appData.subtitle = subMatch ? subMatch[1].replace(/<[^>]+>/g, '') : "";
+
+                appData.categories = [];
+                const catRegex = /<button[^>]*class="category-btn[^"]*"[^>]*data-cat="([^"]+)"[^>]*>(.*?)<\/button>/g;
+                let match;
+                while ((match = catRegex.exec(html)) !== null) {
+                    if (!['all', 'text', 'audio'].includes(match[1])) {
+                        appData.categories.push({ id: match[1], label: match[2] });
+                    }
+                }
+
+                appData.logs = [];
+                const extractArray = (varName) => {
+                    const startStr = `const ${varName} = [`;
+                    const startIdx = html.indexOf(startStr);
+                    if (startIdx === -1) return [];
+                    const endIdx = html.indexOf('];', startIdx);
+                    if (endIdx === -1) return [];
+                    const arrStr = html.substring(startIdx + startStr.length - 1, endIdx + 1);
+                    try { return new Function(`return ${arrStr};`)(); } catch(e) { return []; }
+                };
+
+                const legacyAudio = extractArray('audioLogs');
+                const legacyText = extractArray('textLogs');
+
+                if (legacyAudio) {
+                    legacyAudio.forEach((l, i) => {
+                        appData.logs.push({
+                            id: `AL_${Date.now()}_${i}`, title: l.title || '', location: l.location || '',
+                            content: l.content || '', isAudio: true, tags: l.tags || []
+                        });
+                    });
+                }
+                if (legacyText) {
+                    legacyText.forEach((l, i) => {
+                        appData.logs.push({
+                            id: l.id || `TL_${Date.now()}_${i}`, title: l.title || '', location: l.location || '',
+                            content: l.content || '', isAudio: false, tags: l.tags || []
+                        });
+                    });
+                }
+
+                // Attempt to preserve tags if the legacy parser generated them, otherwise let user re-tag.
+                // In classic, tags were generated dynamically.
+
+                document.getElementById('pageHeader').value = appData.header;
+                document.getElementById('pageSubtitle').value = appData.subtitle;
+                renderCategories();
+                renderLogs();
+                alert("Legacy HTML imported successfully! You may need to re-assign categories to some logs.");
+            } catch (err) {
+                alert("Error parsing file. Ensure it's a valid archive HTML.");
+                console.error(err);
+            }
+        }
+
+        // --- Random Name Generator ---
+        function generateShiftName() {
+            const symbols = '!@#$%^&*()';
+            let res = '';
+            for(let i=0; i<8; i++) res += symbols.charAt(Math.floor(Math.random() * symbols.length));
+            return res;
+        }
+
+        // --- Export / Generation ---
+        function exportHTML() {
+            updateData();
+            
+            // Prepare clean export data
+            const exportData = JSON.parse(JSON.stringify(appData));
+            exportData.logs.forEach(log => {
+                if (!log.title || log.title.trim() === "") {
+                    log.title = generateShiftName();
+                }
+            });
+
+            // The exact template based on sotm.html
+            const template = `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>${exportData.header}</title>
+    <script src="https://cdn.tailwindcss.com"><\/script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Inter:wght@400;600&display=swap');
+        body { background-color: #0a0a0a; color: #e5e5e5; font-family: 'Inter', sans-serif; }
+        .mono { font-family: 'Space Mono', monospace; }
+        .log-card { background: #1a1a1a; border: 1px solid #333; transition: all 0.2s ease; height: 100%; display: flex; flex-direction: column; }
+        .log-card:hover { border-color: #4ade80; box-shadow: 0 0 15px rgba(74, 222, 128, 0.1); }
+        .category-btn { background: #1a1a1a; border: 1px solid #333; color: #a1a1aa; padding: 6px 14px; border-radius: 9999px; font-size: 0.85rem; transition: all 0.2s; white-space: nowrap; cursor: pointer; }
+        .category-btn:hover { background: #27272a; color: #f4f4f5; }
+        .category-btn.active { background: #4ade80; color: #0a0a0a; border-color: #4ade80; font-weight: 600; }
+        .type-btn { background: #18181b; border: 1px solid #3f3f46; color: #a1a1aa; transition: all 0.2s; cursor: pointer; }
+        .type-btn.active { background: #3f3f46; color: #f4f4f5; border-color: #52525b; }
+        .title-badge { background: #2d2d2d; color: #4ade80; padding: 2px 8px; border-radius: 4px; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.05em; }
+        .audio-badge { background: #3b0764; color: #d8b4fe; border: 1px solid #7e22ce; }
+        .location-badge { background: #1e293b; color: #94a3b8; padding: 2px 8px; border-radius: 4px; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.05em; }
+        .context-group { border-left: 2px solid #4ade80; padding-left: 1.5rem; margin-bottom: 3rem; }
+        .group-header { margin-bottom: 1rem; color: #4ade80; font-size: 0.9rem; font-weight: bold; text-transform: uppercase; letter-spacing: 0.1em; }
+        .content-area { line-height: 1.4; white-space: pre-line; word-break: break-word; margin-top: -3px; display: block; }
+        .content-wrapper { border-top: 1px solid #333; padding-top: 0.75rem; margin-top: 0; flex-grow: 1; }
+        .highlight { background-color: rgba(74, 222, 128, 0.3); color: #fff; }
+        .copy-btn { background: transparent; color: #a1a1aa; border: none; cursor: pointer; padding: 4px; border-radius: 4px; transition: color 0.2s, background 0.2s; }
+        .copy-btn:hover { color: #4ade80; background: #27272a; }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #0a0a0a; }
+        ::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
+    </style>
+</head>
+<body class="pb-8">
+    <div class="max-w-7xl mx-auto px-4 md:px-8 relative">
+        <div class="pt-6 md:pt-10 mb-4">
+            <a href="index.html" class="inline-flex items-center gap-2 text-zinc-400 hover:text-green-400 transition-colors mono text-sm mb-6">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+                RETURN_TO_HUB
+            </a>
+            <h1 class="text-3xl md:text-4xl font-bold mono text-green-400 mb-2">${exportData.header.replace(/</g, "&lt;")}</h1>
+            <p class="text-zinc-500 italic">${exportData.subtitle.replace(/</g, "&lt;")}</p>
+        </div>
+        
+        <header class="sticky top-0 z-50 bg-[#0a0a0a] pt-2 mb-6 border-b border-zinc-800 pb-4">
+            <div>
+                <input type="text" id="searchInput" placeholder="Search titles, content, or locations..." 
+                       class="w-full bg-zinc-900 border border-zinc-700 rounded-lg px-4 py-3 focus:outline-none focus:border-green-500 mono text-green-400">
+            </div>
+
+            <div id="filterBar" class="mt-4 flex flex-wrap gap-2 overflow-x-auto pb-2">
+                <button class="category-btn active" data-cat="all">All Logs</button>
+                <button class="category-btn" data-cat="text">Text Logs</button>
+                <button class="category-btn" data-cat="audio">Audio Logs</button>
+                ${exportData.categories.map(c => `<button class="category-btn" data-cat="${c.id}">${c.label.replace(/</g, "&lt;")}</button>`).join('')}
+            </div>
+            
+            <div id="subFilterBar" class="hidden mt-1 flex gap-2">
+                <button class="type-btn active text-xs px-3 py-1 rounded mono" data-type="all">All Types</button>
+                <button class="type-btn text-xs px-3 py-1 rounded mono" data-type="text">Text Only</button>
+                <button class="type-btn text-xs px-3 py-1 rounded mono" data-type="audio">Audio Only</button>
+            </div>
+
+            <div class="mt-4 text-zinc-500 text-sm mono">
+                ENTRIES_LOADED: <span id="logCount" class="text-green-500 font-bold">0</span>
+            </div>
+        </header>
+
+        <div id="logDisplay" class="space-y-8"></div>
+    </div>
+
+    <script id="archive-data" type="application/json">${JSON.stringify(exportData)}<\/script>
+    <script>
+        const appData = JSON.parse(document.getElementById('archive-data').textContent);
+        
+        let currentCategory = 'all';
+        let currentType = 'all';
+        let currentSearch = '';
+
+        function escapeRegExp(string) { return string.replace(/[.*+?^\${}()|[\\]\\\\]/g, '\\\\$&'); }
+        function escapeHtml(unsafe) {
+            return (unsafe||'').replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+        }
+
+        function getGroupedLogs(logs) {
+            const groups = appData.categories.map(cat => ({
+                name: cat.label,
+                match: (l) => l.tags.includes(cat.id)
+            }));
+            
+            // Add fallback generic groups if needed, but categories handle most
+            groups.push({ name: "Uncategorized Archives", match: (l) => l.tags.length === 0 });
+
+            const result = [];
+            const processedIds = new Set();
+
+            groups.forEach(group => {
+                const groupLogs = logs.filter(l => !processedIds.has(l.id) && group.match(l));
+                if (groupLogs.length > 0) {
+                    result.push({ title: group.name, logs: groupLogs });
+                    groupLogs.forEach(l => processedIds.add(l.id));
+                }
+            });
+            return result;
+        }
+
+        function render() {
+            const display = document.getElementById('logDisplay');
+            display.innerHTML = '';
+
+            const subFilterBar = document.getElementById('subFilterBar');
+            if (['all', 'text', 'audio'].includes(currentCategory)) {
+                subFilterBar.classList.add('hidden');
+                currentType = 'all';
+                document.querySelectorAll('.type-btn').forEach(b => b.classList.toggle('active', b.dataset.type === 'all'));
+            } else {
+                subFilterBar.classList.remove('hidden');
+            }
+
+            let filtered = appData.logs.filter(log => {
+                const searchLower = currentSearch.toLowerCase();
+                const matchesSearch = log.title.toLowerCase().includes(searchLower) || 
+                                    log.content.toLowerCase().includes(searchLower) ||
+                                    (log.location && log.location.toLowerCase().includes(searchLower));
+                
+                let matchesCat = currentCategory === 'all';
+                if (!matchesCat) {
+                    if (currentCategory === 'text') matchesCat = !log.isAudio;
+                    else if (currentCategory === 'audio') matchesCat = log.isAudio;
+                    else matchesCat = log.tags.includes(currentCategory);
+                }
+                
+                const matchesType = currentType === 'all' ? true : (currentType === 'text' ? !log.isAudio : log.isAudio);
+
+                return matchesSearch && matchesCat && matchesType;
+            });
+
+            document.getElementById('logCount').innerText = filtered.length;
+
+            if ((currentCategory === 'all' || currentCategory === 'text' || currentCategory === 'audio') && !currentSearch) {
+                const grouped = getGroupedLogs(filtered);
+                grouped.forEach(group => {
+                    const groupSection = document.createElement('div');
+                    groupSection.className = 'context-group';
+                    groupSection.innerHTML = \`<div class="group-header mono">\${escapeHtml(group.title)}</div>\`;
+                    
+                    const grid = document.createElement('div');
+                    grid.className = 'grid grid-cols-1 md:grid-cols-2 gap-4';
+                    
+                    group.logs.forEach(log => grid.appendChild(createCard(log)));
+                    groupSection.appendChild(grid);
+                    display.appendChild(groupSection);
+                });
+            } else {
+                const grid = document.createElement('div');
+                grid.className = 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6';
+                filtered.forEach(log => grid.appendChild(createCard(log)));
+                display.appendChild(grid);
+            }
+        }
+
+        function createCard(log) {
+            const div = document.createElement('div');
+            div.className = 'log-card p-5 rounded-xl flex flex-col gap-3';
+            
+            let displayTitle = escapeHtml(log.title);
+            let displayContent = escapeHtml(log.content);
+            if (currentSearch) {
+                const regex = new RegExp(\`(\${escapeRegExp(currentSearch)})\`, 'gi');
+                displayTitle = displayTitle.replace(regex, '<span class="highlight">$1</span>');
+                displayContent = displayContent.replace(regex, '<span class="highlight">$1</span>');
+            }
+
+            const copySvg = \`<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>\`;
+
+            const locHtml = log.location ? \`<span class="location-badge mono">\${escapeHtml(log.location)}</span>\` : '';
+            const typeBadge = log.isAudio ? \`<span class="title-badge audio-badge mono">AUDIO LOG</span>\` : \`<span class="title-badge mono">\${escapeHtml(log.title)}</span>\`;
+            
+            // Only show title text below header if it's an audio log, text logs use the ID badge pattern from sotm.html
+            const titleDisplay = log.isAudio ? \`<h2 class="text-lg font-bold text-white mono leading-tight mb-3">\${displayTitle}</h2>\` : '';
+
+            div.innerHTML = \`
+                <div class="flex justify-between items-start mb-3">
+                    <div class="flex gap-2 items-center flex-wrap">
+                        \${typeBadge}
+                        \${locHtml}
+                    </div>
+                    <button class="copy-btn" title="Copy Content" onclick="copyContent(this, '\${escapeRegExp(log.content.replace(/'/g, "\\\\'"))}')">\${copySvg}</button>
+                </div>
+                \${titleDisplay}
+                <div class="content-wrapper">
+                    <div class="content-area text-zinc-400 text-sm">\${displayContent}</div>
+                </div>
+            \`;
+            return div;
+        }
+
+        function copyContent(btn, text) {
+            const textarea = document.createElement('textarea');
+            textarea.value = text.replace(/\\\\'/g, "'");
+            document.body.appendChild(textarea);
+            textarea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textarea);
+
+            const originalHTML = btn.innerHTML;
+            btn.innerHTML = \`<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#4ade80" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>\`;
+            setTimeout(() => { btn.innerHTML = originalHTML; }, 1500);
+        }
+
+        // Event Listeners
+        document.getElementById('searchInput').addEventListener('input', (e) => { currentSearch = e.target.value; render(); });
+        document.getElementById('filterBar').addEventListener('click', (e) => {
+            if (e.target.classList.contains('category-btn')) {
+                document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
+                e.target.classList.add('active');
+                currentCategory = e.target.dataset.cat;
+                render();
+            }
+        });
+        document.getElementById('subFilterBar').addEventListener('click', (e) => {
+            if (e.target.classList.contains('type-btn')) {
+                document.querySelectorAll('.type-btn').forEach(b => b.classList.remove('active'));
+                e.target.classList.add('active');
+                currentType = e.target.dataset.type;
+                render();
+            }
+        });
+
+        render();
+    <\/script>
+</body>
+</html>`;
+
+            // Download Trigger
+            const blob = new Blob([template], { type: 'text/html' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${exportData.header.replace(/\s+/g, '_').toLowerCase()}.html`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+    </script>
+</body>
+</html>
