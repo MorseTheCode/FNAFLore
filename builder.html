@@ -12,6 +12,8 @@
             background-color: #0a0a0a;
             color: #e5e5e5;
             font-family: 'Inter', sans-serif;
+            background-image: radial-gradient(circle at 50% 50%, #1a1a1a 0%, #0a0a0a 100%);
+            min-height: 100vh;
         }
         .mono { font-family: 'Space Mono', monospace; }
         
@@ -60,6 +62,14 @@
         }
         .log-item.audio { border-left-color: #a855f7; }
         .log-item.text { border-left-color: #4ade80; }
+        
+        /* Prevent hover/text interactions on all cards during active drag */
+        body.is-dragging .log-item {
+            pointer-events: none;
+        }
+        body.is-dragging .log-item.dragging-source {
+            display: none !important;
+        }
 
         ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-track { background: #0a0a0a; }
@@ -112,7 +122,7 @@
                 <div class="panel p-6">
                     <div class="flex justify-between items-center mb-4 border-b border-zinc-800 pb-2">
                         <h2 class="text-xl font-bold mono text-white">Categories (Filters)</h2>
-                        <button onclick="addCategory()" class="text-green-400 hover:text-green-300">+</button>
+                        <button onclick="addCategory()" class="text-green-400 hover:text-green-300" title="Add Category">+</button>
                     </div>
                     <div id="categoriesContainer" class="space-y-3">
                         <!-- Categories injected here -->
@@ -127,7 +137,7 @@
                     <button onclick="addLog()" class="btn btn-secondary text-xs py-1">Add New Log</button>
                 </div>
                 
-                <div id="logsContainer" class="space-y-4 flex-grow overflow-y-auto pr-2">
+                <div id="logsContainer" class="space-y-4 flex-grow overflow-y-auto pr-2" ondragover="handleDragOver(event)">
                     <!-- Logs injected here -->
                 </div>
             </div>
@@ -141,10 +151,12 @@
             subtitle: "Classified Internal Logs",
             categories: [
                 { id: "admin", label: "Admin" },
-                { id: "staff", label: "Staff Chat" }
+                { id: "staff_chat", label: "Staff Chat" }
             ],
             logs: []
         };
+
+        let currentBuilderFilter = 'all';
 
         // Init
         document.getElementById('pageHeader').value = appData.header;
@@ -159,41 +171,89 @@
         }
 
         // --- Categories Management ---
+        function setBuilderFilter(id) {
+            currentBuilderFilter = id;
+            renderCategories();
+            renderLogs();
+        }
+
         function renderCategories() {
             const container = document.getElementById('categoriesContainer');
-            container.innerHTML = '';
+            container.innerHTML = `
+                <button onclick="setBuilderFilter('all')" class="w-full text-left px-3 py-2 rounded text-sm mb-2 transition-colors ${currentBuilderFilter === 'all' ? 'bg-green-900/30 border border-green-500/50 text-green-400' : 'bg-zinc-900/50 border border-transparent text-zinc-400 hover:bg-zinc-800'}">
+                    Show All Entries
+                </button>
+            `;
             
             appData.categories.forEach((cat, index) => {
                 const div = document.createElement('div');
-                div.className = 'flex gap-2 items-center';
+                const isActive = currentBuilderFilter === cat.id;
+                div.className = `flex gap-2 items-center px-2 py-1 mb-1 rounded border transition-colors ${isActive ? 'bg-green-900/20 border-green-500/30' : 'border-transparent hover:bg-zinc-900/50'}`;
+                
                 div.innerHTML = `
-                    <input type="text" value="${cat.id}" class="input-field w-1/3 text-xs" placeholder="ID (e.g. edwin)" onchange="updateCat(${index}, 'id', this.value)">
-                    <input type="text" value="${cat.label}" class="input-field w-2/3 text-xs" placeholder="Display Label" onchange="updateCat(${index}, 'label', this.value)">
-                    <button onclick="removeCategory(${index})" class="text-red-500 hover:text-red-400 px-2">×</button>
+                    <div class="flex-grow cursor-pointer" onclick="setBuilderFilter('${cat.id}')">
+                        <input type="text" value="${cat.label.replace(/"/g, '&quot;')}" class="w-full bg-transparent border-b border-transparent focus:border-green-500 outline-none text-sm ${isActive ? 'text-green-400 font-bold' : 'text-zinc-200'}" onclick="event.stopPropagation()" onchange="updateCatLabel(${index}, this.value)">
+                        <div class="text-[10px] text-zinc-500 mono mt-1">ID: ${cat.id}</div>
+                    </div>
+                    <button onclick="removeCategory(${index})" class="text-red-500 hover:text-red-400 p-2" title="Delete Category">×</button>
                 `;
                 container.appendChild(div);
             });
-            renderLogs(); // Re-render logs to update tag checkboxes
         }
 
         function addCategory() {
-            appData.categories.push({ id: `cat_${Date.now().toString().slice(-4)}`, label: "New Category" });
+            const newLabel = "New Category";
+            let newId = "new_category";
+            let counter = 1;
+            while(appData.categories.some(c => c.id === newId)) {
+                newId = `new_category_${counter++}`;
+            }
+            appData.categories.push({ id: newId, label: newLabel });
             renderCategories();
+            renderLogs();
         }
 
-        function updateCat(index, field, value) {
-            appData.categories[index][field] = value;
+        function updateCatLabel(index, newLabel) {
+            const oldId = appData.categories[index].id;
+            let newId = newLabel.toLowerCase().replace(/\s+/g, '_').replace(/[^a-z0-9_]/g, '');
+            if (!newId) newId = 'category';
+            
+            let counter = 1;
+            let finalId = newId;
+            while(appData.categories.some((c, i) => c.id === finalId && i !== index)) {
+                finalId = `${newId}_${counter++}`;
+            }
+
+            appData.categories[index].label = newLabel;
+            appData.categories[index].id = finalId;
+
+            // Update associated tags in logs
+            appData.logs.forEach(log => {
+                const tagIdx = log.tags.indexOf(oldId);
+                if (tagIdx > -1) {
+                    log.tags[tagIdx] = finalId;
+                }
+            });
+
+            if (currentBuilderFilter === oldId) {
+                currentBuilderFilter = finalId;
+            }
+
             renderCategories();
+            renderLogs();
         }
 
         function removeCategory(index) {
             const catId = appData.categories[index].id;
             appData.categories.splice(index, 1);
-            // Remove this tag from all logs
             appData.logs.forEach(log => {
                 log.tags = log.tags.filter(t => t !== catId);
             });
+            if (currentBuilderFilter === catId) {
+                currentBuilderFilter = 'all';
+            }
             renderCategories();
+            renderLogs();
         }
 
         // --- Logs Management ---
@@ -205,7 +265,7 @@
                 content: "",
                 isAudio: false,
                 audioUrl: "",
-                tags: []
+                tags: currentBuilderFilter !== 'all' ? [currentBuilderFilter] : []
             };
         }
 
@@ -219,6 +279,88 @@
             renderLogs();
         }
 
+        // --- Drag and Drop Logic ---
+        let draggedLogEl = null;
+        let dragPlaceholder = null;
+        let cachedDraggables = []; // Cache to eliminate layout thrashing lag
+        let currentDragTarget = undefined;
+
+        function handleDragStart(e, id) {
+            draggedLogEl = e.currentTarget;
+            e.dataTransfer.effectAllowed = 'move';
+            e.dataTransfer.setData('text/plain', id);
+            
+            dragPlaceholder = document.createElement('div');
+            dragPlaceholder.className = 'border-2 border-dashed border-green-500/50 bg-green-900/10 rounded-lg transition-all duration-200';
+            dragPlaceholder.style.height = `${draggedLogEl.offsetHeight}px`;
+
+            document.body.classList.add('is-dragging');
+            draggedLogEl.classList.add('dragging-source');
+            currentDragTarget = undefined;
+
+            setTimeout(() => {
+                draggedLogEl.style.display = 'none';
+                draggedLogEl.parentNode.insertBefore(dragPlaceholder, draggedLogEl.nextSibling);
+                // Cache DOM elements ONCE at the start of the drag to fix extreme lag
+                cachedDraggables = [...document.querySelectorAll('#logsContainer .log-item:not(.dragging-source)')];
+            }, 0);
+        }
+
+        function handleDragOver(e) {
+            e.preventDefault();
+            if (!draggedLogEl || !dragPlaceholder) return;
+            
+            const container = document.getElementById('logsContainer');
+            const afterElement = getDragAfterElement(e.clientY);
+            
+            // Prevent massive layout thrashing: only manipulate DOM if target actually changed
+            if (afterElement !== currentDragTarget) {
+                currentDragTarget = afterElement;
+                if (afterElement == null) {
+                    container.appendChild(dragPlaceholder);
+                } else {
+                    container.insertBefore(dragPlaceholder, afterElement);
+                }
+            }
+        }
+
+        function getDragAfterElement(y) {
+            // Optimized check stopping at the first element below the cursor to avoid excessive loops
+            return cachedDraggables.find(child => {
+                const box = child.getBoundingClientRect();
+                return y < box.top + box.height / 2;
+            });
+        }
+
+        function handleDragEnd(e) {
+            if (!draggedLogEl) return;
+            
+            document.body.classList.remove('is-dragging');
+            draggedLogEl.classList.remove('dragging-source');
+            draggedLogEl.style.display = 'flex';
+            
+            if (dragPlaceholder && dragPlaceholder.parentNode) {
+                dragPlaceholder.parentNode.replaceChild(draggedLogEl, dragPlaceholder);
+            }
+            
+            const currentIds = [...document.querySelectorAll('#logsContainer .log-item')].map(el => el.dataset.id);
+            
+            // Map the new visual order directly to the underlying data
+            let indices = currentIds.map(id => appData.logs.findIndex(l => l.id === id)).sort((a, b) => a - b);
+            let newlyOrderedLogs = currentIds.map(id => appData.logs.find(l => l.id === id));
+            
+            indices.forEach((globalIndex, i) => {
+                appData.logs[globalIndex] = newlyOrderedLogs[i];
+            });
+
+            draggedLogEl.setAttribute('draggable', 'false'); // Reset draggability
+            draggedLogEl = null;
+            dragPlaceholder = null;
+            cachedDraggables = [];
+            currentDragTarget = undefined;
+            renderLogs();
+        }
+
         function updateLog(id, field, value, isCheckbox = false) {
             const log = appData.logs.find(l => l.id === id);
             if (!log) return;
@@ -229,10 +371,14 @@
                 } else {
                     log.tags = log.tags.filter(t => t !== field);
                 }
+                
+                if (currentBuilderFilter !== 'all' && currentBuilderFilter === field && !value) {
+                    renderLogs();
+                }
             } else {
                 log[field] = value;
                 if (field === 'isAudio') {
-                    renderLogs(); // refresh border colors and audio input visibility
+                    renderLogs();
                 }
             }
         }
@@ -240,13 +386,22 @@
         function renderLogs() {
             const container = document.getElementById('logsContainer');
             container.innerHTML = '';
-            document.getElementById('logCount').innerText = appData.logs.length;
+            
+            const logsToRender = currentBuilderFilter === 'all' 
+                ? appData.logs 
+                : appData.logs.filter(l => l.tags.includes(currentBuilderFilter));
 
-            appData.logs.forEach(log => {
+            document.getElementById('logCount').innerText = logsToRender.length;
+
+            logsToRender.forEach((log, index) => {
                 const div = document.createElement('div');
                 div.className = `log-item p-4 rounded-lg flex flex-col gap-3 ${log.isAudio ? 'audio' : 'text'}`;
+                // Set to false initially, only made true when gripping the handle
+                div.setAttribute('draggable', 'false');
+                div.setAttribute('data-id', log.id);
+                div.ondragstart = (e) => handleDragStart(e, log.id);
+                div.ondragend = (e) => handleDragEnd(e);
                 
-                // Tag checkboxes HTML
                 const tagsHtml = appData.categories.map(cat => `
                     <label class="inline-flex items-center gap-1 text-xs text-zinc-400 cursor-pointer">
                         <input type="checkbox" class="accent-green-500" 
@@ -259,42 +414,56 @@
                 const audioInputHtml = log.isAudio ? `
                     <div class="mt-2 border-t border-zinc-800/50 pt-3">
                         <label class="block text-purple-400 text-[10px] uppercase mb-1">Audio File URL (Optional)</label>
-                        <input type="text" class="input-field border-purple-900/30 focus:border-purple-500" value="${log.audioUrl || ''}" placeholder="e.g. https://example.com/audio.mp3" oninput="updateLog('${log.id}', 'audioUrl', this.value)">
+                        <input type="text" class="input-field border-purple-900/30 focus:border-purple-500" value="${(log.audioUrl || '').replace(/"/g, '&quot;')}" placeholder="e.g. https://example.com/audio.mp3" oninput="updateLog('${log.id}', 'audioUrl', this.value)">
                     </div>
                 ` : '';
+                
+                const escapeHtmlVal = (str) => (str||'').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 
                 div.innerHTML = `
                     <div class="flex justify-between items-start gap-4">
                         <div class="flex-grow grid grid-cols-2 gap-3">
                             <div>
                                 <label class="block text-zinc-500 text-[10px] uppercase mb-1">Title (Leave blank for random symbols)</label>
-                                <input type="text" class="input-field" value="${log.title}" placeholder="e.g. Night 1 or Incident Report" oninput="updateLog('${log.id}', 'title', this.value)">
+                                <input type="text" class="input-field" value="${escapeHtmlVal(log.title)}" placeholder="e.g. Night 1 or Incident Report" oninput="updateLog('${log.id}', 'title', this.value)">
                             </div>
                             <div>
                                 <label class="block text-zinc-500 text-[10px] uppercase mb-1">Location (Optional)</label>
-                                <input type="text" class="input-field" value="${log.location}" placeholder="e.g. Admin Wing" oninput="updateLog('${log.id}', 'location', this.value)">
+                                <input type="text" class="input-field" value="${escapeHtmlVal(log.location)}" placeholder="e.g. Admin Wing" oninput="updateLog('${log.id}', 'location', this.value)">
                             </div>
                         </div>
-                        <div class="flex flex-col gap-2 items-end">
-                            <button onclick="removeLog('${log.id}')" class="btn btn-danger text-xs py-1">Delete</button>
-                            <select class="input-field text-xs py-1 px-2 w-auto" onchange="updateLog('${log.id}', 'isAudio', this.value === 'true')">
-                                <option value="false" ${!log.isAudio ? 'selected' : ''}>Text Log</option>
-                                <option value="true" ${log.isAudio ? 'selected' : ''}>Audio Log</option>
-                            </select>
+                        <div class="flex flex-col gap-2 items-end min-w-[120px]">
+                            <div class="cursor-grab active:cursor-grabbing text-zinc-500 hover:text-green-400 p-1 mb-1 self-end" title="Drag to reorder" 
+                                 onmousedown="this.closest('.log-item').setAttribute('draggable', 'true')" 
+                                 onmouseup="this.closest('.log-item').setAttribute('draggable', 'false')" 
+                                 onmouseleave="this.closest('.log-item').setAttribute('draggable', 'false')">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="12" r="1"></circle><circle cx="9" cy="5" r="1"></circle><circle cx="9" cy="19" r="1"></circle><circle cx="15" cy="12" r="1"></circle><circle cx="15" cy="5" r="1"></circle><circle cx="15" cy="19" r="1"></circle></svg>
+                            </div>
+                            <div class="flex gap-2 w-full">
+                                <select class="input-field text-xs py-1 px-1 flex-grow" onchange="updateLog('${log.id}', 'isAudio', this.value === 'true')">
+                                    <option value="false" ${!log.isAudio ? 'selected' : ''}>Text</option>
+                                    <option value="true" ${log.isAudio ? 'selected' : ''}>Audio</option>
+                                </select>
+                                <button onclick="removeLog('${log.id}')" class="btn btn-danger text-xs py-1 px-2" title="Delete Log">✕</button>
+                            </div>
                         </div>
                     </div>
                     <div>
                         <label class="block text-zinc-500 text-[10px] uppercase mb-1">Content</label>
-                        <textarea class="input-field min-h-[100px] resize-y" placeholder="Enter transcript or log text here..." oninput="updateLog('${log.id}', 'content', this.value)">${log.content}</textarea>
+                        <textarea class="input-field min-h-[100px] resize-y" placeholder="Enter transcript or log text here..." oninput="updateLog('${log.id}', 'content', this.value)">${escapeHtmlVal(log.content)}</textarea>
                     </div>
                     ${audioInputHtml}
-                    <div class="flex flex-wrap gap-3 p-2 bg-zinc-900 rounded border border-zinc-800">
+                    <div class="flex flex-wrap gap-3 p-2 bg-zinc-900 rounded border border-zinc-800 mt-1">
                         <span class="text-xs text-zinc-500 mr-2 uppercase block w-full mb-1">Assign to Sections:</span>
                         ${tagsHtml || '<span class="text-xs text-zinc-600 italic">No categories defined.</span>'}
                     </div>
                 `;
                 container.appendChild(div);
             });
+            
+            if (logsToRender.length === 0) {
+                container.innerHTML = '<div class="text-center p-8 text-zinc-500 border border-dashed border-zinc-800 rounded-lg">No entries found for this category.</div>';
+            }
         }
 
         // --- File Import (Modern & Legacy) ---
@@ -361,11 +530,39 @@
                 const legacyAudio = extractArray('audioLogs');
                 const legacyText = extractArray('textLogs');
 
+                // Smart Legacy Tag Recovery (Rebuilds tags based on your original JS functions)
+                const recoverTags = (logObj) => {
+                    const tags = [];
+                    const searchStr = ((logObj.id || '') + " " + (logObj.title || '') + " " + (logObj.content || '')).toLowerCase();
+                    const key = (logObj.id || '').toLowerCase();
+                    const loc = (logObj.location || '');
+
+                    appData.categories.forEach(cat => {
+                        const cId = cat.id;
+                        // FNAF categories matching
+                        if (cId === 'fnaf1' && loc === 'FNAF 1') tags.push(cId);
+                        if (cId === 'fnaf2' && loc === 'FNAF 2') tags.push(cId);
+                        if (cId === 'fnaf3' && loc === 'FNAF 3') tags.push(cId);
+
+                        // SOTM categories matching
+                        if (cId === 'admin' && searchStr.includes('admin')) tags.push(cId);
+                        if (cId === 'mcm' && (key.includes('misc_3') && !['misc_31', 'misc_32'].includes(key) || key.includes('misc12') || key.includes('misc10') || key.includes('misc11') || key === 'misc19')) tags.push(cId);
+                        if (cId === 'internal' && (key.includes('misc06') || key.includes('misc07') || key.includes('misc13') || key.includes('doll01') || key.includes('doll02') || searchStr.includes('theater') || ['misc03', 'misc05', 'misc24', 'misc25a', 'doll03', 'doll04'].includes(key))) tags.push(cId);
+                        if (cId === 'fiona' && (['misc04', 'misc21', 'misc22', 'nc_fiona_inventorhouse'].includes(key) || (!['misc03', 'misc05', 'misc19', 'misc27a', 'misc27b'].includes(key) && searchStr.includes('fiona')))) tags.push(cId);
+                        if (cId === 'wa' && (searchStr.includes('w.a.') || searchStr.includes('franchise') || ['misc01', 'misc02', 'misc14'].includes(key))) tags.push(cId);
+                        if (cId === 'edwin' && (!['admin12', 'misc03', 'misc04', 'misc13', 'misc22', 'misc23', 'nc_fiona_inventorhouse'].includes(key) && (searchStr.includes('edwin') || searchStr.includes('inventorhouse') || searchStr.includes("ed's modular") || searchStr.includes('ed,') || ['misc27a', 'misc27b'].includes(key)))) tags.push(cId);
+                        if (cId === 'recovery' && ['misc26', 'misc28', 'misc29'].includes(key)) tags.push(cId);
+                        if (cId === 'sleepymoon' && (key.includes('costumeback') || ['misc_31', 'misc_32'].includes(key))) tags.push(cId);
+                    });
+                    
+                    return [...new Set(tags)]; // return unique array
+                };
+
                 if (legacyAudio) {
                     legacyAudio.forEach((l, i) => {
                         appData.logs.push({
                             id: `AL_${Date.now()}_${i}`, title: l.title || '', location: l.location || '',
-                            content: l.content || '', isAudio: true, audioUrl: l.audioUrl || '', tags: l.tags || []
+                            content: l.content || '', isAudio: true, audioUrl: l.audioUrl || '', tags: l.tags && l.tags.length > 0 ? l.tags : recoverTags(l)
                         });
                     });
                 }
@@ -373,7 +570,7 @@
                     legacyText.forEach((l, i) => {
                         appData.logs.push({
                             id: l.id || `TL_${Date.now()}_${i}`, title: l.title || '', location: l.location || '',
-                            content: l.content || '', isAudio: false, audioUrl: '', tags: l.tags || []
+                            content: l.content || '', isAudio: false, audioUrl: '', tags: l.tags && l.tags.length > 0 ? l.tags : recoverTags(l)
                         });
                     });
                 }
@@ -382,7 +579,7 @@
                 document.getElementById('pageSubtitle').value = appData.subtitle;
                 renderCategories();
                 renderLogs();
-                alert("Legacy HTML imported successfully! You may need to re-assign categories to some logs.");
+                alert("Legacy HTML imported successfully! Categories have been auto-recovered based on original scripts.");
             } catch (err) {
                 alert("Error parsing file. Ensure it's a valid archive HTML.");
                 console.error(err);
@@ -419,7 +616,13 @@
     <script src="https://cdn.tailwindcss.com"><\/script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Inter:wght@400;600&display=swap');
-        body { background-color: #0a0a0a; color: #e5e5e5; font-family: 'Inter', sans-serif; }
+        body { 
+            background-color: #0a0a0a; 
+            color: #e5e5e5; 
+            font-family: 'Inter', sans-serif;
+            background-image: radial-gradient(circle at 50% 50%, #1a1a1a 0%, #0a0a0a 100%);
+            min-height: 100vh;
+        }
         .mono { font-family: 'Space Mono', monospace; }
         .log-card { background: #1a1a1a; border: 1px solid #333; transition: all 0.2s ease; height: 100%; display: flex; flex-direction: column; }
         .log-card:hover { border-color: #4ade80; box-shadow: 0 0 15px rgba(74, 222, 128, 0.1); }
@@ -441,9 +644,25 @@
         ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-track { background: #0a0a0a; }
         ::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
+        @keyframes crt-scan {
+            0% { top: -10%; }
+            100% { top: 110%; }
+        }
+        .crt-line {
+            position: fixed;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: rgba(74, 222, 128, 0.5);
+            box-shadow: 0 0 20px rgba(74, 222, 128, 0.8), 0 0 40px rgba(74, 222, 128, 0.4);
+            animation: crt-scan 6s linear infinite;
+            pointer-events: none;
+            z-index: 9999;
+        }
     </style>
 </head>
 <body class="pb-8">
+    <div class="crt-line"></div>
     <div class="max-w-7xl mx-auto px-4 md:px-8 relative">
         <div class="pt-6 md:pt-10 mb-4">
             <a href="index.html" class="inline-flex items-center gap-2 text-zinc-400 hover:text-green-400 transition-colors mono text-sm mb-6">
@@ -454,7 +673,7 @@
             <p class="text-zinc-500 italic">${exportData.subtitle.replace(/</g, "&lt;")}</p>
         </div>
         
-        <header class="sticky top-0 z-50 bg-[#0a0a0a] pt-2 mb-6 border-b border-zinc-800 pb-4">
+        <header class="sticky top-0 z-50 pt-2 mb-6 border-b border-zinc-800 pb-4" style="background-color: #0a0a0a;">
             <div>
                 <input type="text" id="searchInput" placeholder="Search titles, content, or locations..." 
                        class="w-full bg-zinc-900 border border-zinc-700 rounded-lg px-4 py-3 focus:outline-none focus:border-green-500 mono text-green-400">
