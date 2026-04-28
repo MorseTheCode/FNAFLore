@@ -204,6 +204,7 @@
                 location: "",
                 content: "",
                 isAudio: false,
+                audioUrl: "",
                 tags: []
             };
         }
@@ -231,7 +232,7 @@
             } else {
                 log[field] = value;
                 if (field === 'isAudio') {
-                    renderLogs(); // refresh border colors
+                    renderLogs(); // refresh border colors and audio input visibility
                 }
             }
         }
@@ -254,6 +255,13 @@
                         ${cat.label}
                     </label>
                 `).join('');
+
+                const audioInputHtml = log.isAudio ? `
+                    <div class="mt-2 border-t border-zinc-800/50 pt-3">
+                        <label class="block text-purple-400 text-[10px] uppercase mb-1">Audio File URL (Optional)</label>
+                        <input type="text" class="input-field border-purple-900/30 focus:border-purple-500" value="${log.audioUrl || ''}" placeholder="e.g. https://example.com/audio.mp3" oninput="updateLog('${log.id}', 'audioUrl', this.value)">
+                    </div>
+                ` : '';
 
                 div.innerHTML = `
                     <div class="flex justify-between items-start gap-4">
@@ -279,6 +287,7 @@
                         <label class="block text-zinc-500 text-[10px] uppercase mb-1">Content</label>
                         <textarea class="input-field min-h-[100px] resize-y" placeholder="Enter transcript or log text here..." oninput="updateLog('${log.id}', 'content', this.value)">${log.content}</textarea>
                     </div>
+                    ${audioInputHtml}
                     <div class="flex flex-wrap gap-3 p-2 bg-zinc-900 rounded border border-zinc-800">
                         <span class="text-xs text-zinc-500 mr-2 uppercase block w-full mb-1">Assign to Sections:</span>
                         ${tagsHtml || '<span class="text-xs text-zinc-600 italic">No categories defined.</span>'}
@@ -356,7 +365,7 @@
                     legacyAudio.forEach((l, i) => {
                         appData.logs.push({
                             id: `AL_${Date.now()}_${i}`, title: l.title || '', location: l.location || '',
-                            content: l.content || '', isAudio: true, tags: l.tags || []
+                            content: l.content || '', isAudio: true, audioUrl: l.audioUrl || '', tags: l.tags || []
                         });
                     });
                 }
@@ -364,13 +373,10 @@
                     legacyText.forEach((l, i) => {
                         appData.logs.push({
                             id: l.id || `TL_${Date.now()}_${i}`, title: l.title || '', location: l.location || '',
-                            content: l.content || '', isAudio: false, tags: l.tags || []
+                            content: l.content || '', isAudio: false, audioUrl: '', tags: l.tags || []
                         });
                     });
                 }
-
-                // Attempt to preserve tags if the legacy parser generated them, otherwise let user re-tag.
-                // In classic, tags were generated dynamically.
 
                 document.getElementById('pageHeader').value = appData.header;
                 document.getElementById('pageSubtitle').value = appData.subtitle;
@@ -488,6 +494,64 @@
             return (unsafe||'').replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
         }
 
+        // --- Audio Player Logic ---
+        function toggleAudio(btn, audioId) {
+            var audio = document.getElementById(audioId);
+            if (audio.paused) {
+                document.querySelectorAll('audio').forEach(function(a) { 
+                    if(a !== audio) { 
+                        a.pause(); 
+                        var container = a.closest('.audio-player-container');
+                        if (container) {
+                            var b = container.querySelector('.play-pause-btn');
+                            if(b) b.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>';
+                        }
+                    }
+                });
+                audio.play();
+                btn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>';
+            } else {
+                audio.pause();
+                btn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>';
+            }
+        }
+        function updateProgress(audio) {
+            var container = audio.closest('.audio-player-container');
+            var fill = container.querySelector('.progress-fill');
+            var timeDisplay = container.querySelector('.time-display');
+            var percent = (audio.currentTime / audio.duration) * 100 || 0;
+            fill.style.width = percent + '%';
+            timeDisplay.textContent = formatTime(audio.currentTime) + ' / ' + formatTime(audio.duration || 0);
+        }
+        function setDuration(audio) {
+            var container = audio.closest('.audio-player-container');
+            var timeDisplay = container.querySelector('.time-display');
+            timeDisplay.textContent = '0:00 / ' + formatTime(audio.duration);
+        }
+        function resetPlayer(audio) {
+            var container = audio.closest('.audio-player-container');
+            var btn = container.querySelector('.play-pause-btn');
+            btn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>';
+            var fill = container.querySelector('.progress-fill');
+            fill.style.width = '0%';
+            var timeDisplay = container.querySelector('.time-display');
+            timeDisplay.textContent = '0:00 / ' + formatTime(audio.duration || 0);
+        }
+        function seekAudio(e, audioId) {
+            var audio = document.getElementById(audioId);
+            var bar = e.currentTarget;
+            var rect = bar.getBoundingClientRect();
+            var clickX = e.clientX - rect.left;
+            var percent = clickX / rect.width;
+            audio.currentTime = percent * audio.duration;
+        }
+        function formatTime(seconds) {
+            if (isNaN(seconds) || !isFinite(seconds)) return "0:00";
+            var m = Math.floor(seconds / 60);
+            var s = Math.floor(seconds % 60);
+            return m + ':' + (s < 10 ? '0' : '') + s;
+        }
+
         function getGroupedLogs(logs) {
             const groups = appData.categories.map(cat => ({
                 name: cat.label,
@@ -585,6 +649,20 @@
             // Only show title text below header if it's an audio log, text logs use the ID badge pattern from sotm.html
             const titleDisplay = log.isAudio ? \`<h2 class="text-lg font-bold text-white mono leading-tight mb-3">\${displayTitle}</h2>\` : '';
 
+            // Interactive Audio Player component
+            const audioPlayerHtml = (log.isAudio && log.audioUrl) ? \`
+                <div class="audio-player-container bg-[#121212] border border-zinc-800 p-3 rounded-lg flex items-center gap-4 mt-4">
+                    <button class="play-pause-btn text-purple-400 hover:text-purple-300 transition-colors flex-shrink-0" onclick="toggleAudio(this, 'audio-\${log.id}')">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                    </button>
+                    <div class="bg-zinc-800 h-2 flex-grow rounded cursor-pointer relative" onclick="seekAudio(event, 'audio-\${log.id}')">
+                        <div class="progress-fill bg-purple-500 h-full rounded w-0 pointer-events-none transition-all duration-75"></div>
+                    </div>
+                    <span class="time-display text-zinc-500 text-xs mono pointer-events-none w-24 text-right flex-shrink-0">0:00 / 0:00</span>
+                    <audio id="audio-\${log.id}" src="\${escapeHtml(log.audioUrl)}" ontimeupdate="updateProgress(this)" onloadedmetadata="setDuration(this)" onended="resetPlayer(this)"></audio>
+                </div>
+            \` : '';
+
             div.innerHTML = \`
                 <div class="flex justify-between items-start mb-3">
                     <div class="flex gap-2 items-center flex-wrap">
@@ -594,8 +672,9 @@
                     <button class="copy-btn" title="Copy Content" onclick="copyContent(this, '\${escapeRegExp(log.content.replace(/'/g, "\\\\'"))}')">\${copySvg}</button>
                 </div>
                 \${titleDisplay}
-                <div class="content-wrapper">
-                    <div class="content-area text-zinc-400 text-sm">\${displayContent}</div>
+                <div class="content-wrapper flex flex-col">
+                    <div class="content-area text-zinc-400 text-sm flex-grow">\${displayContent}</div>
+                    \${audioPlayerHtml}
                 </div>
             \`;
             return div;
