@@ -18,7 +18,7 @@
         .panel {
             background: #121212;
             border: 1px solid #27272a;
-            border-radius: 1.5rem;
+            border-radius: 0.75rem;
         }
 
         .input-field {
@@ -26,8 +26,8 @@
             background: #18181b;
             border: 1px solid #3f3f46;
             color: #e5e5e5;
-            padding: 0.5rem 1rem;
-            border-radius: 1rem;
+            padding: 0.5rem 0.75rem;
+            border-radius: 0.5rem;
             font-family: 'Space Mono', monospace;
             font-size: 0.875rem;
         }
@@ -37,8 +37,8 @@
         }
         
         .btn {
-            padding: 0.5rem 1.25rem;
-            border-radius: 9999px;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.2s;
@@ -60,6 +60,9 @@
         }
         .log-item.audio { border-left-color: #a855f7; }
         .log-item.text { border-left-color: #4ade80; }
+        .log-item.image { border-left-color: #3b82f6; }
+        .log-item.memo { border-left-color: #eab308; }
+        .log-item.order { border-left-color: #14b8a6; }
         
         /* Prevent hover/text interactions on all cards during active drag */
         body.is-dragging .log-item {
@@ -118,7 +121,6 @@
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
             
-            <!-- Left Panel: Settings & Categories -->
             <div class="space-y-6">
                 <div class="panel p-6">
                     <h2 class="text-xl font-bold mono text-white mb-4 border-b border-zinc-800 pb-2">Page Settings</h2>
@@ -140,27 +142,37 @@
                         <button onclick="addCategory()" class="text-green-400 hover:text-green-300" title="Add Category">+</button>
                     </div>
                     <div id="categoriesContainer" class="space-y-3">
-                        <!-- Categories injected here -->
-                    </div>
+                        </div>
                 </div>
             </div>
 
-            <!-- Right Panel: Logs -->
             <div class="lg:col-span-2 panel p-6 flex flex-col" style="min-height: 600px;">
                 <div class="flex justify-between items-center mb-4 border-b border-zinc-800 pb-2">
                     <h2 class="text-xl font-bold mono text-white">Media Logs (<span id="logCount">0</span>)</h2>
                     <button onclick="addLog()" class="btn btn-secondary text-xs py-1">Add New Log</button>
                 </div>
-                
-                <div id="logsContainer" class="space-y-4 flex-grow overflow-y-auto pr-2" ondragover="handleDragOver(event)">
-                    <!-- Logs injected here -->
+                <div class="text-[10px] text-zinc-400 mb-3 border border-zinc-800 p-2 rounded bg-zinc-900/50 flex gap-4">
+                    <span><b class="text-zinc-300">Strikethrough:</b> ~~text~~</span>
+                    <span><b class="text-zinc-300">Circle text:</b> ((text))</span>
                 </div>
+                <div id="logsContainer" class="space-y-4 flex-grow overflow-y-auto pr-2" ondragover="handleDragOver(event)">
+                    </div>
             </div>
         </div>
     </div>
 
-    <!-- Application Logic -->
     <script>
+        // Globally declared formatters so they don't break during loop rendering
+        function escapeHtmlVal(str) {
+            return (str||'').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+        }
+        function formatText(s) {
+            if (!s) return '';
+            s = s.replace(/~~(.*?)~~/g, '<del class="opacity-70 text-red-400 decoration-red-500">$1</del>');
+            s = s.replace(/\(\((.*?)\)\)/g, '<span class="inline-block align-middle whitespace-nowrap border border-red-500/70 text-red-400 px-2 py-0.5 leading-none mx-0.5 text-center" style="border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;">$1</span>');
+            return s;
+        }
+
         let appData = {
             header: "NEW_ARCHIVE_DATABASE",
             subtitle: "Classified Internal Logs",
@@ -195,7 +207,7 @@
         function renderCategories() {
             const container = document.getElementById('categoriesContainer');
             container.innerHTML = `
-                <button onclick="setBuilderFilter('all')" class="w-full text-left px-4 py-2 rounded-full text-sm mb-2 transition-colors ${currentBuilderFilter === 'all' ? 'bg-green-900/30 border border-green-500/50 text-green-400' : 'bg-zinc-900/50 border border-transparent text-zinc-400 hover:bg-zinc-800'}">
+                <button onclick="setBuilderFilter('all')" class="w-full text-left px-3 py-2 rounded text-sm mb-2 transition-colors ${currentBuilderFilter === 'all' ? 'bg-green-900/30 border border-green-500/50 text-green-400' : 'bg-zinc-900/50 border border-transparent text-zinc-400 hover:bg-zinc-800'}">
                     Show All Entries
                 </button>
             `;
@@ -203,7 +215,7 @@
             appData.categories.forEach((cat, index) => {
                 const div = document.createElement('div');
                 const isActive = currentBuilderFilter === cat.id;
-                div.className = `flex gap-2 items-center px-3 py-1.5 mb-2 rounded-full border transition-colors ${isActive ? 'bg-green-900/20 border-green-500/30' : 'border-transparent hover:bg-zinc-900/50'}`;
+                div.className = `flex gap-2 items-center px-2 py-1 mb-1 rounded border transition-colors ${isActive ? 'bg-green-900/20 border-green-500/30' : 'border-transparent hover:bg-zinc-900/50'}`;
                 
                 div.innerHTML = `
                     <div class="flex-grow cursor-pointer" onclick="setBuilderFilter('${cat.id}')">
@@ -278,8 +290,24 @@
                 title: "",
                 location: "",
                 content: "",
+                type: "text",
                 isAudio: false,
                 audioUrl: "",
+                imageUrl: "",
+                memoDate: "",
+                memoTo: "",
+                memoFrom: "",
+                memoCC: "",
+                memoSubject: "",
+                memoSignature: "",
+                orderDate: "",
+                orderPickup: "",
+                orderName: "",
+                orderBody: "",
+                orderQty: "",
+                orderMaterials: "",
+                orderDetails: "",
+                orderSpecial: "",
                 tags: currentBuilderFilter !== 'all' ? [currentBuilderFilter] : []
             };
         }
@@ -393,6 +421,11 @@
             } else {
                 log[field] = value;
                 if (field === 'isAudio') {
+                    log.type = value ? 'audio' : 'text'; // Legacy bridge
+                    renderLogs();
+                }
+                if (field === 'type') {
+                    log.isAudio = value === 'audio'; // Legacy bridge
                     renderLogs();
                 }
             }
@@ -409,8 +442,9 @@
             document.getElementById('logCount').innerText = logsToRender.length;
 
             logsToRender.forEach((log, index) => {
+                log.type = log.type || (log.isAudio ? 'audio' : 'text'); // Normalization
                 const div = document.createElement('div');
-                div.className = `log-item p-5 rounded-2xl flex flex-col gap-3 ${log.isAudio ? 'audio' : 'text'}`;
+                div.className = `log-item p-4 rounded-lg flex flex-col gap-3 ${log.type}`;
                 // Set to false initially, only made true when gripping the handle
                 div.setAttribute('draggable', 'false');
                 div.setAttribute('data-id', log.id);
@@ -426,15 +460,57 @@
                     </label>
                 `).join('');
 
-                const audioInputHtml = log.isAudio ? `
-                    <div class="mt-2 border-t border-zinc-800/50 pt-3">
-                        <label class="block text-purple-400 text-[10px] uppercase mb-1">Audio File URL (Optional)</label>
-                        <input type="text" class="input-field border-purple-900/30 focus:border-purple-500" value="${(log.audioUrl || '').replace(/"/g, '&quot;')}" placeholder="e.g. https://example.com/audio.mp3" oninput="updateLog('${log.id}', 'audioUrl', this.value)">
-                    </div>
-                ` : '';
-                
-                const escapeHtmlVal = (str) => (str||'').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+                let dynamicFieldsHtml = '';
+                if (log.type === 'audio') {
+                    dynamicFieldsHtml = `
+                        <div class="mt-2 border-t border-zinc-800/50 pt-3">
+                            <label class="block text-purple-400 text-[10px] uppercase mb-1">Audio File URL (Optional)</label>
+                            <input type="text" class="input-field border-purple-900/30 focus:border-purple-500" value="${escapeHtmlVal(log.audioUrl)}" placeholder="e.g. https://example.com/audio.mp3" oninput="updateLog('${log.id}', 'audioUrl', this.value)">
+                        </div>
+                    `;
+                } else if (log.type === 'image') {
+                    dynamicFieldsHtml = `
+                        <div class="mt-2 border-t border-zinc-800/50 pt-3">
+                            <label class="block text-blue-400 text-[10px] uppercase mb-1">Image URL</label>
+                            <input type="text" class="input-field border-blue-900/30 focus:border-blue-500" value="${escapeHtmlVal(log.imageUrl)}" placeholder="e.g. https://example.com/image.jpg" oninput="updateLog('${log.id}', 'imageUrl', this.value)">
+                        </div>
+                    `;
+                } else if (log.type === 'memo') {
+                    dynamicFieldsHtml = `
+                        <div class="mt-2 border-t border-zinc-800/50 pt-3 grid grid-cols-2 gap-3">
+                            <div><label class="block text-yellow-600 text-[10px] uppercase mb-1">Date</label><input type="text" class="input-field border-yellow-900/30 focus:border-yellow-500" value="${escapeHtmlVal(log.memoDate)}" oninput="updateLog('${log.id}', 'memoDate', this.value)"></div>
+                            <div><label class="block text-yellow-600 text-[10px] uppercase mb-1">To</label><input type="text" class="input-field border-yellow-900/30 focus:border-yellow-500" value="${escapeHtmlVal(log.memoTo)}" oninput="updateLog('${log.id}', 'memoTo', this.value)"></div>
+                            <div><label class="block text-yellow-600 text-[10px] uppercase mb-1">From</label><input type="text" class="input-field border-yellow-900/30 focus:border-yellow-500" value="${escapeHtmlVal(log.memoFrom)}" oninput="updateLog('${log.id}', 'memoFrom', this.value)"></div>
+                            <div><label class="block text-yellow-600 text-[10px] uppercase mb-1">CC</label><input type="text" class="input-field border-yellow-900/30 focus:border-yellow-500" value="${escapeHtmlVal(log.memoCC)}" oninput="updateLog('${log.id}', 'memoCC', this.value)"></div>
+                            <div class="col-span-2"><label class="block text-yellow-600 text-[10px] uppercase mb-1">Subject</label><input type="text" class="input-field border-yellow-900/30 focus:border-yellow-500" value="${escapeHtmlVal(log.memoSubject)}" oninput="updateLog('${log.id}', 'memoSubject', this.value)"></div>
+                            <div class="col-span-2"><label class="block text-yellow-600 text-[10px] uppercase mb-1">Signature</label><input type="text" class="input-field border-yellow-900/30 focus:border-yellow-500" value="${escapeHtmlVal(log.memoSignature)}" placeholder="e.g. - Milton" oninput="updateLog('${log.id}', 'memoSignature', this.value)"></div>
+                        </div>
+                    `;
+                } else if (log.type === 'order') {
+                    dynamicFieldsHtml = `
+                        <div class="mt-2 border-t border-zinc-800/50 pt-3 grid grid-cols-2 gap-3">
+                            <div><label class="block text-teal-600 text-[10px] uppercase mb-1">Order Date</label><input type="text" class="input-field border-teal-900/30 focus:border-teal-500" value="${escapeHtmlVal(log.orderDate)}" oninput="updateLog('${log.id}', 'orderDate', this.value)"></div>
+                            <div><label class="block text-teal-600 text-[10px] uppercase mb-1">Pickup Date</label><input type="text" class="input-field border-teal-900/30 focus:border-teal-500" value="${escapeHtmlVal(log.orderPickup)}" oninput="updateLog('${log.id}', 'orderPickup', this.value)"></div>
+                            <div class="col-span-2"><label class="block text-teal-600 text-[10px] uppercase mb-1">Purchaser's Name</label><input type="text" class="input-field border-teal-900/30 focus:border-teal-500" value="${escapeHtmlVal(log.orderName)}" oninput="updateLog('${log.id}', 'orderName', this.value)"></div>
+                            <div><label class="block text-teal-600 text-[10px] uppercase mb-1">Body Type</label><input type="text" class="input-field border-teal-900/30 focus:border-teal-500" value="${escapeHtmlVal(log.orderBody)}" oninput="updateLog('${log.id}', 'orderBody', this.value)"></div>
+                            <div><label class="block text-teal-600 text-[10px] uppercase mb-1">Quantity</label><input type="text" class="input-field border-teal-900/30 focus:border-teal-500" value="${escapeHtmlVal(log.orderQty)}" oninput="updateLog('${log.id}', 'orderQty', this.value)"></div>
+                            <div class="col-span-2"><label class="block text-teal-600 text-[10px] uppercase mb-1">Requested Materials</label><input type="text" class="input-field border-teal-900/30 focus:border-teal-500" value="${escapeHtmlVal(log.orderMaterials)}" oninput="updateLog('${log.id}', 'orderMaterials', this.value)"></div>
+                            <div class="col-span-2"><label class="block text-teal-600 text-[10px] uppercase mb-1">Requested Details</label><input type="text" class="input-field border-teal-900/30 focus:border-teal-500" value="${escapeHtmlVal(log.orderDetails)}" oninput="updateLog('${log.id}', 'orderDetails', this.value)"></div>
+                            <div class="col-span-2"><label class="block text-teal-600 text-[10px] uppercase mb-1">Special Functions(2x Original Fee)</label><input type="text" class="input-field border-teal-900/30 focus:border-teal-500" value="${escapeHtmlVal(log.orderSpecial)}" oninput="updateLog('${log.id}', 'orderSpecial', this.value)"></div>
+                        </div>
+                    `;
+                }
 
+                let contentInputHtml = '';
+                if (log.type !== 'image' && log.type !== 'order') {
+                    contentInputHtml = `
+                        <div>
+                            <label class="block text-zinc-500 text-[10px] uppercase mb-1">Content</label>
+                            <textarea class="input-field min-h-[100px] resize-y" placeholder="Enter transcript or log text here..." oninput="updateLog('${log.id}', 'content', this.value)">${escapeHtmlVal(log.content)}</textarea>
+                        </div>
+                    `;
+                }
+                
                 div.innerHTML = `
                     <div class="flex justify-between items-start gap-4">
                         <div class="flex-grow grid grid-cols-2 gap-3">
@@ -455,20 +531,20 @@
                                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="12" r="1"></circle><circle cx="9" cy="5" r="1"></circle><circle cx="9" cy="19" r="1"></circle><circle cx="15" cy="12" r="1"></circle><circle cx="15" cy="5" r="1"></circle><circle cx="15" cy="19" r="1"></circle></svg>
                             </div>
                             <div class="flex gap-2 w-full">
-                                <select class="input-field text-xs py-1 px-1 flex-grow" onchange="updateLog('${log.id}', 'isAudio', this.value === 'true')">
-                                    <option value="false" ${!log.isAudio ? 'selected' : ''}>Text</option>
-                                    <option value="true" ${log.isAudio ? 'selected' : ''}>Audio</option>
+                                <select class="input-field text-xs py-1 px-1 flex-grow" onchange="updateLog('${log.id}', 'type', this.value)">
+                                    <option value="text" ${log.type === 'text' ? 'selected' : ''}>Text</option>
+                                    <option value="audio" ${log.type === 'audio' ? 'selected' : ''}>Audio</option>
+                                    <option value="image" ${log.type === 'image' ? 'selected' : ''}>Image</option>
+                                    <option value="memo" ${log.type === 'memo' ? 'selected' : ''}>Memo</option>
+                                    <option value="order" ${log.type === 'order' ? 'selected' : ''}>MCM Order</option>
                                 </select>
                                 <button onclick="removeLog('${log.id}')" class="btn btn-danger text-xs py-1 px-2" title="Delete Log">✕</button>
                             </div>
                         </div>
                     </div>
-                    <div>
-                        <label class="block text-zinc-500 text-[10px] uppercase mb-1">Content</label>
-                        <textarea class="input-field min-h-[100px] resize-y" placeholder="Enter transcript or log text here..." oninput="updateLog('${log.id}', 'content', this.value)">${escapeHtmlVal(log.content)}</textarea>
-                    </div>
-                    ${audioInputHtml}
-                    <div class="flex flex-wrap gap-3 p-3 bg-zinc-900 rounded-2xl border border-zinc-800 mt-2">
+                    ${contentInputHtml}
+                    ${dynamicFieldsHtml}
+                    <div class="flex flex-wrap gap-3 p-2 bg-zinc-900 rounded border border-zinc-800 mt-1">
                         <span class="text-xs text-zinc-500 mr-2 uppercase block w-full mb-1">Assign to Sections:</span>
                         ${tagsHtml || '<span class="text-xs text-zinc-600 italic">No categories defined.</span>'}
                     </div>
@@ -502,6 +578,7 @@
             if (dataIslandMatch && dataIslandMatch[1]) {
                 try {
                     appData = JSON.parse(dataIslandMatch[1]);
+                    appData.logs.forEach(l => l.type = l.type || (l.isAudio ? 'audio' : 'text')); // Normalization
                     document.getElementById('pageHeader').value = appData.header;
                     document.getElementById('pageSubtitle').value = appData.subtitle;
                     renderCategories();
@@ -525,7 +602,7 @@
                 const catRegex = /<button[^>]*class="category-btn[^"]*"[^>]*data-cat="([^"]+)"[^>]*>(.*?)<\/button>/g;
                 let match;
                 while ((match = catRegex.exec(html)) !== null) {
-                    if (!['all', 'text', 'audio'].includes(match[1])) {
+                    if (!['all', 'text', 'audio', 'image', 'memo', 'order'].includes(match[1])) {
                         appData.categories.push({ id: match[1], label: match[2] });
                     }
                 }
@@ -544,7 +621,7 @@
                 const legacyAudio = extractArray('audioLogs');
                 const legacyText = extractArray('textLogs');
 
-                // Smart Legacy Tag Recovery (Rebuilds tags based on your original JS functions)
+                // Smart Legacy Tag Recovery
                 const recoverTags = (logObj) => {
                     const tags = [];
                     const searchStr = ((logObj.id || '') + " " + (logObj.title || '') + " " + (logObj.content || '')).toLowerCase();
@@ -553,12 +630,9 @@
 
                     appData.categories.forEach(cat => {
                         const cId = cat.id;
-                        // FNAF categories matching
                         if (cId === 'fnaf1' && loc === 'FNAF 1') tags.push(cId);
                         if (cId === 'fnaf2' && loc === 'FNAF 2') tags.push(cId);
                         if (cId === 'fnaf3' && loc === 'FNAF 3') tags.push(cId);
-
-                        // SOTM categories matching
                         if (cId === 'admin' && searchStr.includes('admin')) tags.push(cId);
                         if (cId === 'mcm' && (key.includes('misc_3') && !['misc_31', 'misc_32'].includes(key) || key.includes('misc12') || key.includes('misc10') || key.includes('misc11') || key === 'misc19')) tags.push(cId);
                         if (cId === 'internal' && (key.includes('misc06') || key.includes('misc07') || key.includes('misc13') || key.includes('doll01') || key.includes('doll02') || searchStr.includes('theater') || ['misc03', 'misc05', 'misc24', 'misc25a', 'doll03', 'doll04'].includes(key))) tags.push(cId);
@@ -576,7 +650,7 @@
                     legacyAudio.forEach((l, i) => {
                         appData.logs.push({
                             id: `AL_${Date.now()}_${i}`, title: l.title || '', location: l.location || '',
-                            content: l.content || '', isAudio: true, audioUrl: l.audioUrl || '', tags: l.tags && l.tags.length > 0 ? l.tags : recoverTags(l)
+                            content: l.content || '', type: 'audio', isAudio: true, audioUrl: l.audioUrl || '', tags: l.tags && l.tags.length > 0 ? l.tags : recoverTags(l)
                         });
                     });
                 }
@@ -584,7 +658,7 @@
                     legacyText.forEach((l, i) => {
                         appData.logs.push({
                             id: l.id || `TL_${Date.now()}_${i}`, title: l.title || '', location: l.location || '',
-                            content: l.content || '', isAudio: false, audioUrl: '', tags: l.tags && l.tags.length > 0 ? l.tags : recoverTags(l)
+                            content: l.content || '', type: 'text', isAudio: false, audioUrl: '', tags: l.tags && l.tags.length > 0 ? l.tags : recoverTags(l)
                         });
                     });
                 }
@@ -642,11 +716,11 @@
         .category-btn { background: #1a1a1a; border: 1px solid #333; color: #a1a1aa; padding: 6px 14px; border-radius: 9999px; font-size: 0.85rem; transition: all 0.2s; white-space: nowrap; cursor: pointer; }
         .category-btn:hover { background: #27272a; color: #f4f4f5; }
         .category-btn.active { background: #4ade80; color: #0a0a0a; border-color: #4ade80; font-weight: 600; }
-        .type-btn { background: #18181b; border: 1px solid #3f3f46; color: #a1a1aa; transition: all 0.2s; cursor: pointer; border-radius: 9999px; }
+        .type-btn { background: #18181b; border: 1px solid #3f3f46; color: #a1a1aa; transition: all 0.2s; cursor: pointer; }
         .type-btn.active { background: #3f3f46; color: #f4f4f5; border-color: #52525b; }
-        .title-badge { background: #2d2d2d; color: #4ade80; padding: 2px 8px; border-radius: 9999px; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.05em; }
+        .title-badge { background: #2d2d2d; color: #4ade80; padding: 2px 8px; border-radius: 4px; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.05em; }
         .audio-badge { background: #3b0764; color: #d8b4fe; border: 1px solid #7e22ce; }
-        .location-badge { background: #1e293b; color: #94a3b8; padding: 2px 8px; border-radius: 9999px; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.05em; }
+        .location-badge { background: #1e293b; color: #94a3b8; padding: 2px 8px; border-radius: 4px; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.05em; }
         .context-group { border-left: 2px solid #4ade80; padding-left: 1.5rem; margin-bottom: 3rem; }
         .group-header { margin-bottom: 1rem; color: #4ade80; font-size: 0.9rem; font-weight: bold; text-transform: uppercase; letter-spacing: 0.1em; }
         .content-area { line-height: 1.4; white-space: pre-line; word-break: break-word; margin-top: -3px; display: block; }
@@ -686,23 +760,24 @@
             <p class="text-zinc-500 italic">${exportData.subtitle.replace(/</g, "&lt;")}</p>
         </div>
         
-        <header class="sticky top-0 z-50 pt-2 mb-6 border-b border-zinc-800 pb-4 bg-transparent backdrop-blur-xl">
+        <header class="sticky top-4 z-50 p-4 md:p-6 mb-8 border border-zinc-800/50 bg-transparent backdrop-blur-xl rounded-2xl shadow-xl">
             <div>
                 <input type="text" id="searchInput" placeholder="Search titles, content, or locations..." 
-                       class="w-full bg-zinc-900 border border-zinc-700 rounded-full px-5 py-3 focus:outline-none focus:border-green-500 mono text-green-400">
+                       class="w-full bg-zinc-900 border border-zinc-700 rounded-lg px-4 py-3 focus:outline-none focus:border-green-500 mono text-green-400">
             </div>
 
             <div id="filterBar" class="mt-4 flex flex-wrap gap-2 overflow-x-auto pb-2">
                 <button class="category-btn active" data-cat="all">All Logs</button>
-                <button class="category-btn" data-cat="text">Text Logs</button>
-                <button class="category-btn" data-cat="audio">Audio Logs</button>
                 ${exportData.categories.map(c => `<button class="category-btn" data-cat="${c.id}">${c.label.replace(/</g, "&lt;")}</button>`).join('')}
             </div>
             
-            <div id="subFilterBar" class="hidden mt-1 flex gap-2">
-                <button class="type-btn active text-xs px-4 py-1.5 mono" data-type="all">All Types</button>
-                <button class="type-btn text-xs px-4 py-1.5 mono" data-type="text">Text Only</button>
-                <button class="type-btn text-xs px-4 py-1.5 mono" data-type="audio">Audio Only</button>
+            <div id="subFilterBar" class="hidden mt-1 flex gap-2 overflow-x-auto pb-2">
+                <button class="type-btn active text-xs px-3 py-1 rounded mono" data-type="all">All Types</button>
+                <button class="type-btn text-xs px-3 py-1 rounded mono" data-type="text">Text Only</button>
+                <button class="type-btn text-xs px-3 py-1 rounded mono" data-type="audio">Audio Only</button>
+                <button class="type-btn text-xs px-3 py-1 rounded mono" data-type="image">Image Only</button>
+                <button class="type-btn text-xs px-3 py-1 rounded mono" data-type="memo">Memo Only</button>
+                <button class="type-btn text-xs px-3 py-1 rounded mono" data-type="order">Order Form Only</button>
             </div>
 
             <div class="mt-4 text-zinc-500 text-sm mono">
@@ -713,9 +788,19 @@
         <div id="logDisplay" class="space-y-8"></div>
     </div>
 
-    <script id="archive-data" type="application/json">${JSON.stringify(exportData)}<\/script>
+    <div id="imageModal" class="fixed inset-0 z-[9999] bg-black/95 hidden items-center justify-center p-4 md:p-8 opacity-0 transition-opacity duration-300 backdrop-blur-sm" onclick="closeImageModal()">
+        <div class="relative max-w-5xl w-full max-h-full flex items-center justify-center" onclick="event.stopPropagation()">
+            <button class="absolute -top-12 right-0 text-zinc-400 hover:text-white transition-colors p-2" onclick="closeImageModal()">
+                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            </button>
+            <img id="modalImage" src="" class="max-w-full max-h-[85vh] object-contain rounded-lg border border-zinc-800 shadow-2xl">
+        </div>
+    </div>
+
+    <script id="archive-data" type="application/json">${JSON.stringify(exportData).replace(/</g, '\\u003c')}<\/script>
     <script>
         const appData = JSON.parse(document.getElementById('archive-data').textContent);
+        appData.logs.forEach(l => l.type = l.type || (l.isAudio ? 'audio' : 'text')); // Normalization
         
         let currentCategory = 'all';
         let currentType = 'all';
@@ -724,6 +809,30 @@
         function escapeRegExp(string) { return string.replace(/[.*+?^\${}()|[\\]\\\\]/g, '\\\\$&'); }
         function escapeHtml(unsafe) {
             return (unsafe||'').replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+        }
+        function formatText(s) {
+            if (!s) return '';
+            s = s.replace(/~~(.*?)~~/g, '<del class="opacity-70 text-red-400 decoration-red-500">$1</del>');
+            s = s.replace(/\\(\\((.*?)\\)\\)/g, '<span class="inline-block align-middle whitespace-nowrap border border-red-500/70 text-red-400 px-2 py-0.5 leading-none mx-0.5 text-center" style="border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;">$1</span>');
+            return s;
+        }
+
+        // --- Image Modal Logic ---
+        function openImageModal(url) {
+            const modal = document.getElementById('imageModal');
+            document.getElementById('modalImage').src = url;
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            setTimeout(() => modal.classList.remove('opacity-0'), 10);
+        }
+        function closeImageModal() {
+            const modal = document.getElementById('imageModal');
+            modal.classList.add('opacity-0');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+                document.getElementById('modalImage').src = '';
+            }, 300);
         }
 
         // --- Audio Player Logic ---
@@ -791,7 +900,7 @@
             }));
             
             // Add fallback generic groups if needed, but categories handle most
-            groups.push({ name: "Uncategorized Archives", match: (l) => l.tags.length === 0 });
+            groups.push({ name: "Uncategorized Archives", match: (l) => !l.tags || l.tags.length === 0 });
 
             const result = [];
             const processedIds = new Set();
@@ -811,7 +920,7 @@
             display.innerHTML = '';
 
             const subFilterBar = document.getElementById('subFilterBar');
-            if (['all', 'text', 'audio'].includes(currentCategory)) {
+            if (['all', 'text', 'audio', 'image', 'memo', 'order'].includes(currentCategory)) {
                 subFilterBar.classList.add('hidden');
                 currentType = 'all';
                 document.querySelectorAll('.type-btn').forEach(b => b.classList.toggle('active', b.dataset.type === 'all'));
@@ -827,19 +936,22 @@
                 
                 let matchesCat = currentCategory === 'all';
                 if (!matchesCat) {
-                    if (currentCategory === 'text') matchesCat = !log.isAudio;
-                    else if (currentCategory === 'audio') matchesCat = log.isAudio;
+                    if (currentCategory === 'text') matchesCat = log.type === 'text';
+                    else if (currentCategory === 'audio') matchesCat = log.type === 'audio';
+                    else if (currentCategory === 'image') matchesCat = log.type === 'image';
+                    else if (currentCategory === 'memo') matchesCat = log.type === 'memo';
+                    else if (currentCategory === 'order') matchesCat = log.type === 'order';
                     else matchesCat = log.tags.includes(currentCategory);
                 }
                 
-                const matchesType = currentType === 'all' ? true : (currentType === 'text' ? !log.isAudio : log.isAudio);
+                const matchesType = currentType === 'all' ? true : log.type === currentType;
 
                 return matchesSearch && matchesCat && matchesType;
             });
 
             document.getElementById('logCount').innerText = filtered.length;
 
-            if ((currentCategory === 'all' || currentCategory === 'text' || currentCategory === 'audio') && !currentSearch) {
+            if ((currentCategory === 'all' || ['text', 'audio', 'image', 'memo', 'order'].includes(currentCategory)) && !currentSearch) {
                 const grouped = getGroupedLogs(filtered);
                 grouped.forEach(group => {
                     const groupSection = document.createElement('div');
@@ -863,7 +975,7 @@
 
         function createCard(log) {
             const div = document.createElement('div');
-            div.className = 'log-card p-6 rounded-2xl flex flex-col gap-3';
+            div.className = 'log-card p-5 rounded-xl flex flex-col gap-3';
             
             let displayTitle = escapeHtml(log.title);
             let displayContent = escapeHtml(log.content);
@@ -872,28 +984,110 @@
                 displayTitle = displayTitle.replace(regex, '<span class="highlight">$1</span>');
                 displayContent = displayContent.replace(regex, '<span class="highlight">$1</span>');
             }
+            displayTitle = formatText(displayTitle);
+            displayContent = formatText(displayContent);
 
             const copySvg = \`<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>\`;
 
-            const locHtml = log.location ? \`<span class="location-badge mono">\${escapeHtml(log.location)}</span>\` : '';
-            const typeBadge = log.isAudio ? \`<span class="title-badge audio-badge mono">AUDIO LOG</span>\` : \`<span class="title-badge mono">\${escapeHtml(log.title)}</span>\`;
+            const locHtml = log.location ? \`<span class="location-badge mono">\${formatText(escapeHtml(log.location))}</span>\` : '';
             
-            // Only show title text below header if it's an audio log, text logs use the ID badge pattern from sotm.html
-            const titleDisplay = log.isAudio ? \`<h2 class="text-lg font-bold text-white mono leading-tight mb-3">\${displayTitle}</h2>\` : '';
+            let typeBadgeClass = "title-badge mono";
+            let typeBadgeLabel = formatText(escapeHtml(log.title));
+            if (log.type === 'audio') { typeBadgeClass = "title-badge audio-badge mono"; typeBadgeLabel = "AUDIO LOG"; }
+            else if (log.type === 'image') { typeBadgeClass = "title-badge mono border border-blue-800 bg-blue-900/30 text-blue-400"; typeBadgeLabel = "IMAGE ATTACHMENT"; }
+            else if (log.type === 'memo') { typeBadgeClass = "title-badge mono border border-yellow-800 bg-yellow-900/30 text-yellow-400"; typeBadgeLabel = "INTEROFFICE MEMO"; }
+            else if (log.type === 'order') { typeBadgeClass = "title-badge mono border border-teal-800 bg-teal-900/30 text-teal-400"; typeBadgeLabel = "MCM ORDER FORM"; }
+            
+            const typeBadge = \`<span class="\${typeBadgeClass}">\${typeBadgeLabel}</span>\`;
+            
+            const titleDisplay = (log.type === 'audio' || log.type === 'image' || log.type === 'memo' || log.type === 'order') ? \`<h2 class="text-lg font-bold text-white mono leading-tight mb-3">\${displayTitle}</h2>\` : '';
 
-            // Interactive Audio Player component
-            const audioPlayerHtml = (log.isAudio && log.audioUrl) ? \`
-                <div class="audio-player-container bg-[#121212] border border-zinc-800 p-3 rounded-full flex items-center gap-4 mt-4">
-                    <button class="play-pause-btn text-purple-400 hover:text-purple-300 transition-colors flex-shrink-0" onclick="toggleAudio(this, 'audio-\${log.id}')">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
-                    </button>
-                    <div class="bg-zinc-800 h-2 flex-grow rounded cursor-pointer relative" onclick="seekAudio(event, 'audio-\${log.id}')">
-                        <div class="progress-fill bg-purple-500 h-full rounded w-0 pointer-events-none transition-all duration-75"></div>
+            let rawCopyText = log.content || '';
+            let cardBodyHtml = '';
+            
+            if (log.type === 'audio') {
+                const audioPlayerHtml = log.audioUrl ? \`
+                    <div class="audio-player-container bg-[#121212] border border-zinc-800 p-3 rounded-lg flex items-center gap-4 mt-4">
+                        <button class="play-pause-btn text-purple-400 hover:text-purple-300 transition-colors flex-shrink-0" onclick="toggleAudio(this, 'audio-\${log.id}')">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                        </button>
+                        <div class="bg-zinc-800 h-2 flex-grow rounded cursor-pointer relative" onclick="seekAudio(event, 'audio-\${log.id}')">
+                            <div class="progress-fill bg-purple-500 h-full rounded w-0 pointer-events-none transition-all duration-75"></div>
+                        </div>
+                        <span class="time-display text-zinc-500 text-xs mono pointer-events-none w-24 text-right flex-shrink-0">0:00 / 0:00</span>
+                        <audio id="audio-\${log.id}" src="\${escapeHtml(log.audioUrl)}" ontimeupdate="updateProgress(this)" onloadedmetadata="setDuration(this)" onended="resetPlayer(this)"></audio>
                     </div>
-                    <span class="time-display text-zinc-500 text-xs mono pointer-events-none w-24 text-right flex-shrink-0">0:00 / 0:00</span>
-                    <audio id="audio-\${log.id}" src="\${escapeHtml(log.audioUrl)}" ontimeupdate="updateProgress(this)" onloadedmetadata="setDuration(this)" onended="resetPlayer(this)"></audio>
-                </div>
-            \` : '';
+                \` : '';
+                cardBodyHtml = \`<div class="content-area text-zinc-400 text-sm flex-grow">\${displayContent}</div>\${audioPlayerHtml}\`;
+            } else if (log.type === 'image') {
+                rawCopyText = log.imageUrl || '';
+                cardBodyHtml = \`
+                    \${log.imageUrl ? \`
+                    <div class="mt-2 relative cursor-pointer group" onclick="openImageModal('\${escapeHtml(log.imageUrl)}')">
+                        <img src="\${escapeHtml(log.imageUrl)}" alt="\${escapeHtml(log.title)}" class="w-full h-auto max-h-64 object-cover rounded-lg border border-zinc-800 group-hover:border-blue-500 transition-colors">
+                        <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center rounded-lg">
+                            <span class="text-white text-sm mono flex items-center gap-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path></svg> Expand
+                            </span>
+                        </div>
+                    </div>
+                    \` : \`<div class="text-zinc-600 text-sm italic">No image URL provided.</div>\`}
+                \`;
+            } else if (log.type === 'memo') {
+                const memoLines = [];
+                if(log.memoDate) memoLines.push('Date: ' + log.memoDate);
+                if(log.memoTo) memoLines.push('To: ' + log.memoTo);
+                if(log.memoFrom) memoLines.push('From: ' + log.memoFrom);
+                if(log.memoCC) memoLines.push('CC: ' + log.memoCC);
+                if(log.memoSubject) memoLines.push('Subject: ' + log.memoSubject);
+                memoLines.push('');
+                if(log.content) memoLines.push(log.content);
+                if(log.memoSignature) { memoLines.push(''); memoLines.push(log.memoSignature); }
+                rawCopyText = memoLines.join('\\n').trim();
+
+                cardBodyHtml = \`
+                    <div class="bg-zinc-900/50 p-4 rounded-lg border border-zinc-800 mb-4 text-sm mono text-zinc-300 flex flex-col gap-2 shadow-inner">
+                        \${log.memoDate ? \`<div class="flex flex-col sm:flex-row sm:items-start gap-1 sm:gap-2"><span class="text-zinc-500 font-bold sm:w-20 shrink-0 mt-0.5">DATE:</span> <span class="leading-relaxed">\${formatText(escapeHtml(log.memoDate))}</span></div>\` : ''}
+                        \${log.memoTo ? \`<div class="flex flex-col sm:flex-row sm:items-start gap-1 sm:gap-2"><span class="text-zinc-500 font-bold sm:w-20 shrink-0 mt-0.5">TO:</span> <span class="leading-relaxed">\${formatText(escapeHtml(log.memoTo))}</span></div>\` : ''}
+                        \${log.memoFrom ? \`<div class="flex flex-col sm:flex-row sm:items-start gap-1 sm:gap-2"><span class="text-zinc-500 font-bold sm:w-20 shrink-0 mt-0.5">FROM:</span> <span class="leading-relaxed">\${formatText(escapeHtml(log.memoFrom))}</span></div>\` : ''}
+                        \${log.memoCC ? \`<div class="flex flex-col sm:flex-row sm:items-start gap-1 sm:gap-2"><span class="text-zinc-500 font-bold sm:w-20 shrink-0 mt-0.5">CC:</span> <span class="leading-relaxed">\${formatText(escapeHtml(log.memoCC))}</span></div>\` : ''}
+                        \${log.memoSubject ? \`<div class="mt-1 pt-3 border-t border-zinc-800 flex flex-col sm:flex-row sm:items-start gap-1 sm:gap-2"><span class="text-zinc-500 font-bold sm:w-20 shrink-0 mt-0.5">SUBJECT:</span> <span class="leading-relaxed">\${formatText(escapeHtml(log.memoSubject))}</span></div>\` : ''}
+                    </div>
+                    <div class="content-area text-zinc-300 text-sm flex-grow">\${displayContent}</div>
+                    \${log.memoSignature ? \`<div class="mt-6 pt-4 border-t border-zinc-800/50 text-zinc-400 font-serif italic text-lg">\${formatText(escapeHtml(log.memoSignature))}</div>\` : ''}
+                \`;
+            } else if (log.type === 'order') {
+                const orderLines = [];
+                if(log.orderDate) orderLines.push('ORDER DATE: ' + log.orderDate);
+                if(log.orderPickup) orderLines.push('PICKUP DATE: ' + log.orderPickup);
+                if(log.orderName) orderLines.push("PURCHASER'S NAME: " + log.orderName);
+                if(log.orderDate || log.orderPickup || log.orderName) orderLines.push('');
+                if(log.orderBody) orderLines.push('BODY TYPE: ' + log.orderBody);
+                if(log.orderQty) orderLines.push('QUANTITY: ' + log.orderQty);
+                if(log.orderMaterials) orderLines.push('REQUESTED MATERIALS: ' + log.orderMaterials);
+                if(log.orderDetails) orderLines.push('REQUESTED DETAILS: ' + log.orderDetails);
+                if(log.orderBody || log.orderQty || log.orderMaterials || log.orderDetails) orderLines.push('');
+                if(log.orderSpecial) orderLines.push('SPECIAL FUNCTIONS(2X ORIGINAL FEE): ' + log.orderSpecial);
+                rawCopyText = orderLines.join('\\n').trim();
+
+                cardBodyHtml = \`
+                    <div class="bg-zinc-900/50 p-4 rounded-lg border border-zinc-800 text-sm mono text-zinc-300 flex flex-col gap-2 shadow-inner">
+                        \${log.orderDate ? \`<div class="flex flex-col sm:flex-row sm:items-start gap-1 sm:gap-2"><span class="text-zinc-500 font-bold sm:w-48 shrink-0 mt-0.5">ORDER DATE:</span> <span class="leading-relaxed break-words">\${formatText(escapeHtml(log.orderDate))}</span></div>\` : ''}
+                        \${log.orderPickup ? \`<div class="flex flex-col sm:flex-row sm:items-start gap-1 sm:gap-2"><span class="text-zinc-500 font-bold sm:w-48 shrink-0 mt-0.5">PICKUP DATE:</span> <span class="leading-relaxed break-words">\${formatText(escapeHtml(log.orderPickup))}</span></div>\` : ''}
+                        \${log.orderName ? \`<div class="flex flex-col sm:flex-row sm:items-start gap-1 sm:gap-2"><span class="text-zinc-500 font-bold sm:w-48 shrink-0 mt-0.5">PURCHASER'S NAME:</span> <span class="leading-relaxed break-words">\${formatText(escapeHtml(log.orderName))}</span></div>\` : ''}
+                        \${(log.orderDate || log.orderPickup || log.orderName) && (log.orderBody || log.orderQty || log.orderMaterials || log.orderDetails) ? \`<div class="my-1 border-t border-zinc-800/50"></div>\` : ''}
+                        \${log.orderBody ? \`<div class="flex flex-col sm:flex-row sm:items-start gap-1 sm:gap-2"><span class="text-zinc-500 font-bold sm:w-48 shrink-0 mt-0.5">BODY TYPE:</span> <span class="leading-relaxed break-words">\${formatText(escapeHtml(log.orderBody))}</span></div>\` : ''}
+                        \${log.orderQty ? \`<div class="flex flex-col sm:flex-row sm:items-start gap-1 sm:gap-2"><span class="text-zinc-500 font-bold sm:w-48 shrink-0 mt-0.5">QUANTITY:</span> <span class="leading-relaxed break-words">\${formatText(escapeHtml(log.orderQty))}</span></div>\` : ''}
+                        \${log.orderMaterials ? \`<div class="flex flex-col sm:flex-row sm:items-start gap-1 sm:gap-2"><span class="text-zinc-500 font-bold sm:w-48 shrink-0 mt-0.5">REQUESTED MATERIALS:</span> <span class="leading-relaxed break-words">\${formatText(escapeHtml(log.orderMaterials))}</span></div>\` : ''}
+                        \${log.orderDetails ? \`<div class="flex flex-col sm:flex-row sm:items-start gap-1 sm:gap-2"><span class="text-zinc-500 font-bold sm:w-48 shrink-0 mt-0.5">REQUESTED DETAILS:</span> <span class="leading-relaxed break-words">\${formatText(escapeHtml(log.orderDetails))}</span></div>\` : ''}
+                        \${log.orderSpecial ? \`<div class="mt-1 pt-3 border-t border-zinc-800"><span class="text-zinc-500 font-bold block mb-1">SPECIAL FUNCTIONS(2X ORIGINAL FEE):</span> <span class="leading-relaxed break-words">\${formatText(escapeHtml(log.orderSpecial))}</span></div>\` : ''}
+                    </div>
+                \`;
+            } else {
+                cardBodyHtml = \`<div class="content-area text-zinc-400 text-sm flex-grow">\${displayContent}</div>\`;
+            }
+
+            const encodedCopyText = encodeURIComponent(rawCopyText).replace(/'/g, "%27");
 
             div.innerHTML = \`
                 <div class="flex justify-between items-start mb-3">
@@ -901,20 +1095,21 @@
                         \${typeBadge}
                         \${locHtml}
                     </div>
-                    <button class="copy-btn" title="Copy Content" onclick="copyContent(this, '\${escapeRegExp(log.content.replace(/'/g, "\\\\'"))}')">\${copySvg}</button>
+                    <button class="copy-btn" title="Copy Content" onclick="copyContent(this, '\${encodedCopyText}')">\${copySvg}</button>
                 </div>
                 \${titleDisplay}
                 <div class="content-wrapper flex flex-col">
-                    <div class="content-area text-zinc-400 text-sm flex-grow">\${displayContent}</div>
-                    \${audioPlayerHtml}
+                    \${cardBodyHtml}
                 </div>
             \`;
             return div;
         }
 
-        function copyContent(btn, text) {
+        function copyContent(btn, encodedText) {
             const textarea = document.createElement('textarea');
-            textarea.value = text.replace(/\\\\'/g, "'");
+            textarea.value = decodeURIComponent(encodedText);
+            textarea.style.position = 'fixed';
+            textarea.style.opacity = '0';
             document.body.appendChild(textarea);
             textarea.select();
             document.execCommand('copy');
