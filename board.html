@@ -6,7 +6,7 @@
     <title>THEORY_BOARD_OS</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Inter:wght@400;600&family=Space+Mono:wght@400;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Space+Mono:wght@400;700&display=swap');
         body { 
             background-color: #0a0a0a; 
             color: #e5e5e5; 
@@ -132,36 +132,6 @@
             display: flex; flex-direction: column; box-shadow: -4px 0 15px rgba(0,0,0,0.5);
         }
         #sidebar-navigator.open { transform: translateX(0); }
-
-        body.theme-gow { background-image: radial-gradient(circle at 50% 50%, #2a1212 0%, #0a0505 100%); }
-        .theme-gow .mono { font-family: 'Cinzel', serif; letter-spacing: 0.05em; }
-        .theme-gow .theory-node { background: rgba(26, 12, 12, 0.95); border-color: #4a1515; }
-        .theme-gow .node-header { border-bottom-color: #4a1515; background: rgba(0, 0, 0, 0.4); }
-        .theme-gow .theory-node.selected, .theme-gow .theory-node:hover { border-color: #dc2626; box-shadow: 0 0 15px rgba(220, 38, 38, 0.3); }
-        .theme-gow .theory-node.multi-selected { border-color: #fbbf24; box-shadow: 0 0 15px rgba(251, 191, 36, 0.3); }
-        .theme-gow ::selection { background-color: rgba(220, 38, 38, 0.4); }
-        .theme-gow ::-moz-selection { background-color: rgba(220, 38, 38, 0.4); }
-        .theme-gow .title-badge { color: #fbbf24; background: #451a1a; }
-        .theme-gow .temp-connection { stroke: #dc2626; }
-        .theme-gow .resize-handle::after { border-color: #dc2626; }
-        .theme-gow .small-node { border-color: #dc2626; background: #1a0505; }
-        .theme-gow .tool-active { background: #dc2626 !important; border-color: #dc2626 !important; color: #fff !important;}
-        .theme-gow input[type="range"] { accent-color: #dc2626; }
-        .theme-gow .scanline { background: linear-gradient(0deg, rgba(0,0,0,0) 0%, rgba(220,38,38,0.1) 50%, rgba(0,0,0,0) 100%); }
-        
-        .theme-gow .text-green-400 { color: #dc2626 !important; }
-        .theme-gow .hover\:text-green-400:hover { color: #dc2626 !important; }
-        .theme-gow .bg-green-600 { background-color: #dc2626 !important; }
-        .theme-gow .hover\:bg-green-500:hover { background-color: #b91c1c !important; }
-        .theme-gow .focus\:border-green-500:focus { border-color: #dc2626 !important; }
-        .theme-gow .context-menu { background: rgba(26, 12, 12, 0.95); border-color: #4a1515; }
-        .theme-gow .context-menu button:hover, .theme-gow .context-menu label:hover { color: #dc2626; background: #2a1212; }
-        .theme-gow #selection-box { border-color: #dc2626; background: rgba(220, 38, 38, 0.1); }
-        .theme-gow .controls { background: rgba(26, 12, 12, 0.85); border-color: #4a1515; }
-        .theme-gow .control-btn { background: #2a1212; border-color: #4a1515; color: #d1d5db; }
-        .theme-gow .control-btn:hover { background: #4a1515; color: #fff; border-color: #7f1d1d; }
-        .theme-gow #sidebar-navigator { background: rgba(26, 12, 12, 0.95); border-color: #4a1515; }
-        .theme-gow .bg-zinc-800, .theme-gow .bg-zinc-900 { background-color: #1a0505 !important; border-color: #4a1515 !important; }
     </style>
 </head>
 <body>
@@ -203,11 +173,6 @@
         <button class="control-btn" id="btn-zoom-in" title="Zoom In"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg></button>
         <button class="control-btn" id="btn-zoom-out" title="Zoom Out"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line></svg></button>
         <button class="control-btn" id="btn-reset" title="Reset View"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg></button>
-        <div class="w-px h-6 bg-zinc-700 mx-1"></div>
-        <select id="theme-selector" class="bg-zinc-800 text-zinc-300 text-xs rounded border border-zinc-700 outline-none px-1 py-1 h-8 cursor-pointer hover:bg-zinc-700 transition-colors mono">
-            <option value="default">Matrix Theme</option>
-            <option value="gow">God of War Theme</option>
-        </select>
         <div class="w-px h-6 bg-zinc-700 mx-1"></div>
         <button class="control-btn" id="btn-toggle-sidebar" title="Open Navigator"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></button>
     </div>
@@ -356,7 +321,7 @@
 
     <script>
         const STORAGE_KEY = 'theory_board_data';
-        let boardData = { items: [], connections: [], drawings: [], theme: 'default' };
+        let boardData = { items: [], connections: [], drawings: [] };
 
         let state = {
             scale: 1, panX: 0, panY: 0,
@@ -393,7 +358,6 @@
         const drawSize = document.getElementById('draw-size');
         const pencilCursor = document.getElementById('pencil-cursor');
         const eraserCursor = document.getElementById('eraser-cursor');
-        const themeSelector = document.getElementById('theme-selector');
 
         const domItems = new Map();
         const domLines = new Map();
@@ -411,11 +375,6 @@
         }
 
         function generateId() { return Math.random().toString(36).substr(2, 9); }
-
-        function applyTheme(theme) {
-            document.body.classList.toggle('theme-gow', theme === 'gow');
-            if (themeSelector) themeSelector.value = theme || 'default';
-        }
 
         function init() {
             loadState();
@@ -444,14 +403,6 @@
             document.getElementById('mode-select').addEventListener('click', () => setMode('select'));
             document.getElementById('mode-draw').addEventListener('click', () => setMode('draw'));
             document.getElementById('mode-erase').addEventListener('click', () => setMode('erase'));
-
-            if (themeSelector) {
-                themeSelector.addEventListener('change', (e) => {
-                    boardData.theme = e.target.value;
-                    applyTheme(boardData.theme);
-                    saveState();
-                });
-            }
 
             document.getElementById('btn-clear-all').addEventListener('click', () => { document.getElementById('confirm-modal-overlay').style.display = 'flex'; });
             document.getElementById('btn-cancel-clear').addEventListener('click', () => { document.getElementById('confirm-modal-overlay').style.display = 'none'; });
@@ -581,7 +532,6 @@
                     boardData.items = parsed.items || [];
                     boardData.connections = parsed.connections || [];
                     boardData.drawings = parsed.drawings || [];
-                    boardData.theme = parsed.theme || 'default';
                 } else {
                     boardData.items.push({
                         id: generateId(), type: 'note', x: window.innerWidth/2 - 175, y: window.innerHeight/2 - 100,
@@ -590,7 +540,6 @@
                     });
                 }
             } catch (e) {}
-            applyTheme(boardData.theme);
             renderAll();
             updateSidebar();
         }
@@ -609,7 +558,6 @@
             reader.onload = (event) => {
                 try {
                     boardData = JSON.parse(event.target.result);
-                    applyTheme(boardData.theme);
                     renderAll(); updateSidebar(); saveState();
                 } catch (err) { showAlert("Invalid board file"); }
             };
@@ -617,7 +565,7 @@
         }
 
         function clearBoard() {
-            boardData = { items: [], connections: [], drawings: [], theme: boardData.theme };
+            boardData = { items: [], connections: [], drawings: [] };
             clearSelection(); renderAll(); updateSidebar(); saveState();
         }
 
