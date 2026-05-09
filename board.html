@@ -855,14 +855,53 @@
                     }
                     arrow.setAttribute('fill', color);
                     
-                    const size = parseInt(thickness) * 3 + 4;
-                    let dir = (x2 >= x1) ? 1 : -1;
-                    const pts = `${x2},${y2} ${x2 - dir*size},${y2 - size/1.5} ${x2 - dir*size},${y2 + size/1.5}`;
+                    const size = parseInt(thickness) * 3 + 6;
+                    
+                    let arrowX = x2, arrowY = y2;
+                    let tDirX = x2 >= x1 ? 1 : -1, tDirY = 0;
+                    let foundT = 1;
+                    
+                    for (let t = 0.99; t >= 0; t -= 0.01) {
+                        let mt = 1 - t;
+                        let px = mt*mt*mt*x1 + 3*mt*mt*t*cpX1 + 3*mt*t*t*cpX1 + t*t*t*x2;
+                        let py = mt*mt*mt*y1 + 3*mt*mt*t*y1 + 3*mt*t*t*y2 + t*t*t*y2;
+                        
+                        if (Math.abs(px - x2) >= targetEl.offsetWidth / 2 + 2 || Math.abs(py - y2) >= targetEl.offsetHeight / 2 + 2) {
+                            arrowX = px;
+                            arrowY = py;
+                            foundT = t;
+                            let dxt = 3*mt*mt*(cpX1 - x1) + 3*t*t*(x2 - cpX1);
+                            let dyt = 6*mt*t*(y2 - y1);
+                            let len = Math.sqrt(dxt*dxt + dyt*dyt) || 1;
+                            tDirX = dxt / len;
+                            tDirY = dyt / len;
+                            break;
+                        }
+                    }
+                    
+                    const backX = arrowX - tDirX * size;
+                    const backY = arrowY - tDirY * size;
+                    const perpX = -tDirY * size * 0.6;
+                    const perpY = tDirX * size * 0.6;
+                    
+                    const pts = `${arrowX},${arrowY} ${backX + perpX},${backY + perpY} ${backX - perpX},${backY - perpY}`;
                     arrow.setAttribute('points', pts);
 
-                    const d = `M ${x1} ${y1} C ${cpX1} ${y1}, ${cpX1} ${y2}, ${x2 - dir*size*0.8} ${y2}`;
+                    let t = foundT;
+                    let p01x = x1 + t * (cpX1 - x1);
+                    let p01y = y1;
+                    let p12x = cpX1;
+                    let p12y = y1 + t * (y2 - y1);
+                    
+                    let p012x = p01x + t * (p12x - p01x);
+                    let p012y = p01y + t * (p12y - p01y);
+
+                    const centerX = arrowX - tDirX * (size / 2);
+                    const centerY = arrowY - tDirY * (size / 2);
+
+                    const d = `M ${x1} ${y1} C ${p01x} ${p01y}, ${p012x} ${p012y}, ${centerX} ${centerY}`;
                     path.setAttribute('d', d);
-                    hitbox.setAttribute('d', `M ${x1} ${y1} C ${cpX1} ${y1}, ${cpX1} ${y2}, ${x2} ${y2}`);
+                    hitbox.setAttribute('d', d);
                 } else {
                     if (arrow) arrow.remove();
                     const d = `M ${x1} ${y1} C ${cpX1} ${y1}, ${cpX1} ${y2}, ${x2} ${y2}`;
