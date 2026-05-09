@@ -121,6 +121,7 @@
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
             
+            <!-- Left Panel: Settings & Categories -->
             <div class="space-y-6">
                 <div class="panel p-6">
                     <h2 class="text-xl font-bold mono text-white mb-4 border-b border-zinc-800 pb-2">Page Settings</h2>
@@ -142,10 +143,12 @@
                         <button onclick="addCategory()" class="text-green-400 hover:text-green-300" title="Add Category">+</button>
                     </div>
                     <div id="categoriesContainer" class="space-y-3">
-                        </div>
+                        <!-- Categories injected here -->
+                    </div>
                 </div>
             </div>
 
+            <!-- Right Panel: Logs -->
             <div class="lg:col-span-2 panel p-6 flex flex-col" style="min-height: 600px;">
                 <div class="flex justify-between items-center mb-4 border-b border-zinc-800 pb-2">
                     <h2 class="text-xl font-bold mono text-white">Media Logs (<span id="logCount">0</span>)</h2>
@@ -156,16 +159,18 @@
                     <span><b class="text-zinc-300">Circle text:</b> ((text))</span>
                 </div>
                 <div id="logsContainer" class="space-y-4 flex-grow overflow-y-auto pr-2" ondragover="handleDragOver(event)">
-                    </div>
+                    <!-- Logs injected here -->
+                </div>
             </div>
         </div>
     </div>
 
+    <!-- Application Logic -->
     <script>
-        // Globally declared formatters so they don't break during loop rendering
         function escapeHtmlVal(str) {
             return (str||'').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
         }
+
         function formatText(s) {
             if (!s) return '';
             s = s.replace(/~~(.*?)~~/g, '<del class="opacity-70 text-red-400 decoration-red-500">$1</del>');
@@ -578,7 +583,10 @@
             if (dataIslandMatch && dataIslandMatch[1]) {
                 try {
                     appData = JSON.parse(dataIslandMatch[1]);
-                    appData.logs.forEach(l => l.type = l.type || (l.isAudio ? 'audio' : 'text')); // Normalization
+                    appData.logs.forEach(l => {
+                        l.type = l.type || (l.isAudio ? 'audio' : 'text'); // Normalization
+                        l.tags = l.tags || [];
+                    });
                     document.getElementById('pageHeader').value = appData.header;
                     document.getElementById('pageSubtitle').value = appData.subtitle;
                     renderCategories();
@@ -691,7 +699,15 @@
                 if (!log.title || log.title.trim() === "") {
                     log.title = generateShiftName();
                 }
+                log.tags = log.tags || [];
             });
+
+            // Prevent script tags inside the JSON from breaking the HTML parser
+            const escapedJson = JSON.stringify(exportData).replace(/</g, '\\u003c');
+            
+            // Dynamically construct script tags to bypass HTML parser interference completely
+            const scriptStart = "<" + "script>";
+            const scriptEnd = "</" + "script>";
 
             // The exact template based on sotm.html
             const template = `<!DOCTYPE html>
@@ -700,7 +716,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>${exportData.header}</title>
-    <script src="https://cdn.tailwindcss.com"><\/script>
+    <script src="https://cdn.tailwindcss.com">${scriptEnd}
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Inter:wght@400;600&display=swap');
         body { 
@@ -713,11 +729,16 @@
         .mono { font-family: 'Space Mono', monospace; }
         .log-card { background: #1a1a1a; border: 1px solid #333; transition: all 0.2s ease; height: 100%; display: flex; flex-direction: column; }
         .log-card:hover { border-color: #4ade80; box-shadow: 0 0 15px rgba(74, 222, 128, 0.1); }
-        .category-btn { background: #1a1a1a; border: 1px solid #333; color: #a1a1aa; padding: 6px 14px; border-radius: 9999px; font-size: 0.85rem; transition: all 0.2s; white-space: nowrap; cursor: pointer; }
+        .category-btn { background: #1a1a1a; border: 1px solid #333; color: #a1a1aa; padding: 6px 14px; border-radius: 6px; font-size: 0.85rem; transition: all 0.2s; white-space: nowrap; cursor: pointer; }
         .category-btn:hover { background: #27272a; color: #f4f4f5; }
         .category-btn.active { background: #4ade80; color: #0a0a0a; border-color: #4ade80; font-weight: 600; }
-        .type-btn { background: #18181b; border: 1px solid #3f3f46; color: #a1a1aa; transition: all 0.2s; cursor: pointer; }
+        .type-btn { background: #18181b; border: 1px solid #3f3f46; color: #a1a1aa; transition: all 0.2s; cursor: pointer; border-radius: 6px; }
         .type-btn.active { background: #3f3f46; color: #f4f4f5; border-color: #52525b; }
+        .scroll-arrow { background: #121212; border: 1px solid #333; color: #a1a1aa; width: 32px; display: flex; align-items: center; justify-content: center; border-radius: 6px; cursor: pointer; transition: all 0.2s; flex-shrink: 0; }
+        .scroll-arrow:hover { border-color: #4ade80; color: #4ade80; background: #1a1a1a; }
+        .scroll-container { display: flex; flex-wrap: nowrap; gap: 0.5rem; overflow-x: auto; scroll-behavior: smooth; }
+        .scroll-container::-webkit-scrollbar { display: none; }
+        .scroll-container { -ms-overflow-style: none; scrollbar-width: none; }
         .title-badge { background: #2d2d2d; color: #4ade80; padding: 2px 8px; border-radius: 4px; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.05em; }
         .audio-badge { background: #3b0764; color: #d8b4fe; border: 1px solid #7e22ce; }
         .location-badge { background: #1e293b; color: #94a3b8; padding: 2px 8px; border-radius: 4px; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.05em; }
@@ -731,6 +752,8 @@
         ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-track { background: #0a0a0a; }
         ::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
+        .scrollbar-hide::-webkit-scrollbar { display: none; }
+        .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
         .scanline {
             width: 100%;
             height: 100px;
@@ -760,34 +783,53 @@
             <p class="text-zinc-500 italic">${exportData.subtitle.replace(/</g, "&lt;")}</p>
         </div>
         
-        <header class="sticky top-4 z-50 p-4 md:p-6 mb-8 border border-zinc-800/50 bg-transparent backdrop-blur-xl rounded-2xl shadow-xl">
-            <div>
-                <input type="text" id="searchInput" placeholder="Search titles, content, or locations..." 
-                       class="w-full bg-zinc-900 border border-zinc-700 rounded-lg px-4 py-3 focus:outline-none focus:border-green-500 mono text-green-400">
-            </div>
+        <header class="sticky top-2 md:top-4 z-50 p-3 md:p-4 mb-6 border border-zinc-800/60 bg-[#0a0a0a]/85 backdrop-blur-xl rounded-xl md:rounded-2xl shadow-2xl">
+            <div class="flex flex-col gap-3">
+                <div class="relative w-full flex items-center">
+                    <svg class="absolute left-3 text-zinc-500" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                    <input type="text" id="searchInput" placeholder="Search archives..." 
+                           class="w-full bg-zinc-900/80 border border-zinc-700/50 rounded-lg pl-9 pr-24 py-2.5 focus:outline-none focus:border-green-500/50 mono text-green-400 text-sm transition-colors shadow-inner">
+                    <div class="absolute right-3 text-zinc-500 text-[10px] mono pointer-events-none flex items-center gap-1 pl-2">
+                        <span id="logCount" class="text-green-500 font-bold text-xs">0</span> <span class="hidden sm:inline">ENTRIES</span>
+                    </div>
+                </div>
 
-            <div id="filterBar" class="mt-4 flex flex-wrap gap-2 overflow-x-auto pb-2">
-                <button class="category-btn active" data-cat="all">All Logs</button>
-                ${exportData.categories.map(c => `<button class="category-btn" data-cat="${c.id}">${c.label.replace(/</g, "&lt;")}</button>`).join('')}
-            </div>
-            
-            <div id="subFilterBar" class="hidden mt-1 flex gap-2 overflow-x-auto pb-2">
-                <button class="type-btn active text-xs px-3 py-1 rounded mono" data-type="all">All Types</button>
-                <button class="type-btn text-xs px-3 py-1 rounded mono" data-type="text">Text Only</button>
-                <button class="type-btn text-xs px-3 py-1 rounded mono" data-type="audio">Audio Only</button>
-                <button class="type-btn text-xs px-3 py-1 rounded mono" data-type="image">Image Only</button>
-                <button class="type-btn text-xs px-3 py-1 rounded mono" data-type="memo">Memo Only</button>
-                <button class="type-btn text-xs px-3 py-1 rounded mono" data-type="order">Order Form Only</button>
-            </div>
-
-            <div class="mt-4 text-zinc-500 text-sm mono">
-                ENTRIES_LOADED: <span id="logCount" class="text-green-500 font-bold">0</span>
+                <div class="flex items-stretch gap-2 w-full mt-1 relative">
+                    <button class="scroll-arrow left-arrow hidden" onclick="scrollContainer('filterBar', -200)">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                    </button>
+                    <div id="filterBar" class="scroll-container w-full" onscroll="updateArrows('filterBar')">
+                        <button class="category-btn active shrink-0" data-cat="all">All Logs</button>
+                        ${exportData.categories.map(c => `<button class="category-btn shrink-0" data-cat="${c.id}">${c.label.replace(/</g, "&lt;")}</button>`).join('')}
+                    </div>
+                    <button class="scroll-arrow right-arrow hidden" onclick="scrollContainer('filterBar', 200)">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                    </button>
+                </div>
+                
+                <div id="subFilterWrapper" class="hidden items-stretch gap-2 w-full relative">
+                    <button class="scroll-arrow left-arrow hidden" onclick="scrollContainer('subFilterBar', -200)">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                    </button>
+                    <div id="subFilterBar" class="scroll-container w-full" onscroll="updateArrows('subFilterBar')">
+                        <button class="type-btn active text-xs px-3 py-1.5 mono shrink-0" data-type="all">All Types</button>
+                        <button class="type-btn text-xs px-3 py-1.5 mono shrink-0" data-type="text">Text Only</button>
+                        <button class="type-btn text-xs px-3 py-1.5 mono shrink-0" data-type="audio">Audio Only</button>
+                        <button class="type-btn text-xs px-3 py-1.5 mono shrink-0" data-type="image">Image Only</button>
+                        <button class="type-btn text-xs px-3 py-1.5 mono shrink-0" data-type="memo">Memo Only</button>
+                        <button class="type-btn text-xs px-3 py-1.5 mono shrink-0" data-type="order">Order Form</button>
+                    </div>
+                    <button class="scroll-arrow right-arrow hidden" onclick="scrollContainer('subFilterBar', 200)">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                    </button>
+                </div>
             </div>
         </header>
 
         <div id="logDisplay" class="space-y-8"></div>
     </div>
 
+    <!-- Modal injected dynamically in output -->
     <div id="imageModal" class="fixed inset-0 z-[9999] bg-black/95 hidden items-center justify-center p-4 md:p-8 opacity-0 transition-opacity duration-300 backdrop-blur-sm" onclick="closeImageModal()">
         <div class="relative max-w-5xl w-full max-h-full flex items-center justify-center" onclick="event.stopPropagation()">
             <button class="absolute -top-12 right-0 text-zinc-400 hover:text-white transition-colors p-2" onclick="closeImageModal()">
@@ -797,16 +839,19 @@
         </div>
     </div>
 
-    <script id="archive-data" type="application/json">${JSON.stringify(exportData).replace(/</g, '\\u003c')}<\/script>
-    <script>
+    <script id="archive-data" type="application/json">${escapedJson}${scriptEnd}
+    ${scriptStart}
         const appData = JSON.parse(document.getElementById('archive-data').textContent);
-        appData.logs.forEach(l => l.type = l.type || (l.isAudio ? 'audio' : 'text')); // Normalization
+        appData.logs.forEach(l => {
+            l.type = l.type || (l.isAudio ? 'audio' : 'text'); // Normalization
+            l.tags = l.tags || [];
+        });
         
         let currentCategory = 'all';
         let currentType = 'all';
         let currentSearch = '';
 
-        function escapeRegExp(string) { return string.replace(/[.*+?^\${}()|[\\]\\\\]/g, '\\\\$&'); }
+        function escapeRegExp(string) { return string.replace(/[.*+?^\\$\\{\\}()|\\[\\]\\\\]/g, '\\\\$&'); }
         function escapeHtml(unsafe) {
             return (unsafe||'').replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
         }
@@ -896,7 +941,7 @@
         function getGroupedLogs(logs) {
             const groups = appData.categories.map(cat => ({
                 name: cat.label,
-                match: (l) => l.tags.includes(cat.id)
+                match: (l) => (l.tags || []).includes(cat.id)
             }));
             
             // Add fallback generic groups if needed, but categories handle most
@@ -915,33 +960,66 @@
             return result;
         }
 
+        function scrollContainer(id, amount) {
+            document.getElementById(id).scrollBy({ left: amount, behavior: 'smooth' });
+        }
+
+        function updateArrows(id) {
+            const container = document.getElementById(id);
+            if (!container) return;
+            const wrapper = container.parentElement;
+            const leftArrow = wrapper.querySelector('.left-arrow');
+            const rightArrow = wrapper.querySelector('.right-arrow');
+            
+            if (container.scrollLeft > 0) {
+                leftArrow.classList.remove('hidden');
+            } else {
+                leftArrow.classList.add('hidden');
+            }
+            
+            if (container.scrollLeft < container.scrollWidth - container.clientWidth - 2) {
+                rightArrow.classList.remove('hidden');
+            } else {
+                rightArrow.classList.add('hidden');
+            }
+        }
+
+        window.addEventListener('resize', () => {
+            updateArrows('filterBar');
+            if (!document.getElementById('subFilterWrapper').classList.contains('hidden')) {
+                updateArrows('subFilterBar');
+            }
+        });
+
         function render() {
             const display = document.getElementById('logDisplay');
             display.innerHTML = '';
 
-            const subFilterBar = document.getElementById('subFilterBar');
+            const subFilterWrapper = document.getElementById('subFilterWrapper');
             if (['all', 'text', 'audio', 'image', 'memo', 'order'].includes(currentCategory)) {
-                subFilterBar.classList.add('hidden');
+                subFilterWrapper.classList.add('hidden');
+                subFilterWrapper.classList.remove('flex');
                 currentType = 'all';
                 document.querySelectorAll('.type-btn').forEach(b => b.classList.toggle('active', b.dataset.type === 'all'));
             } else {
-                subFilterBar.classList.remove('hidden');
+                subFilterWrapper.classList.remove('hidden');
+                subFilterWrapper.classList.add('flex');
+                setTimeout(() => updateArrows('subFilterBar'), 10);
             }
 
             let filtered = appData.logs.filter(log => {
                 const searchLower = currentSearch.toLowerCase();
-                const matchesSearch = log.title.toLowerCase().includes(searchLower) || 
-                                    log.content.toLowerCase().includes(searchLower) ||
-                                    (log.location && log.location.toLowerCase().includes(searchLower));
+                const matchesSearch = (log.title || '').toLowerCase().includes(searchLower) || 
+                                      (log.content || '').toLowerCase().includes(searchLower) ||
+                                      (log.location || '').toLowerCase().includes(searchLower);
                 
                 let matchesCat = currentCategory === 'all';
                 if (!matchesCat) {
-                    if (currentCategory === 'text') matchesCat = log.type === 'text';
-                    else if (currentCategory === 'audio') matchesCat = log.type === 'audio';
-                    else if (currentCategory === 'image') matchesCat = log.type === 'image';
-                    else if (currentCategory === 'memo') matchesCat = log.type === 'memo';
-                    else if (currentCategory === 'order') matchesCat = log.type === 'order';
-                    else matchesCat = log.tags.includes(currentCategory);
+                    if (['text', 'audio', 'image', 'memo', 'order'].includes(currentCategory)) {
+                        matchesCat = log.type === currentCategory;
+                    } else {
+                        matchesCat = (log.tags || []).includes(currentCategory);
+                    }
                 }
                 
                 const matchesType = currentType === 'all' ? true : log.type === currentType;
@@ -1120,7 +1198,6 @@
             setTimeout(() => { btn.innerHTML = originalHTML; }, 1500);
         }
 
-        // Event Listeners
         document.getElementById('searchInput').addEventListener('input', (e) => { currentSearch = e.target.value; render(); });
         document.getElementById('filterBar').addEventListener('click', (e) => {
             if (e.target.classList.contains('category-btn')) {
@@ -1140,7 +1217,10 @@
         });
 
         render();
-    <\/script>
+        setTimeout(() => {
+            updateArrows('filterBar');
+        }, 100);
+    ${scriptEnd}
 </body>
 </html>`;
 
