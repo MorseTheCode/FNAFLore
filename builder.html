@@ -457,18 +457,24 @@
             if (!log.imageUrls) log.imageUrls = [];
             log.imageUrls = log.imageUrls.filter(u => u.trim() !== '');
 
-            let loadedCount = 0;
-            const total = files.length;
+            const inputField = document.getElementById(`new-img-url-${id}`);
+            let prefix = inputField ? inputField.value.trim() : "";
+            
+            // Default to ./posters/ if the input box is empty
+            if (!prefix) {
+                prefix = "./posters/";
+            } else if (!prefix.endsWith('/')) {
+                prefix += "/";
+            }
 
             Array.from(files).forEach(file => {
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                    log.imageUrls.push(e.target.result);
-                    loadedCount++;
-                    if (loadedCount === total) renderLogs();
-                };
-                reader.readAsDataURL(file);
+                // Append the local path prefix to the actual file name
+                log.imageUrls.push(prefix + file.name);
             });
+            
+            // Clear the input box after adding
+            if (inputField) inputField.value = "";
+            renderLogs();
         }
 
         function moveLogImage(id, index, direction) {
@@ -554,10 +560,10 @@
                         <div class="mt-2 border-t border-zinc-800/50 pt-3">
                             <label class="block text-blue-400 text-[10px] uppercase mb-1">Image Gallery</label>
                             <div class="flex flex-col sm:flex-row gap-2 mb-2 items-stretch sm:items-center">
-                                <input type="text" id="new-img-url-${log.id}" class="input-field border-blue-900/30 focus:border-blue-500 py-1.5 text-xs flex-grow" placeholder="Paste image URL here...">
+                                <input type="text" id="new-img-url-${log.id}" class="input-field border-blue-900/30 focus:border-blue-500 py-1.5 text-xs flex-grow" placeholder="Image URL or local folder path (defaults to ./posters/)">
                                 <button class="btn btn-secondary py-1.5 px-3 text-xs whitespace-nowrap" onclick="addLogImage('${log.id}')">Add URL</button>
-                                <label class="btn btn-primary py-1.5 px-3 text-xs whitespace-nowrap cursor-pointer mb-0 text-center">
-                                    Upload Local Files
+                                <label class="btn btn-primary py-1.5 px-3 text-xs whitespace-nowrap cursor-pointer mb-0 text-center" title="Select files to generate local paths">
+                                    Add Local Files
                                     <input type="file" multiple accept="image/*" class="hidden" onchange="uploadLogImages('${log.id}', this.files)">
                                 </label>
                             </div>
