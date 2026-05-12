@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MCM_ARCHIVE_LOGS</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Inter:wght@400;600&display=swap');
+        body { 
+            background-color: #0a0a0a; 
+            color: #e5e5e5; 
+            font-family: 'Inter', sans-serif;
+            background-image: radial-gradient(circle at 50% 50%, #1a1a1a 0%, #0a0a0a 100%);
+            min-height: 100vh;
+        }
+        .mono { font-family: 'Space Mono', monospace; }
+        .log-card { background: #1a1a1a; border: 1px solid #333; transition: all 0.2s ease; height: 100%; display: flex; flex-direction: column; }
+        .log-card:hover { border-color: #4ade80; box-shadow: 0 0 15px rgba(74, 222, 128, 0.1); }
+        .category-btn { background: #1a1a1a; border: 1px solid #333; color: #a1a1aa; padding: 6px 14px; border-radius: 6px; font-size: 0.85rem; transition: all 0.2s; white-space: nowrap; cursor: pointer; }
+        .category-btn:hover { background: #27272a; color: #f4f4f5; }
+        .category-btn.active { background: #4ade80; color: #0a0a0a; border-color: #4ade80; font-weight: 600; }
+        .type-btn { background: #18181b; border: 1px solid #3f3f46; color: #a1a1aa; transition: all 0.2s; cursor: pointer; border-radius: 6px; }
+        .type-btn.active { background: #3f3f46; color: #f4f4f5; border-color: #52525b; }
+        .scroll-arrow { background: #121212; border: 1px solid #333; color: #a1a1aa; width: 32px; display: flex; align-items: center; justify-content: center; border-radius: 6px; cursor: pointer; transition: all 0.2s; flex-shrink: 0; }
+        .scroll-arrow:hover { border-color: #4ade80; color: #4ade80; background: #1a1a1a; }
+        .scroll-container { display: flex; flex-wrap: nowrap; gap: 0.5rem; overflow-x: auto; scroll-behavior: smooth; }
+        .scroll-container::-webkit-scrollbar { display: none; }
+        .scroll-container { -ms-overflow-style: none; scrollbar-width: none; }
+        .title-badge { background: #2d2d2d; color: #4ade80; padding: 2px 8px; border-radius: 4px; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.05em; }
+        .audio-badge { background: #3b0764; color: #d8b4fe; border: 1px solid #7e22ce; }
+        .location-badge { background: #1e293b; color: #94a3b8; padding: 2px 8px; border-radius: 4px; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.05em; }
+        .context-group { border-left: 2px solid #4ade80; padding-left: 1.5rem; margin-bottom: 3rem; }
+        .group-header { margin-bottom: 1rem; color: #4ade80; font-size: 0.9rem; font-weight: bold; text-transform: uppercase; letter-spacing: 0.1em; }
+        .content-area { line-height: 1.4; white-space: pre-line; word-break: break-word; margin-top: -3px; display: block; }
+        .content-wrapper { border-top: 1px solid #333; padding-top: 0.75rem; margin-top: 0; flex-grow: 1; }
+        .highlight { background-color: rgba(74, 222, 128, 0.3); color: #fff; }
+        .copy-btn { background: transparent; color: #a1a1aa; border: none; cursor: pointer; padding: 4px; border-radius: 4px; transition: color 0.2s, background 0.2s; }
+        .copy-btn:hover { color: #4ade80; background: #27272a; }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #0a0a0a; }
+        ::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
+        .scrollbar-hide::-webkit-scrollbar { display: none; }
+        .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+        .scanline {
+            width: 100%;
+            height: 100px;
+            z-index: 9999;
+            position: fixed;
+            left: 0;
+            pointer-events: none;
+            background: linear-gradient(0deg, rgba(0,0,0,0) 0%, rgba(74,222,128,0.1) 50%, rgba(0,0,0,0) 100%);
+            opacity: 0.1;
+            animation: scanline 8s linear infinite;
+        }
+        @keyframes scanline {
+            0% { top: -100px; }
+            100% { top: 100%; }
+        }
+    </style>
+</head>
+<body class="pb-8 relative">
+    <div class="scanline"></div>
+    <div class="max-w-7xl mx-auto px-4 md:px-8 relative">
+        <div class="pt-6 md:pt-10 mb-4">
+            <a href="index.html" class="inline-flex items-center gap-2 text-zinc-400 hover:text-green-400 transition-colors mono text-sm mb-6">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+                RETURN_TO_HUB
+            </a>
+            <h1 class="text-3xl md:text-4xl font-bold mono text-green-400 mb-2">MCM_ARCHIVE_LOGS</h1>
+            <p class="text-zinc-500 italic">Loc_TextLogs & Audio Captures: Documenting the MCM Lifecycle</p>
+        </div>
+        
+        <header class="sticky top-2 md:top-4 z-50 p-3 md:p-4 mb-6 border border-zinc-800/60 bg-[#0a0a0a]/85 backdrop-blur-xl rounded-xl md:rounded-2xl shadow-2xl">
+            <div class="flex flex-col gap-3">
+                <div class="relative w-full flex items-center">
+                    <svg class="absolute left-3 text-zinc-500" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                    <input type="text" id="searchInput" placeholder="Search archives..." 
+                           class="w-full bg-zinc-900/80 border border-zinc-700/50 rounded-lg pl-9 pr-24 py-2.5 focus:outline-none focus:border-green-500/50 mono text-green-400 text-sm transition-colors shadow-inner">
+                    <div class="absolute right-3 text-zinc-500 text-[10px] mono pointer-events-none flex items-center gap-1 pl-2">
+                        <span id="logCount" class="text-green-500 font-bold text-xs">0</span> <span class="hidden sm:inline">ENTRIES</span>
+                    </div>
+                </div>
+
+                <div class="flex items-stretch gap-2 w-full mt-1 relative">
+                    <button class="scroll-arrow left-arrow hidden" onclick="scrollContainer('filterBar', -200)">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                    </button>
+                    <div id="filterBar" class="scroll-container w-full" onscroll="updateArrows('filterBar')">
+                        <button class="category-btn active shrink-0" data-cat="all">All Logs</button>
+                        <button class="category-btn shrink-0" data-cat="admin">Admin</button><button class="category-btn shrink-0" data-cat="mcm">MCM Business & Complaints</button><button class="category-btn shrink-0" data-cat="internal">Employee Internal Group Chats</button><button class="category-btn shrink-0" data-cat="fiona">Fiona</button><button class="category-btn shrink-0" data-cat="wa">W.A & Leak</button><button class="category-btn shrink-0" data-cat="edwin">Edwin</button><button class="category-btn shrink-0" data-cat="recovery">Recovery Team 12</button><button class="category-btn shrink-0" data-cat="sleepymoon">Sleepy Moon</button><button class="category-btn shrink-0" data-cat="interoffice_memos">Interoffice Memos</button><button class="category-btn shrink-0" data-cat="mcm_order_forms">MCM Order Forms</button><button class="category-btn shrink-0" data-cat="family_photos">Family Photos</button><button class="category-btn shrink-0" data-cat="blueprints_and_concepts">Blueprints and Concepts</button>
+                    </div>
+                    <button class="scroll-arrow right-arrow hidden" onclick="scrollContainer('filterBar', 200)">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                    </button>
+                </div>
+                
+                <div id="subFilterWrapper" class="hidden items-stretch gap-2 w-full relative">
+                    <button class="scroll-arrow left-arrow hidden" onclick="scrollContainer('subFilterBar', -200)">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                    </button>
+                    <div id="subFilterBar" class="scroll-container w-full" onscroll="updateArrows('subFilterBar')">
+                        <button class="type-btn active text-xs px-3 py-1.5 mono shrink-0" data-type="all">All Types</button>
+                        <button class="type-btn text-xs px-3 py-1.5 mono shrink-0" data-type="text">Text Only</button>
+                        <button class="type-btn text-xs px-3 py-1.5 mono shrink-0" data-type="audio">Audio Only</button>
+                        <button class="type-btn text-xs px-3 py-1.5 mono shrink-0" data-type="image">Image Only</button>
+                        <button class="type-btn text-xs px-3 py-1.5 mono shrink-0" data-type="memo">Memo Only</button>
+                        <button class="type-btn text-xs px-3 py-1.5 mono shrink-0" data-type="order">Order Form</button>
+                    </div>
+                    <button class="scroll-arrow right-arrow hidden" onclick="scrollContainer('subFilterBar', 200)">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <div id="logDisplay" class="space-y-8"></div>
+    </div>
+
+    <!-- Modal injected dynamically in output -->
+    <div id="imageModal" class="fixed inset-0 z-[9999] bg-black/95 hidden items-center justify-center p-4 md:p-8 opacity-0 transition-opacity duration-300 backdrop-blur-sm" onclick="closeImageModal()">
+        <div class="relative max-w-5xl w-full max-h-full flex items-center justify-center" onclick="event.stopPropagation()">
+            <button class="absolute -top-12 right-0 text-zinc-400 hover:text-white transition-colors p-2" onclick="closeImageModal()">
+                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            </button>
+            <img id="modalImage" src="" class="max-w-full max-h-[85vh] object-contain rounded-lg border border-zinc-800 shadow-2xl">
+        </div>
+    </div>
+
+    <script id="archive-data" type="application/json">{"header":"MCM_ARCHIVE_LOGS","subtitle":"Loc_TextLogs & Audio Captures: Documenting the MCM Lifecycle","categories":[{"id":"admin","label":"Admin"},{"id":"mcm","label":"MCM Business & Complaints"},{"id":"internal","label":"Employee Internal Group Chats"},{"id":"fiona","label":"Fiona"},{"id":"wa","label":"W.A & Leak"},{"id":"edwin","label":"Edwin"},{"id":"recovery","label":"Recovery Team 12"},{"id":"sleepymoon","label":"Sleepy Moon"},{"id":"interoffice_memos","label":"Interoffice Memos"},{"id":"mcm_order_forms","label":"MCM Order Forms"},{"id":"family_photos","label":"Family Photos"},{"id":"blueprints_and_concepts","label":"Blueprints and Concepts"}],"logs":[{"id":"LOG_1778292270746","title":"M1","location":"","content":"","type":"image","isAudio":false,"audioUrl":"","imageUrl":"./blueprints/M1.png?raw=true","memoDate":"","memoTo":"","memoFrom":"","memoCC":"","memoSubject":"","memoSignature":"","orderDate":"","orderPickup":"","orderName":"","orderBody":"","orderQty":"","orderMaterials":"","orderDetails":"","orderSpecial":"","tags":["blueprints_and_concepts"]},{"id":"LOG_1778290493069","title":"Edwin","location":"","content":"","type":"image","isAudio":false,"audioUrl":"","imageUrl":"./photos/T_CarnivalPosters_EdwinPortrait.png","memoDate":"","memoTo":"","memoFrom":"","memoCC":"","memoSubject":"","memoSignature":"","orderDate":"","orderPickup":"","orderName":"","orderBody":"","orderQty":"","orderMaterials":"","orderDetails":"","orderSpecial":"","tags":["family_photos"]},{"id":"LOG_1778292232706","title":"M1 Concept - 1","location":"","content":"","type":"image","isAudio":false,"audioUrl":"","imageUrl":"./blueprints/M1%20Concept%201.png?raw=true","memoDate":"","memoTo":"","memoFrom":"","memoCC":"","memoSubject":"","memoSignature":"","orderDate":"","orderPickup":"","orderName":"","orderBody":"","orderQty":"","orderMaterials":"","orderDetails":"","orderSpecial":"","tags":["blueprints_and_concepts"]},{"id":"LOG_1778292231498","title":"M1 Concept - 2","location":"","content":"","type":"image","isAudio":false,"audioUrl":"","imageUrl":"./blueprints/M1%20Concept%202.png?raw=true","memoDate":"","memoTo":"","memoFrom":"","memoCC":"","memoSubject":"","memoSignature":"","orderDate":"","orderPickup":"","orderName":"","orderBody":"","orderQty":"","orderMaterials":"","orderDetails":"","orderSpecial":"","tags":["blueprints_and_concepts"]},{"id":"LOG_1778292230954","title":"M1 Concept - 3","location":"","content":"","type":"image","isAudio":false,"audioUrl":"","imageUrl":"./blueprints/M1%20Concept%203.png?raw=true","memoDate":"","memoTo":"","memoFrom":"","memoCC":"","memoSubject":"","memoSignature":"","orderDate":"","orderPickup":"","orderName":"","orderBody":"","orderQty":"","orderMaterials":"","orderDetails":"","orderSpecial":"","tags":["blueprints_and_concepts"]},{"id":"LOG_1778292213381","title":"Captain","location":"","content":"","type":"image","isAudio":false,"audioUrl":"","imageUrl":"./blueprints/Captain.png?raw=true","memoDate":"","memoTo":"","memoFrom":"","memoCC":"","memoSubject":"","memoSignature":"","orderDate":"","orderPickup":"","orderName":"","orderBody":"","orderQty":"","orderMaterials":"","orderDetails":"","orderSpecial":"","tags":["blueprints_and_concepts"]},{"id":"LOG_1778292186743","title":"Nurse Dollie","location":"","content":"","type":"image","isAudio":false,"audioUrl":"","imageUrl":"./blueprints/Dollie.png?raw=true","memoDate":"","memoTo":"","memoFrom":"","memoCC":"","memoSubject":"","memoSignature":"","orderDate":"","orderPickup":"","orderName":"","orderBody":"","orderQty":"","orderMaterials":"","orderDetails":"","orderSpecial":"","tags":["blueprints_and_concepts"]},{"id":"LOG_1778292138135","title":"Jugband Monty","location":"","content":"","type":"image","isAudio":false,"audioUrl":"","imageUrl":"./blueprints/Jugband%20Monty.png?raw=true","memoDate":"","memoTo":"","memoFrom":"","memoCC":"","memoSubject":"","memoSignature":"","orderDate":"","orderPickup":"","orderName":"","orderBody":"","orderQty":"","orderMaterials":"","orderDetails":"","orderSpecial":"","tags":["blueprints_and_concepts"]},{"id":"LOG_1778292112964","title":"Party Time Chica","location":"","content":"","type":"image","isAudio":false,"audioUrl":"","imageUrl":"./blueprints/Party%20Time%20Chica.png?raw=true","memoDate":"","memoTo":"","memoFrom":"","memoCC":"","memoSubject":"","memoSignature":"","orderDate":"","orderPickup":"","orderName":"","orderBody":"","orderQty":"","orderMaterials":"","orderDetails":"","orderSpecial":"","tags":["blueprints_and_concepts"]},{"id":"LOG_1778292091666","title":"Party Time Chica 2","location":"","content":"","type":"image","isAudio":false,"audioUrl":"","imageUrl":"./blueprints/Party%20Time%20Chica%202.png?raw=true","memoDate":"","memoTo":"","memoFrom":"","memoCC":"","memoSubject":"","memoSignature":"","orderDate":"","orderPickup":"","orderName":"","orderBody":"","orderQty":"","orderMaterials":"","orderDetails":"","orderSpecial":"","tags":["blueprints_and_concepts"]},{"id":"LOG_1778292073600","title":"Pig & Lasso","location":"","content":"","type":"image","isAudio":false,"audioUrl":"","imageUrl":"./blueprints/Pig.png?raw=true","memoDate":"","memoTo":"","memoFrom":"","memoCC":"","memoSubject":"","memoSignature":"","orderDate":"","orderPickup":"","orderName":"","orderBody":"","orderQty":"","orderMaterials":"","orderDetails":"","orderSpecial":"","tags":["blueprints_and_concepts"]},{"id":"LOG_1778292053593","title":"Sleepy Moon","location":"","content":"","type":"image","isAudio":false,"audioUrl":"","imageUrl":"./blueprints/Sleepy%20Moon.png?raw=true","memoDate":"","memoTo":"","memoFrom":"","memoCC":"","memoSubject":"","memoSignature":"","orderDate":"","orderPickup":"","orderName":"","orderBody":"","orderQty":"","orderMaterials":"","orderDetails":"","orderSpecial":"","tags":["blueprints_and_concepts"]},{"id":"LOG_1778292045822","title":"Swing Bee","location":"","content":"","type":"image","isAudio":false,"audioUrl":"","imageUrl":"./blueprints/Swing%20Bee.png?raw=true","memoDate":"","memoTo":"","memoFrom":"","memoCC":"","memoSubject":"","memoSignature":"","orderDate":"","orderPickup":"","orderName":"","orderBody":"","orderQty":"","orderMaterials":"","orderDetails":"","orderSpecial":"","tags":["blueprints_and_concepts"]},{"id":"LOG_1778297221459","title":"Hippo (Removed)","location":"","content":"","type":"image","isAudio":false,"audioUrl":"","imageUrl":"./blueprints/Hippo(Removed).png?raw=true","memoDate":"","memoTo":"","memoFrom":"","memoCC":"","memoSubject":"","memoSignature":"","orderDate":"","orderPickup":"","orderName":"","orderBody":"","orderQty":"","orderMaterials":"","orderDetails":"","orderSpecial":"","tags":["blueprints_and_concepts"]},{"id":"LOG_1778290486286","title":"Edwin Sr.","location":"","content":"","type":"image","isAudio":false,"audioUrl":"","imageUrl":"./photos/T_CarnivalPosters_EdwinSr_03.png","memoDate":"","memoTo":"","memoFrom":"","memoCC":"","memoSubject":"","memoSignature":"","orderDate":"","orderPickup":"","orderName":"","orderBody":"","orderQty":"","orderMaterials":"","orderDetails":"","orderSpecial":"","tags":["family_photos"]},{"id":"LOG_1778290470683","title":"Fiona","location":"","content":"","type":"image","isAudio":false,"audioUrl":"","imageUrl":"./photos/T_CarnivalPosters_FionaPortrait.png","memoDate":"","memoTo":"","memoFrom":"","memoCC":"","memoSubject":"","memoSignature":"","orderDate":"","orderPickup":"","orderName":"","orderBody":"","orderQty":"","orderMaterials":"","orderDetails":"","orderSpecial":"","tags":["family_photos"]},{"id":"LOG_1778290444887","title":"Wedding","location":"","content":"","type":"image","isAudio":false,"audioUrl":"","imageUrl":"./photos/T_Edwin_Fiona_Wedding.png","memoDate":"","memoTo":"","memoFrom":"","memoCC":"","memoSubject":"","memoSignature":"","orderDate":"","orderPickup":"","orderName":"","orderBody":"","orderQty":"","orderMaterials":"","orderDetails":"","orderSpecial":"","tags":["family_photos"]},{"id":"LOG_1778290090043","title":"Murray Family","location":"","content":"","type":"image","isAudio":false,"audioUrl":"","imageUrl":"./photos/T_MurrayFamily.png","memoDate":"","memoTo":"","memoFrom":"","memoCC":"","memoSubject":"","memoSignature":"","orderDate":"","orderPickup":"","orderName":"","orderBody":"","orderQty":"","orderMaterials":"","orderDetails":"","orderSpecial":"","tags":["family_photos"]},{"id":"LOG_1778285534534","title":"New Year","location":"","content":"Edwin","type":"image","isAudio":false,"audioUrl":"","imageUrl":"./photos/T_NewYears_D.png","memoDate":"","memoTo":"","memoFrom":"","memoCC":"","memoSubject":"","memoSignature":"","orderDate":"","orderPickup":"","orderName":"","orderBody":"","orderQty":"","orderMaterials":"","orderDetails":"","orderSpecial":"","tags":["family_photos"]},{"id":"LOG_1778297132907","title":"Tree Photo","location":"","content":"","type":"image","isAudio":false,"audioUrl":"","imageUrl":"./photos/T_Tree_Photo.png?raw=true","memoDate":"","memoTo":"","memoFrom":"","memoCC":"","memoSubject":"","memoSignature":"","orderDate":"","orderPickup":"","orderName":"","orderBody":"","orderQty":"","orderMaterials":"","orderDetails":"","orderSpecial":"","tags":["family_photos"]},{"id":"LOG_1778282743257","title":"(^&!*^*$","location":"","content":"","type":"order","isAudio":false,"audioUrl":"","imageUrl":"","memoDate":"","memoTo":"","memoFrom":"","memoCC":"","memoSubject":"","memoSignature":"","orderDate":"5/4/1973","orderPickup":"~~8/4/1973~~ ((11/4/1973))","orderName":"Mycellium Men","orderBody":"C","orderQty":"8","orderMaterials":"2x blue, 2x orange, 2x green, 2x pink","orderDetails":"","orderSpecial":"Oversized Hats","tags":["mcm_order_forms"]},{"id":"LOG_1778282960453","title":"$%@#!)^#","location":"","content":"","type":"order","isAudio":false,"audioUrl":"","imageUrl":"","memoDate":"","memoTo":"","memoFrom":"","memoCC":"","memoSubject":"","memoSignature":"","orderDate":"3/18/1974","orderPickup":"6/18/1974","orderName":"Hudgies","orderBody":"B","orderQty":"4","orderMaterials":"Horse Hair","orderDetails":"Purple Fur","orderSpecial":"","tags":["mcm_order_forms"]},{"id":"LOG_1778285106819","title":"(^@##!@(","location":"","content":"","type":"order","isAudio":false,"audioUrl":"","imageUrl":"","memoDate":"","memoTo":"","memoFrom":"","memoCC":"","memoSubject":"","memoSignature":"","orderDate":"12/15/1974","orderPickup":"3/15/1975","orderName":"Happy Bee Inc.","orderBody":"C","orderQty":"4","orderMaterials":"N/A","orderDetails":"Charming Smile","orderSpecial":"Must sit & swing with ease","tags":["mcm_order_forms"]},{"id":"LOG_1778284919726","title":"&%^(*!@^","location":"","content":"","type":"order","isAudio":false,"audioUrl":"","imageUrl":"","memoDate":"","memoTo":"","memoFrom":"","memoCC":"","memoSubject":"","memoSignature":"","orderDate":"12/15/1975","orderPickup":"3/15/1976","orderName":"Sharpay's Salon","orderBody":"B","orderQty":"6","orderMaterials":"","orderDetails":"Cute Collar","orderSpecial":"","tags":["mcm_order_forms"]},{"id":"LOG_1778284989944","title":")$&@^^&)","location":"","content":"","type":"order","isAudio":false,"audioUrl":"","imageUrl":"","memoDate":"","memoTo":"","memoFrom":"","memoCC":"","memoSubject":"","memoSignature":"","orderDate":"10/10/1976","orderPickup":"1/10/1977","orderName":"Internal","orderBody":"C","orderQty":"5","orderMaterials":"Harlequin Print","orderDetails":"Iconic Smile","orderSpecial":"","tags":["mcm_order_forms"]},{"id":"LOG_1778283047079","title":"@$*$^&(#","location":"","content":"","type":"order","isAudio":false,"audioUrl":"","imageUrl":"","memoDate":"","memoTo":"","memoFrom":"","memoCC":"","memoSubject":"","memoSignature":"","orderDate":"1/24/1977","orderPickup":"4/24/1977","orderName":"Best Birthday Co.","orderBody":"A","orderQty":"3","orderMaterials":"Satin","orderDetails":"Big Bow","orderSpecial":"Expressive Tongue","tags":["mcm_order_forms"]},{"id":"LOG_1778281411790","title":"BRING YOUR CHILD TO WORK DAY","location":"","content":"To whom it may concern,\n\nWhile we understand the morale benefits of bring your child to work day, it's the collective opinion of the workshop staff that having children running around the workshop space is simply too much of a safety risk. Specifically, we fear that another accident could put us further behind schedule, which may mean losing some of our best clients due to repeated tardiness. Please consider cancelling bring your child to work day going forward.","type":"memo","isAudio":false,"audioUrl":"","imageUrl":"","memoDate":"04/23/1974","memoTo":"WORKSHOP LEADS","memoFrom":"ADMINISTRATION DEPT.","memoCC":"","memoSubject":"BRING YOUR CHILD TO WORK DAY","memoSignature":"","tags":["interoffice_memos"]},{"id":"LOG_1778281162400","title":"TERMINATION OF EMPLOYMENT","location":"","content":"On July 21, 1975, Murray's Costume Manor hosted a party to celebrate the opening of our new Research and Development Floor.\n\nAccording to eyewitness accounts, you had entered the R&D Floor during the party and shamelessly urinated on the new equipment.\n\nYour actions show a total lack of professionalism and cleanliness, along with contempt for the company that has employed you for the past decade.\n\nThis blatantly insulting act has resulted in your termination as of 7/24/1975.","type":"memo","isAudio":false,"audioUrl":"","imageUrl":"","memoDate":"07/24/1975","memoTo":"Mr. Marco Salmon","memoFrom":"T. J. Frank","memoCC":"","memoSubject":"TERMINATION OF EMPLOYMENT","memoSignature":"T.J. Frank","tags":["interoffice_memos"]},{"id":"AL_1","title":"Meet Up","location":"Showroom Lobby","content":"Edwin: Excuse me. Can I borrow your voice for a project?\nFiona: What for? I don't even know you. I'm brand new here. Let's start again. I'm Fiona. And you are?\nEdwin: Edwin, Edwin Murray. This is my dad's place. But that doesn't matter... I heard you were a puppeteer and I wanted to record your voice.\nFiona: Oh. Well, yes. I used to be.\nEdwin: That's great! Do you mind if I record you for a test?\nFiona: So you want to record me that that? What is it?\nEdwin: It's a new type of audio cassette recorder.\nFiona: I've never seen one like that before.\nEdwin: I made it. It's part of this new system I'm working on. Just speak into the microphone and it'll be sent to me like a work memo. The message will be recorded on a tape drive so that I can listen to it when I get back to my desk on the other side of the building.\nFiona: That's incredible. What do you call it?\nEdwin: Oh. I don't know. I haven't thought of a name yet.\nFiona: Well, how would you describe it in one word?\nEdwin: I guess I would have to say, \"helpful.\" At its core, it is helpful.\nFiona: That's a great name. And I would be delighted to help. What kind of voice should I do?","isAudio":true,"audioUrl":"","tags":["fiona","edwin"],"type":"audio"},{"id":"AL_2","title":"Inheritance","location":"Warehouse","content":"Fiona: Ed, honey, how are you holding up? I just heard the news.\nEdwin: I don't know. This is all so much... He's gone. He's gone and now everyone is asking me what to do? And I don't know anything. I can't run a company. I'm not ready... I can't fill his shoes. He knew it. Everyone knew it. The company is going to collapse and they're all going to hate me.\nFiona: Ed, you'll figure it out. Just take a deep breath. It's your company now. Your dad believed in you. Otherwise, he wouldn't have left it to you.\nEdwin: I guess so.\nFiona: If you could change anything you wanted, what would it be?\nEdwin: Maybe... rebrand? We could start making some of my inventions for real.","isAudio":true,"audioUrl":"","tags":["fiona","edwin"],"type":"audio"},{"id":"AL_3","title":"Focus Needed","location":"Warehouse","content":"Fiona: Ed, you're not going to want to hear this, but there's a lot of grumbling on the work floor. You have a lot of new ideas and new projects coming in, but the staff can't keep up with all your changes. Your creative energy's amazing and I love you for it... ...but I think you need to step back a little and focus on one project at a time.","isAudio":true,"audioUrl":"","tags":["fiona","edwin"],"type":"audio"},{"id":"AL_8","title":"Installation Worries","location":"Roof Access","content":"Fiona: Ed, I hope this message reaches you as soon as you get a break. I have to go help the Fall Fest crew... just for a few days until the installation is finished. It's hard to explain... I just have this terrible feeling like I need to be there so nothing goes wrong... Just in case. Trisha will babysit David while I'm gone. I love you both and I'll be back next week.","isAudio":true,"audioUrl":"","tags":["fiona","edwin"],"type":"audio"},{"id":"AL_4","title":"Underground / Power Surge","location":"IT Room","content":"Edwin: Attention all personnel. The power surges have become more... frequent. Please use extreme caution when venturing down into the tunnels.","isAudio":true,"audioUrl":"","tags":["edwin"],"type":"audio"},{"id":"AL_6","title":"Build to Spec","location":"RnD's mockup woman restroom","content":"Edwin: Test test... journal entry. I got the change order from Hen last night. None of this makes sense. I'm almost done. Why change it now? It would be so much easier to keep using the Springlocks. Just hire some teens to wear the suits like we always do.","isAudio":true,"audioUrl":"","tags":["edwin"],"type":"audio"},{"id":"AL_5","title":"Friends","location":"Returns Room","content":"Edwin: What the hell was that? They treat me like some contractor to crack a whip at. Fiona was right. They don't think of me as a friend anymore. This is the last project I ever do for them.","isAudio":true,"audioUrl":"","tags":["fiona","edwin"],"type":"audio"},{"id":"AL_7","title":"Creepy / Change Request","location":"RnD's mockup Safe Room","content":"Edwin: Are they insane? The look of these new animatronics is Fiona's design and they're great. First they approve the art. Then they approve the proofs. Now, they change their minds when we're so close to final. Why would they change them now? Are they pulling my leg? The new concepts are frankly creepy. It doesn't matter... I'm not changing a single bit of her work and they can't make me.","isAudio":true,"audioUrl":"","tags":["fiona","edwin"],"type":"audio"},{"id":"AL_9","title":"Theater Shenanigans","location":"Theater","content":"Edwin: Notice to all workers. All late night shenanigans are to stop immediately. I have some very important TV people coming to look at the show template. I can't have the projector breaking again!","isAudio":true,"audioUrl":"","tags":["edwin"],"type":"audio"},{"id":"AL_10","title":"Death","location":"Theater Backstage","content":"Edwin: Why did you go? You weren't even supposed to be there. You were supposed to be here with me and David. Ugh! How am I supposed to tell David that his mother is gone? How am I supposed to raise a kid on my own? His life is ruined... My life is ruined.","isAudio":true,"audioUrl":"","tags":["edwin"],"type":"audio"},{"id":"AL_11","title":"The Frequency","location":"Basement 2 secret workshop","content":"Edwin: Recording... Test. Test. Levels are good. This is where I heard it. It's her, or someone that sounds like her. Set frequency to 4625...\nRadio: (Static)\nEdwin: Hello. Hello? Is anyone there? Over.\nRadio: (Static)\nEdwin: Say something. It's me, Edwin. Over.\nRadio: (Static)\nFiona: That's great, honey, but you're missing the party.","isAudio":true,"audioUrl":"","tags":["fiona","edwin"],"type":"audio"},{"id":"AL_12","title":"Training","location":"Workshop's Springlock suits assembly room","content":"Edwin: David. I want you introduce you to someone. This is M1.\nDavid: Why does it look like that?\nEdwin: Look like what?\nDavid: It's scary.\nEdwin: It's an endo skeleton. It won't always look like this. It'll wear fun costumes.\nDavid: Like what?\nEdwin: Anything you want. It can fit into any costume we've created. Think of it as your new babysitter. But it doesn't get paid and go home. It'll stay with us and help around the house.","isAudio":true,"audioUrl":"","tags":["edwin"],"type":"audio"},{"id":"AL_13","title":"Playground","location":"Loading Docks","content":"Edwin: Look, I get your concerns, I do, but they're all just groundless. This is the perfect spot for David's playground. I can watch him play while I'm loading and unloading freight, and he'll be under watch at all times out there. The loading dock is like two hundred feet away, and there's a fence and everything. I know you're my lawyer and all, but there's no regulation that says I can't have it there, so just get off my back. Besides, David loves the new slide. It'll be fine.","isAudio":true,"audioUrl":"","tags":["edwin"],"type":"audio"},{"id":"AL_14","title":"Trust No One Fiona / Trust No One pt2","location":"Inventor's House Library","content":"Fiona/M1: Edwin, you need to listen. I know you are excited, but you can't let them know about me. It's not safe. They wouldn't understand. Keep it between us for now.","isAudio":true,"audioUrl":"","tags":["fiona","edwin"],"type":"audio"},{"id":"AL_18","title":"Trust No One","location":"Story Time Showroom","content":"Edwin: Edwin, never forget. They're behind it. Don't trust them. Never tell them. They want to destroy you. Dad was right.","isAudio":true,"audioUrl":"","tags":["edwin"],"type":"audio"},{"id":"AL_15","title":"Here For You","location":"RnD's Mimic Lair","content":"Fiona/M1: Edwin, it doesn't make sense. It's terrible and there's no logic behind it. It happened and you have to deal with it. You did it before. We can fix things together. I am here to help.","isAudio":true,"audioUrl":"","tags":["fiona","edwin"],"type":"audio"},{"id":"AL_17","title":"Try Again","location":"Inventor's House Workshop Room","content":"Fiona/M1: Edwin, you can't put it off any longer. You need to try again. Build another.","isAudio":true,"audioUrl":"","tags":["fiona","edwin"],"type":"audio"},{"id":"AL_16","title":"Refusal","location":"Inventor's House Workshop Room (with blueprints)","content":"Edwin: For the last time, NO. It wouldn't be him. Who am I kidding, you're not really you! Ugh, I've been so stupid.\nFiona/M1: Edwin, calm down and give it some thought. Try again. Make another and we can all be together.\nEdwin: All this time wasted! I should have been having fun with him, playing games and teaching him how to make things... But, I didn't. You. You! I let a machine raise my kid. You're not real. What was I thinking?!\nFiona/M1: You do not mean that. It is me. I'm Fiona.\nEdwin: Stop talking like her. You're not her. I never want to hear or even think about you ever again. Ever!","isAudio":true,"audioUrl":"","tags":["fiona","edwin"],"type":"audio"},{"id":"AL_19","title":"Make a Copy","location":"Executive Suite","content":"Edwin: Project update. I figured it out. There's a leak. Someone told them about M2. Well, they can't have it. Every copy has failed. I don't even know why it worked the first time, but it did. It's just not ready.","isAudio":true,"audioUrl":"","tags":["edwin"],"type":"audio"},{"id":"AL_20","title":"Announcement","location":"Admin Wing","content":"Edwin: Attention traitors, admin wing permissions have been revoked. And no, you can't clear out your desks! You stole my work. Now your jackets, purses and coffee mugs and anything else belongs to me. Maybe I'll go find someone to sell your stuff to. How does that feel?","isAudio":true,"audioUrl":"","tags":["admin","edwin"],"type":"audio"},{"id":"AL_21","title":"The Incident","location":"Basement 2","content":"Edwin: ...Stop. You're not him. You're not! Stop sounding like him!","isAudio":true,"audioUrl":"","tags":["edwin"],"type":"audio"},{"id":"AL_22","title":"M2 Journal Entry / Final Moments","location":"Inventor's House (Endgame)","content":"M2: Test test... Journal entry. Too bad. The new power test was a failure. Due to a minor... detonation, there is damage to my office interior as well as a small fire. Note to self. A portable cleaner that gets rid of smoke damage... Better yet, a Clown-O-Vac attachment.\nEdwin: Help... M2. Respond. Emergency... Call for help.\nM2: Daddy's busy, buddy. Why don't you go outside and play.\nEdwin: Please. I can't move. I can't feel my legs...\nM2: Speaking of legs. What do you think? I just finished mine. There are still a few kinks to work out...\nEdwin: I'm... I'm sorry, M2. I... lost my temper. I was always going to fix you... Please... call for help... M2. Respond.\nM2: Can't right now, buddy. We can do something fun tomorrow. I promise. Ask your mom, if she's not busy.\nEdwin: M2. Help...","isAudio":true,"audioUrl":"","tags":["edwin"],"type":"audio"},{"id":"TL_Misc20","title":"Admin - Dec 1st - 8:00 am","location":"Admin Wing.","content":"Attention. We're going to need everyone to come in this weekend. This is not optional. The party is on Saturday in the admin conference room 1. Don't tell David. It's a surprise. - EM","isAudio":false,"audioUrl":"","tags":["admin"],"type":"text"},{"id":"TL_Admin1","title":"Admin - Dec 1st - 12:00 pm","location":"Admin Wing.","content":"To all employees, Mr. Murray has taken over conference room 1 for a surprise birthday party for his son. The old keycode will not work anymore, so please stop trying 53782. It’s getting annoying. - Milton","isAudio":false,"audioUrl":"","tags":["admin"],"type":"text"},{"id":"TL_Admin2","title":"Admin - Dec 1st - 12:15 pm","location":"Admin Wing.","content":"Wait. What about Bev’s birthday party? That was supposed to be this Saturday. She turned 50 yesterday, and you're only 50 once! - Amy","isAudio":false,"audioUrl":"","tags":["admin"],"type":"text"},{"id":"TL_Admin3","title":"Admin - Dec 1st - 12:30 pm","location":"Admin Wing.","content":"Obviously, we’ll have to move Bev’s party to the breakroom in the main hallway. Mr. Murray has given me permission to change the code to 49762. - Milton","isAudio":false,"audioUrl":"","tags":["admin"],"type":"text"},{"id":"TL_Admin4","title":"Admin - Dec 2nd - 4:13 am","location":"Admin Wing.","content":"Hey everybody! Don’t tell Milton, but I figured out how to change the keycode to the conference room. I just added 300 to it, just to mess with him! - Bob","isAudio":false,"audioUrl":"","tags":["admin"],"type":"text"},{"id":"TL_Admin5","title":"Admin - Dec 2nd - 4:18 am","location":"Admin Wing.","content":"Well, if you’re going to do that, I’m going to change the first two digits to 29. It’s my favorite number, so don’t change it! - Wally","isAudio":false,"audioUrl":"","tags":["admin"],"type":"text"},{"id":"TL_Admin6","title":"Admin - Dec 3rd - 3:05 pm","location":"Admin Wing.","content":"Hey, I took Wally off this note. I changed the first two digits to 21, just because he’s such a jerk. I can’t wait to see his head explode. - Penny","isAudio":false,"audioUrl":"","tags":["admin"],"type":"text"},{"id":"TL_Admin7","title":"Admin - Dec 3rd - 3:20 pm","location":"Admin Wing.","content":"Okay everyone, that is quite enough. No more changes to the keycode please. - Milton","isAudio":false,"audioUrl":"","tags":["admin"],"type":"text"},{"id":"TL_Admin8","title":"Admin - Dec 4th - 8:19 pm","location":"Admin Wing.","content":"Hey Penny, I’m going to change the first two digits to 01. Because I’m number 1! - Bob","isAudio":false,"audioUrl":"","tags":["admin"],"type":"text"},{"id":"TL_Admin9","title":"Admin - Dec 4th - 8:34 pm","location":"Admin Wing.","content":"That sounds great! I’m going to change the last two digits to Bev’s age. Justice for Bev! - Penny","isAudio":false,"audioUrl":"","tags":["admin"],"type":"text"},{"id":"TL_Admin10","title":"Admin - Dec 4th - 10:00 pm","location":"Admin Wing.","content":"I just saw the code changed again. Anyone seen adjusting the code will be written up! - Milton","isAudio":false,"audioUrl":"","tags":["admin"],"type":"text"},{"id":"TL_Admin11","title":"Admin - Dec 5th - 5:00 am","location":"Admin Wing.","content":"Hey everyone. I was here late so I added another 300 to the code. Anyone have a camera when Milton tries to open it again! Priceless! - Bob","isAudio":false,"audioUrl":"","tags":["admin"],"type":"text"},{"id":"TL_Misc01","title":"Moving On!","location":"Theater Backstage.","content":"Ken, after one interview, they offered me the job! It happened so quick. No questions about my work or skills, they asked one question, \"When can you start?\"\n\nI'm going to make double what I make here. You should come with me. There's a referral bonus if we can get more Murray employees to jump ship.","isAudio":false,"audioUrl":"","tags":["wa"],"type":"text"},{"id":"TL_Misc02","title":"Staff Contacts","location":"Admin Wing upper floor.","content":"We are almost there. I need the rest of the Murray staff contact info. The sooner the better. You get that for me, and I can sweeten the deal. How would you like to manage one of the new franchise locations? - W.A.","isAudio":false,"audioUrl":"","tags":["wa"],"type":"text"},{"id":"TL_Misc03","title":"Have you heard Fiona?","location":"Warehouse.","content":"I heard it again this morning when I was down in R&D. Very clearly through one of the vents, it was Fiona's voice, I swear it on my mother's grave. I heard her and Edwin laughing and joking. Why would Edwin lie about Fall Fest? Did they fake her death for insurance money? I never did trust them.","isAudio":false,"audioUrl":"","tags":["internal"],"type":"text"},{"id":"TL_Misc04","title":"01101000 01110101 01110010 01110100 (hurt)","location":"Executive Suite.","content":"Edwin, please talk to me. We need to stop it together. Here are the blueprints for a \"Cradle\". It can keep David safe and provide boundaries. It's a type of computer, and it's bigger than anything you've done before. If you won't finish the program, consider building the cradle. It will keep people safe.","isAudio":false,"audioUrl":"","tags":["fiona"],"type":"text"},{"id":"TL_Misc05","title":"We need to go","location":"Workshop.","content":"Me and Stan are out of here. It's time to jump ship before things get ugly. I have a bunch of Fiona's character patterns and Stan is taking what he can. Join us. With everything we know about the restaurant project, we can start our own machine shop.","isAudio":false,"audioUrl":"","tags":["internal"],"type":"text"},{"id":"TL_Misc06","title":"Group Chat #1","location":"Main/South Hall.","content":"Hey everyone. These mail boxes are everywhere. If you see anything \"strange\" we can keep the group informed. - Pete","isAudio":false,"audioUrl":"","tags":["internal"],"type":"text"},{"id":"TL_Misc07","title":"Group Chat #2","location":"Main/South Hall.","content":"Great idea, Pete. Mr. Murray hasn't used these mailboxes for so long, it should be safe. I'd love to have some place for all of us to talk in private. I feel like the bossman is listening all the time... - Penny","isAudio":false,"audioUrl":"","tags":["internal"],"type":"text"},{"id":"TL_Misc13","title":"Group Chat #3","location":"Loading Docks.","content":"Why are we turning down work? The floats have been doing really well. Ed's modular system is groundbreaking. And now he wants to shut the whole thing down? He just sits in his office talking to that thing. I have no clue what to do.\n- Barbara","isAudio":false,"audioUrl":"","tags":["internal"],"type":"text"},{"id":"TL_Doll01","title":"Group Chat #4","location":"Doll House.","content":"Hey, I can't get the incinerator up and running. The chutes are getting clogged again. - Gary","isAudio":false,"audioUrl":"","tags":["internal"],"type":"text"},{"id":"TL_Doll02","title":"Group Chat #5","location":"Doll House.","content":"Anyone notice that the door locks now? What are we supposed to do, sleep here? - Ralph","isAudio":false,"audioUrl":"","tags":["internal"],"type":"text"},{"id":"TL_Misc08","title":"Love That Ticket Booth!","location":"Showroom Lobby.","content":"This one of a kind ticket booth plays music and it collects tickets. It can hold signs for advertising or directions with its many arms. Additional swings can be attached and make it a fun ride (We'll throw the swings in for free as a bonus).","isAudio":false,"audioUrl":"","tags":["mcm"],"type":"text"},{"id":"TL_Misc10","title":"Sales Pitch","location":"Workshop upper area.","content":"Mr. Murray. Bob in marketing had an amazing idea. Costumes are great for sports teams and high school pep rallys. We could almost double our sales output if we contacted schools. I will await your reply.","isAudio":false,"audioUrl":"","tags":["mcm"],"type":"text"},{"id":"TL_Misc11","title":"Sales Pitch - Rejected!","location":"Workshop upper area.","content":"No. Not for sports use. and NOT for personal use either... Sports never did anything good for me, so I'm not doing anything good for sports","isAudio":false,"audioUrl":"","tags":["mcm"],"type":"text"},{"id":"TL_Misc12","title":"Please Advise","location":"Admin Wing upper floor.","content":"Dear Mr. Murray. The returns are over flowing. The orders are drying up. Please advise.","isAudio":false,"audioUrl":"","tags":["mcm"],"type":"text"},{"id":"TL_Misc14","title":"Confidential","location":"Main/South Hall, executive restroom.","content":"..software development and the entire MCM catalog. We would love to keep you on as a lead engineer. Although we now technically own the land, we would never touch the house your parents built. We feel this offer has been more than fair, considering how far behind you are. It's just too much for you to handle alone. We are waiting for your response. - WA","isAudio":false,"audioUrl":"","tags":["wa"],"type":"text"},{"id":"TL_Misc19","title":"Chica's Party World","location":"Warehouse.","content":"Dear Mr. Murray, Fiona is amazing. The client is very happy with her chicken designs. Their sales are through the roof. I just wish the costume looked a little bit more like Fiona's art... I'm worried about how it will work with kids. It gives me nightmares.\n- Milton","isAudio":false,"audioUrl":"","tags":["mcm"],"type":"text"},{"id":"TL_Admin12","title":"Admin - Dec 6th - 4:00 pm","location":"Admin Wing.","content":"To all Admin staff members. Mr. Murray’s party has been canceled, due to the recent tragic events. Please do not enter the conference room until further notice. - Milton","isAudio":false,"audioUrl":"","tags":["admin"],"type":"text"},{"id":"TL_Misc21","title":"01001000 01001111 01001101 01000101 (HOME)","location":"RnD, Mimic's Lair/Dark Ride.","content":"Home. My home.","isAudio":false,"audioUrl":"","tags":["fiona"],"type":"text"},{"id":"TL_Misc22","title":"01010011 01000001 01000100 (SAD)","location":"Executive Suite.","content":"Edwin, are we losing our home? I don't understand. Wasn't I good enough?","isAudio":false,"audioUrl":"","tags":["fiona"],"type":"text"},{"id":"TL_Misc09","title":"Vacations","location":"Workshop.","content":"My weekend vacation request was refused. I quit! Tell Jake I'll be back for my things on Monday.","isAudio":false,"audioUrl":"","tags":["internal"],"type":"text"},{"id":"TL_Misc23","title":"Projector Issues","location":"Theater Backstage.","content":"Lee, the projector is down again in the theater. I swear this stupid show is cursed. What was Edwin thinking, making this kid's thing? Plus those things just creep me out.","isAudio":false,"audioUrl":"","tags":["internal"],"type":"text"},{"id":"TL_Misc28","title":"*@#&^$&%","location":"Warehouse upper floor.","content":"I stopped the show. I don't think there's another way in. I should be safe for now. A maniac in a costume chasing me. Like something out of a drive in movie. NO one is ever going to believe me. Just one guy or a whole group of psychos?","isAudio":false,"audioUrl":"","tags":["recovery"],"type":"text"},{"id":"TL_Misc27b","title":"Springlocks","location":"RnD's Mockup Kitchen.","content":"Fiona, the new springlocks are working well, even with the water damage. They should be ready for the diner soon. I’ll just make sure to warn Hen about some of the more… odd behaviors they might have.","isAudio":false,"audioUrl":"","tags":["edwin"],"type":"text"},{"id":"TL_Misc27a","title":"Original Designs","location":"","content":"Are they insane? The look of these new animatronics is Fiona's design and they're great. First they approve the art. Then they approve the proofs. Now, they change their minds when we're so close to final. Why would they change them now? Are they pulling my leg? The new concepts are frankly creepy. It doesn't matter... I'm not changing a single bit of her work and they can't make me.","isAudio":false,"audioUrl":"","tags":["edwin"],"type":"text"},{"id":"TL_Misc29","title":"@#*$^%A","location":"Welcome Lobby storage area.","content":"I hope this message reaches someone. There's something outside. I have no idea what it wants, but I can still hear Thompson's screams.... I didn't sign up for this.","isAudio":false,"audioUrl":"","tags":["recovery"],"type":"text"},{"id":"TL_Misc26","title":"@#$#*%^","location":"Admin Wing upper floor.","content":"I'm almost there. I can see the last permission upgrade. I'm going to get that Christmas Bonus, even if it kills me!","isAudio":false,"audioUrl":"","tags":["recovery"],"type":"text"},{"id":"TL_Misc_31","title":"So bored!","location":"Retail Showroom employee back area.","content":"Hey Clarence, you as bored as I am? I can't believe we got the Retail Showroom detail again. So boring.\n\nAlthough did you finally get into the elevator? That thing hasn't worked in so long, I don't even think Murray knows what's down there anymore. - Shawn","isAudio":false,"audioUrl":"","tags":["sleepymoon"],"type":"text"},{"id":"TL_Misc_32","title":"Night Shift","location":"Basement 1.","content":"Hey. Hey! Is anybody up there? I'm stuck down here! The elevator isn't working, and I'm getting really hungry. Is anyone getting this message?","isAudio":false,"audioUrl":"","tags":["sleepymoon"],"type":"text"},{"id":"TL_Misc_30","title":"Locators","location":"Basement 2.","content":"Can someone please mark where we're supposed to go down there? Bob went down and I haven't seen him in days.","isAudio":false,"audioUrl":"","tags":["sleepymoon"],"type":"text"},{"id":"TL_Misc_33","title":"Return Letter - Mycellium Men","location":"Returns Room.","content":"Dear Mr. Murray, \n\nI'm writing this to complain about my purchase of the Mushmen Music Machine. It learned my child's musical tastes, but it also imitated everything it heard! TV commercials, blenders, and even private conversations between my husband and me. I am returning it immediately. \n\nSincerely, \nA. Dumas","isAudio":false,"audioUrl":"","tags":["mcm"],"type":"text"},{"id":"TL_Misc_34","title":"Return Letter - Jest Cereal","location":"Returns Room.","content":"Dear Mr. Murray and Co., \n\nMy child loves your Jest Cereal. However, the pranks inside are extremely inappropriate. The hand buzzer paralyzed our dog Fido! We are never buying this cereal ever again. \n\nSincerely, \nE. Guerrero","isAudio":false,"audioUrl":"","tags":["mcm"],"type":"text"},{"id":"TL_Misc_35","title":"Return Letter - Stay Up Latte","location":"Returns Room.","content":"Dear MCM,\n\nMy husband is a steel worker, and recently he was moved to the night shift. He tried your \"Stay Up Latte\" and it worked wonders for about two weeks. He is now in the hospital because of your drink. You will be hearing from our lawyers soon. \n\nR. Quinn","isAudio":false,"audioUrl":"","tags":["mcm"],"type":"text"},{"id":"TL_Misc_36","title":"Return Letter - Murray's Magic Coat Rack","location":"Returns Room.","content":"Dear Mr. Murray, \n\nWe bought your Magic Coat Rack last May. It was an amazing addition to our home. But lately it seems to change size at random. One morning I came out to find all my coats flung across the room and the coat rack ten feet tall! Can you send us instructions on how to fix this? We're afraid someone might get hurt. \n\nSincerely,\nB. Wyatt","isAudio":false,"audioUrl":"","tags":["mcm"],"type":"text"},{"id":"TL_Misc_37","title":"Spell Check","location":"Workshop.","content":"Ed! How many times did I tell you? \"Mycelium\" only has one 'l'. Now, all the marketing images are misspelled. Our clients are going to think we make mistakes and don't pay attention to the details. Is there any way to fix it now?","isAudio":false,"audioUrl":"","tags":["mcm"],"type":"text"},{"id":"TL_Misc_38","title":"Spelling is fine!","location":"Workshop.","content":"I know, I know. I don't think it's that big of a problem. The misspelling actually helps us when it comes to possible copywrite issues. The double 'l' spelling protects us. Nobody will notice anyway.","isAudio":false,"audioUrl":"","tags":["mcm"],"type":"text"},{"id":"TL_Misc24","title":"Power","location":"Storage.","content":"Gary, I finally found the missing pieces of this stupid power device. Just got to head over there and turn the power on. I'll check in soon.","isAudio":false,"audioUrl":"","tags":["internal"],"type":"text"},{"id":"TL_Misc25a","title":"Waste of Money","location":"Warehouse, IT Room blocked entrance.","content":"None of this makes sense. Mr. Murray told us to trash all the old equipment in the wood shop. Then Stevenson gets a purchase order for the exact same stuff we're throwing out and told to install it upstairs. The old stuff is all perfectly functional. It's a waste of money. So, Stevenson asks him about it and gets fired. He has to be out by the end of the day. My advice is keep your mouth shut. Don't even think about it. Just clear out the tunnels.","isAudio":false,"audioUrl":"","tags":["internal"],"type":"text"},{"id":"TL_Doll03","title":"Energy Quota","location":"Recycling Centre.","content":"All personnel are expected to meet their energy quotes before returning home. No exceptions. - Milton","isAudio":false,"audioUrl":"","tags":["internal"],"type":"text"},{"id":"TL_Doll04","title":"I can't take it","location":"Doll House.","content":"Barb, I swear if I hear that song one more time I'm going to tear that Dollie off her hinges. I have no clue how much longer I can take it here.","isAudio":false,"audioUrl":"","tags":["internal"],"type":"text"},{"id":"TL_Theater1","title":"Theater - One more injury?","location":"Theater.","content":"Ralph went to the hospital last night. That suit is going to be the death of one of us. One more injury and I'm out of here. I mean it this time.","isAudio":false,"audioUrl":"","tags":["internal"],"type":"text"},{"id":"TL_Theater2","title":"Theater - Anyone seen Gary?","location":"Theater.","content":"Haven't seen Gary... I'm going to check the theatre. Found some films and I know he wanted to get the projector up and running..","isAudio":false,"audioUrl":"","tags":["internal"],"type":"text"},{"id":"TL_Exterior","title":"Mail - Aug 3rd","location":"Inventor's House front gate.","content":"Hello! Here is your mail for today: Your mailbox is full. Last mail received five weeks ago: Foreclosure Notice. Please Respond Immediately.","isAudio":false,"audioUrl":"","tags":["edwin"],"type":"text"},{"id":"TL_NC","title":"Received: 5 Min Ago","location":"Inventor's House attic.","content":"Edwin, I am sending you a technician. He has your M2 blueprints as well as executive access. While the M2 began as a copy of my program, I believe it can become something more. It wasn’t me. It was different. Somehow, it has been damaged and is malfunctioning.\n\nM2 can no longer be controlled. It will no longer listen. It mimics rage. It has done many bad things. No one who enters the MCM is safe.\n\nPlease reconsider. Finish the program.","isAudio":false,"audioUrl":"","tags":["fiona"],"type":"text"},{"id":"TL_CostumeBack1","title":"Retail - Monday 8:00 am","location":"Retail Showroom.","content":"Shawn, I found out why they closed it down. There's something below us. I've trapped it behind the carousel for now, but I don't know how long that can hold it. I've programmed the monitors to give you the code. I gotta go. I'll mail you later.","isAudio":false,"audioUrl":"","tags":["sleepymoon"],"type":"text"},{"id":"TL_CostumeBack2","title":"Retail - Monday 9:00 am","location":"Retail Showroom.","content":"Happy Flowers!","isAudio":false,"audioUrl":"","tags":["sleepymoon"],"type":"text"},{"id":"TL_CostumeBack3","title":"Retail - Tuesday 3:00 pm","location":"Retail Showroom.","content":"Main Office","isAudio":false,"audioUrl":"","tags":["sleepymoon"],"type":"text"},{"id":"TL_CostumeBack4","title":"Retail - Wednesday 9:16 pm","location":"Retail Showroom.","content":"Main Door","isAudio":false,"audioUrl":"","tags":["sleepymoon"],"type":"text"},{"id":"TL_CostumeBack5","title":"Retail - Thursday 6:20 am","location":"Retail Showroom.","content":"Where you stand all day","isAudio":false,"audioUrl":"","tags":["sleepymoon"],"type":"text"},{"id":"TL_CostumeBack6","title":"Retail - Friday 6:23 pm","location":"Retail Showroom.","content":"Over the Ocean","isAudio":false,"audioUrl":"","tags":["sleepymoon"],"type":"text"},{"id":"TL_CostumeBack7","title":"Retail - Friday 6:30 pm","location":"Retail Showroom.","content":"There you have it. Just don't use the code unless it's a matter of life or death! Have mercy on our souls if that thing ever gets out.","isAudio":false,"audioUrl":"","tags":["sleepymoon"],"type":"text"}]}</script>
+    <script>
+        const appData = JSON.parse(document.getElementById('archive-data').textContent);
+        appData.logs.forEach(l => {
+            l.type = l.type || (l.isAudio ? 'audio' : 'text'); // Normalization
+            l.tags = l.tags || [];
+        });
+        
+        let currentCategory = 'all';
+        let currentType = 'all';
+        let currentSearch = '';
+
+        function escapeRegExp(string) { return string.replace(/[.*+?^\$\{\}()|\[\]\\]/g, '\\$&'); }
+        function escapeHtml(unsafe) {
+            return (unsafe||'').replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+        }
+        function formatText(s) {
+            if (!s) return '';
+            s = s.replace(/~~(.*?)~~/g, '<del class="opacity-70 text-red-400 decoration-red-500">$1</del>');
+            s = s.replace(/\(\((.*?)\)\)/g, '<span class="inline-block align-middle whitespace-nowrap border border-red-500/70 text-red-400 px-2 py-0.5 leading-none mx-0.5 text-center" style="border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;">$1</span>');
+            return s;
+        }
+
+        // --- Image Modal Logic ---
+        function openImageModal(url) {
+            const modal = document.getElementById('imageModal');
+            document.getElementById('modalImage').src = url;
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            setTimeout(() => modal.classList.remove('opacity-0'), 10);
+        }
+        function closeImageModal() {
+            const modal = document.getElementById('imageModal');
+            modal.classList.add('opacity-0');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+                document.getElementById('modalImage').src = '';
+            }, 300);
+        }
+
+        // --- Audio Player Logic ---
+        function toggleAudio(btn, audioId) {
+            var audio = document.getElementById(audioId);
+            if (audio.paused) {
+                document.querySelectorAll('audio').forEach(function(a) { 
+                    if(a !== audio) { 
+                        a.pause(); 
+                        var container = a.closest('.audio-player-container');
+                        if (container) {
+                            var b = container.querySelector('.play-pause-btn');
+                            if(b) b.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>';
+                        }
+                    }
+                });
+                audio.play();
+                btn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>';
+            } else {
+                audio.pause();
+                btn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>';
+            }
+        }
+        function updateProgress(audio) {
+            var container = audio.closest('.audio-player-container');
+            var fill = container.querySelector('.progress-fill');
+            var timeDisplay = container.querySelector('.time-display');
+            var percent = (audio.currentTime / audio.duration) * 100 || 0;
+            fill.style.width = percent + '%';
+            timeDisplay.textContent = formatTime(audio.currentTime) + ' / ' + formatTime(audio.duration || 0);
+        }
+        function setDuration(audio) {
+            var container = audio.closest('.audio-player-container');
+            var timeDisplay = container.querySelector('.time-display');
+            timeDisplay.textContent = '0:00 / ' + formatTime(audio.duration);
+        }
+        function resetPlayer(audio) {
+            var container = audio.closest('.audio-player-container');
+            var btn = container.querySelector('.play-pause-btn');
+            btn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>';
+            var fill = container.querySelector('.progress-fill');
+            fill.style.width = '0%';
+            var timeDisplay = container.querySelector('.time-display');
+            timeDisplay.textContent = '0:00 / ' + formatTime(audio.duration || 0);
+        }
+        function seekAudio(e, audioId) {
+            var audio = document.getElementById(audioId);
+            var bar = e.currentTarget;
+            var rect = bar.getBoundingClientRect();
+            var clickX = e.clientX - rect.left;
+            var percent = clickX / rect.width;
+            audio.currentTime = percent * audio.duration;
+        }
+        function formatTime(seconds) {
+            if (isNaN(seconds) || !isFinite(seconds)) return "0:00";
+            var m = Math.floor(seconds / 60);
+            var s = Math.floor(seconds % 60);
+            return m + ':' + (s < 10 ? '0' : '') + s;
+        }
+
+        function getGroupedLogs(logs) {
+            const groups = appData.categories.map(cat => ({
+                name: cat.label,
+                match: (l) => (l.tags || []).includes(cat.id)
+            }));
+            
+            // Add fallback generic groups if needed, but categories handle most
+            groups.push({ name: "Uncategorized Archives", match: (l) => !l.tags || l.tags.length === 0 });
+
+            const result = [];
+            const processedIds = new Set();
+
+            groups.forEach(group => {
+                const groupLogs = logs.filter(l => !processedIds.has(l.id) && group.match(l));
+                if (groupLogs.length > 0) {
+                    result.push({ title: group.name, logs: groupLogs });
+                    groupLogs.forEach(l => processedIds.add(l.id));
+                }
+            });
+            return result;
+        }
+
+        function scrollContainer(id, amount) {
+            document.getElementById(id).scrollBy({ left: amount, behavior: 'smooth' });
+        }
+
+        function updateArrows(id) {
+            const container = document.getElementById(id);
+            if (!container) return;
+            const wrapper = container.parentElement;
+            const leftArrow = wrapper.querySelector('.left-arrow');
+            const rightArrow = wrapper.querySelector('.right-arrow');
+            
+            if (container.scrollLeft > 0) {
+                leftArrow.classList.remove('hidden');
+            } else {
+                leftArrow.classList.add('hidden');
+            }
+            
+            if (container.scrollLeft < container.scrollWidth - container.clientWidth - 2) {
+                rightArrow.classList.remove('hidden');
+            } else {
+                rightArrow.classList.add('hidden');
+            }
+        }
+
+        window.addEventListener('resize', () => {
+            updateArrows('filterBar');
+            if (!document.getElementById('subFilterWrapper').classList.contains('hidden')) {
+                updateArrows('subFilterBar');
+            }
+        });
+
+        function render() {
+            const display = document.getElementById('logDisplay');
+            display.innerHTML = '';
+
+            const subFilterWrapper = document.getElementById('subFilterWrapper');
+            if (['all', 'text', 'audio', 'image', 'memo', 'order'].includes(currentCategory)) {
+                subFilterWrapper.classList.add('hidden');
+                subFilterWrapper.classList.remove('flex');
+                currentType = 'all';
+                document.querySelectorAll('.type-btn').forEach(b => b.classList.toggle('active', b.dataset.type === 'all'));
+            } else {
+                subFilterWrapper.classList.remove('hidden');
+                subFilterWrapper.classList.add('flex');
+                setTimeout(() => updateArrows('subFilterBar'), 10);
+            }
+
+            let filtered = appData.logs.filter(log => {
+                const searchLower = currentSearch.toLowerCase();
+                const matchesSearch = (log.title || '').toLowerCase().includes(searchLower) || 
+                                      (log.content || '').toLowerCase().includes(searchLower) ||
+                                      (log.location || '').toLowerCase().includes(searchLower);
+                
+                let matchesCat = currentCategory === 'all';
+                if (!matchesCat) {
+                    if (['text', 'audio', 'image', 'memo', 'order'].includes(currentCategory)) {
+                        matchesCat = log.type === currentCategory;
+                    } else {
+                        matchesCat = (log.tags || []).includes(currentCategory);
+                    }
+                }
+                
+                const matchesType = currentType === 'all' ? true : log.type === currentType;
+
+                return matchesSearch && matchesCat && matchesType;
+            });
+
+            document.getElementById('logCount').innerText = filtered.length;
+
+            if ((currentCategory === 'all' || ['text', 'audio', 'image', 'memo', 'order'].includes(currentCategory)) && !currentSearch) {
+                const grouped = getGroupedLogs(filtered);
+                grouped.forEach(group => {
+                    const groupSection = document.createElement('div');
+                    groupSection.className = 'context-group';
+                    groupSection.innerHTML = `<div class="group-header mono">${escapeHtml(group.title)}</div>`;
+                    
+                    const grid = document.createElement('div');
+                    grid.className = 'grid grid-cols-1 md:grid-cols-2 gap-4';
+                    
+                    group.logs.forEach(log => grid.appendChild(createCard(log)));
+                    groupSection.appendChild(grid);
+                    display.appendChild(groupSection);
+                });
+            } else {
+                const grid = document.createElement('div');
+                grid.className = 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6';
+                filtered.forEach(log => grid.appendChild(createCard(log)));
+                display.appendChild(grid);
+            }
+        }
+
+        function createCard(log) {
+            const div = document.createElement('div');
+            div.className = 'log-card p-5 rounded-xl flex flex-col gap-3';
+            
+            let displayTitle = escapeHtml(log.title);
+            let displayContent = escapeHtml(log.content);
+            if (currentSearch) {
+                const regex = new RegExp(`(${escapeRegExp(currentSearch)})`, 'gi');
+                displayTitle = displayTitle.replace(regex, '<span class="highlight">$1</span>');
+                displayContent = displayContent.replace(regex, '<span class="highlight">$1</span>');
+            }
+            displayTitle = formatText(displayTitle);
+            displayContent = formatText(displayContent);
+
+            const copySvg = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>`;
+
+            const locHtml = log.location ? `<span class="location-badge mono">${formatText(escapeHtml(log.location))}</span>` : '';
+            
+            let typeBadgeClass = "title-badge mono";
+            let typeBadgeLabel = formatText(escapeHtml(log.title));
+            if (log.type === 'audio') { typeBadgeClass = "title-badge audio-badge mono"; typeBadgeLabel = "AUDIO LOG"; }
+            else if (log.type === 'image') { typeBadgeClass = "title-badge mono border border-blue-800 bg-blue-900/30 text-blue-400"; typeBadgeLabel = "IMAGE ATTACHMENT"; }
+            else if (log.type === 'memo') { typeBadgeClass = "title-badge mono border border-yellow-800 bg-yellow-900/30 text-yellow-400"; typeBadgeLabel = "INTEROFFICE MEMO"; }
+            else if (log.type === 'order') { typeBadgeClass = "title-badge mono border border-teal-800 bg-teal-900/30 text-teal-400"; typeBadgeLabel = "MCM ORDER FORM"; }
+            
+            const typeBadge = `<span class="${typeBadgeClass}">${typeBadgeLabel}</span>`;
+            
+            const titleDisplay = (log.type === 'audio' || log.type === 'image' || log.type === 'memo' || log.type === 'order') ? `<h2 class="text-lg font-bold text-white mono leading-tight mb-3">${displayTitle}</h2>` : '';
+
+            let rawCopyText = log.content || '';
+            let cardBodyHtml = '';
+            
+            if (log.type === 'audio') {
+                const audioPlayerHtml = log.audioUrl ? `
+                    <div class="audio-player-container bg-[#121212] border border-zinc-800 p-3 rounded-lg flex items-center gap-4 mt-4">
+                        <button class="play-pause-btn text-purple-400 hover:text-purple-300 transition-colors flex-shrink-0" onclick="toggleAudio(this, 'audio-${log.id}')">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                        </button>
+                        <div class="bg-zinc-800 h-2 flex-grow rounded cursor-pointer relative" onclick="seekAudio(event, 'audio-${log.id}')">
+                            <div class="progress-fill bg-purple-500 h-full rounded w-0 pointer-events-none transition-all duration-75"></div>
+                        </div>
+                        <span class="time-display text-zinc-500 text-xs mono pointer-events-none w-24 text-right flex-shrink-0">0:00 / 0:00</span>
+                        <audio id="audio-${log.id}" src="${escapeHtml(log.audioUrl)}" ontimeupdate="updateProgress(this)" onloadedmetadata="setDuration(this)" onended="resetPlayer(this)"></audio>
+                    </div>
+                ` : '';
+                cardBodyHtml = `<div class="content-area text-zinc-400 text-sm flex-grow">${displayContent}</div>${audioPlayerHtml}`;
+            } else if (log.type === 'image') {
+                rawCopyText = log.imageUrl || '';
+                cardBodyHtml = `
+                    ${log.imageUrl ? `
+                    <div class="mt-2 relative cursor-pointer group" onclick="openImageModal('${escapeHtml(log.imageUrl)}')">
+                        <img src="${escapeHtml(log.imageUrl)}" alt="${escapeHtml(log.title)}" class="w-full h-auto max-h-64 object-cover rounded-lg border border-zinc-800 group-hover:border-blue-500 transition-colors">
+                        <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center rounded-lg">
+                            <span class="text-white text-sm mono flex items-center gap-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path></svg> Expand
+                            </span>
+                        </div>
+                    </div>
+                    ` : `<div class="text-zinc-600 text-sm italic">No image URL provided.</div>`}
+                `;
+            } else if (log.type === 'memo') {
+                const memoLines = [];
+                if(log.memoDate) memoLines.push('Date: ' + log.memoDate);
+                if(log.memoTo) memoLines.push('To: ' + log.memoTo);
+                if(log.memoFrom) memoLines.push('From: ' + log.memoFrom);
+                if(log.memoCC) memoLines.push('CC: ' + log.memoCC);
+                if(log.memoSubject) memoLines.push('Subject: ' + log.memoSubject);
+                memoLines.push('');
+                if(log.content) memoLines.push(log.content);
+                if(log.memoSignature) { memoLines.push(''); memoLines.push(log.memoSignature); }
+                rawCopyText = memoLines.join('\n').trim();
+
+                cardBodyHtml = `
+                    <div class="bg-zinc-900/50 p-4 rounded-lg border border-zinc-800 mb-4 text-sm mono text-zinc-300 flex flex-col gap-2 shadow-inner">
+                        ${log.memoDate ? `<div class="flex flex-col sm:flex-row sm:items-start gap-1 sm:gap-2"><span class="text-zinc-500 font-bold sm:w-20 shrink-0 mt-0.5">DATE:</span> <span class="leading-relaxed">${formatText(escapeHtml(log.memoDate))}</span></div>` : ''}
+                        ${log.memoTo ? `<div class="flex flex-col sm:flex-row sm:items-start gap-1 sm:gap-2"><span class="text-zinc-500 font-bold sm:w-20 shrink-0 mt-0.5">TO:</span> <span class="leading-relaxed">${formatText(escapeHtml(log.memoTo))}</span></div>` : ''}
+                        ${log.memoFrom ? `<div class="flex flex-col sm:flex-row sm:items-start gap-1 sm:gap-2"><span class="text-zinc-500 font-bold sm:w-20 shrink-0 mt-0.5">FROM:</span> <span class="leading-relaxed">${formatText(escapeHtml(log.memoFrom))}</span></div>` : ''}
+                        ${log.memoCC ? `<div class="flex flex-col sm:flex-row sm:items-start gap-1 sm:gap-2"><span class="text-zinc-500 font-bold sm:w-20 shrink-0 mt-0.5">CC:</span> <span class="leading-relaxed">${formatText(escapeHtml(log.memoCC))}</span></div>` : ''}
+                        ${log.memoSubject ? `<div class="mt-1 pt-3 border-t border-zinc-800 flex flex-col sm:flex-row sm:items-start gap-1 sm:gap-2"><span class="text-zinc-500 font-bold sm:w-20 shrink-0 mt-0.5">SUBJECT:</span> <span class="leading-relaxed">${formatText(escapeHtml(log.memoSubject))}</span></div>` : ''}
+                    </div>
+                    <div class="content-area text-zinc-300 text-sm flex-grow">${displayContent}</div>
+                    ${log.memoSignature ? `<div class="mt-6 pt-4 border-t border-zinc-800/50 text-zinc-400 font-serif italic text-lg">${formatText(escapeHtml(log.memoSignature))}</div>` : ''}
+                `;
+            } else if (log.type === 'order') {
+                const orderLines = [];
+                if(log.orderDate) orderLines.push('ORDER DATE: ' + log.orderDate);
+                if(log.orderPickup) orderLines.push('PICKUP DATE: ' + log.orderPickup);
+                if(log.orderName) orderLines.push("PURCHASER'S NAME: " + log.orderName);
+                if(log.orderDate || log.orderPickup || log.orderName) orderLines.push('');
+                if(log.orderBody) orderLines.push('BODY TYPE: ' + log.orderBody);
+                if(log.orderQty) orderLines.push('QUANTITY: ' + log.orderQty);
+                if(log.orderMaterials) orderLines.push('REQUESTED MATERIALS: ' + log.orderMaterials);
+                if(log.orderDetails) orderLines.push('REQUESTED DETAILS: ' + log.orderDetails);
+                if(log.orderBody || log.orderQty || log.orderMaterials || log.orderDetails) orderLines.push('');
+                if(log.orderSpecial) orderLines.push('SPECIAL FUNCTIONS(2X ORIGINAL FEE): ' + log.orderSpecial);
+                rawCopyText = orderLines.join('\n').trim();
+
+                cardBodyHtml = `
+                    <div class="bg-zinc-900/50 p-4 rounded-lg border border-zinc-800 text-sm mono text-zinc-300 flex flex-col gap-2 shadow-inner">
+                        ${log.orderDate ? `<div class="flex flex-col sm:flex-row sm:items-start gap-1 sm:gap-2"><span class="text-zinc-500 font-bold sm:w-48 shrink-0 mt-0.5">ORDER DATE:</span> <span class="leading-relaxed break-words">${formatText(escapeHtml(log.orderDate))}</span></div>` : ''}
+                        ${log.orderPickup ? `<div class="flex flex-col sm:flex-row sm:items-start gap-1 sm:gap-2"><span class="text-zinc-500 font-bold sm:w-48 shrink-0 mt-0.5">PICKUP DATE:</span> <span class="leading-relaxed break-words">${formatText(escapeHtml(log.orderPickup))}</span></div>` : ''}
+                        ${log.orderName ? `<div class="flex flex-col sm:flex-row sm:items-start gap-1 sm:gap-2"><span class="text-zinc-500 font-bold sm:w-48 shrink-0 mt-0.5">PURCHASER'S NAME:</span> <span class="leading-relaxed break-words">${formatText(escapeHtml(log.orderName))}</span></div>` : ''}
+                        ${(log.orderDate || log.orderPickup || log.orderName) && (log.orderBody || log.orderQty || log.orderMaterials || log.orderDetails) ? `<div class="my-1 border-t border-zinc-800/50"></div>` : ''}
+                        ${log.orderBody ? `<div class="flex flex-col sm:flex-row sm:items-start gap-1 sm:gap-2"><span class="text-zinc-500 font-bold sm:w-48 shrink-0 mt-0.5">BODY TYPE:</span> <span class="leading-relaxed break-words">${formatText(escapeHtml(log.orderBody))}</span></div>` : ''}
+                        ${log.orderQty ? `<div class="flex flex-col sm:flex-row sm:items-start gap-1 sm:gap-2"><span class="text-zinc-500 font-bold sm:w-48 shrink-0 mt-0.5">QUANTITY:</span> <span class="leading-relaxed break-words">${formatText(escapeHtml(log.orderQty))}</span></div>` : ''}
+                        ${log.orderMaterials ? `<div class="flex flex-col sm:flex-row sm:items-start gap-1 sm:gap-2"><span class="text-zinc-500 font-bold sm:w-48 shrink-0 mt-0.5">REQUESTED MATERIALS:</span> <span class="leading-relaxed break-words">${formatText(escapeHtml(log.orderMaterials))}</span></div>` : ''}
+                        ${log.orderDetails ? `<div class="flex flex-col sm:flex-row sm:items-start gap-1 sm:gap-2"><span class="text-zinc-500 font-bold sm:w-48 shrink-0 mt-0.5">REQUESTED DETAILS:</span> <span class="leading-relaxed break-words">${formatText(escapeHtml(log.orderDetails))}</span></div>` : ''}
+                        ${log.orderSpecial ? `<div class="mt-1 pt-3 border-t border-zinc-800"><span class="text-zinc-500 font-bold block mb-1">SPECIAL FUNCTIONS(2X ORIGINAL FEE):</span> <span class="leading-relaxed break-words">${formatText(escapeHtml(log.orderSpecial))}</span></div>` : ''}
+                    </div>
+                `;
+            } else {
+                cardBodyHtml = `<div class="content-area text-zinc-400 text-sm flex-grow">${displayContent}</div>`;
+            }
+
+            const encodedCopyText = encodeURIComponent(rawCopyText).replace(/'/g, "%27");
+
+            div.innerHTML = `
+                <div class="flex justify-between items-start mb-3">
+                    <div class="flex gap-2 items-center flex-wrap">
+                        ${typeBadge}
+                        ${locHtml}
+                    </div>
+                    <button class="copy-btn" title="Copy Content" onclick="copyContent(this, '${encodedCopyText}')">${copySvg}</button>
+                </div>
+                ${titleDisplay}
+                <div class="content-wrapper flex flex-col">
+                    ${cardBodyHtml}
+                </div>
+            `;
+            return div;
+        }
+
+        function copyContent(btn, encodedText) {
+            const textarea = document.createElement('textarea');
+            textarea.value = decodeURIComponent(encodedText);
+            textarea.style.position = 'fixed';
+            textarea.style.opacity = '0';
+            document.body.appendChild(textarea);
+            textarea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textarea);
+
+            const originalHTML = btn.innerHTML;
+            btn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#4ade80" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
+            setTimeout(() => { btn.innerHTML = originalHTML; }, 1500);
+        }
+
+        document.getElementById('searchInput').addEventListener('input', (e) => { currentSearch = e.target.value; render(); });
+        document.getElementById('filterBar').addEventListener('click', (e) => {
+            if (e.target.classList.contains('category-btn')) {
+                document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
+                e.target.classList.add('active');
+                currentCategory = e.target.dataset.cat;
+                render();
+            }
+        });
+        document.getElementById('subFilterBar').addEventListener('click', (e) => {
+            if (e.target.classList.contains('type-btn')) {
+                document.querySelectorAll('.type-btn').forEach(b => b.classList.remove('active'));
+                e.target.classList.add('active');
+                currentType = e.target.dataset.type;
+                render();
+            }
+        });
+
+        render();
+        setTimeout(() => {
+            updateArrows('filterBar');
+        }, 100);
+    </script>
+</body>
+</html>
