@@ -75,6 +75,8 @@
         ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-track { background: #0a0a0a; }
         ::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
+        .scrollbar-hide::-webkit-scrollbar { display: none; }
+        .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
         
         .scanline {
             width: 100%;
@@ -1040,8 +1042,7 @@
                 match: (l) => (l.tags || []).includes(cat.id)
             }));
             
-            // Add fallback generic groups if needed, but categories handle most
-            groups.push({ name: "Uncategorized Archives", match: (l) => !l.tags || l.tags.length === 0 });
+            groups.push({ name: "Uncategorized Archives", match: (l) => true });
 
             const result = [];
             const processedIds = new Set();
@@ -1067,16 +1068,18 @@
             const leftArrow = wrapper.querySelector('.left-arrow');
             const rightArrow = wrapper.querySelector('.right-arrow');
             
-            if (container.scrollLeft > 0) {
-                leftArrow.classList.remove('hidden');
-            } else {
-                leftArrow.classList.add('hidden');
-            }
-            
-            if (container.scrollLeft < container.scrollWidth - container.clientWidth - 2) {
-                rightArrow.classList.remove('hidden');
-            } else {
-                rightArrow.classList.add('hidden');
+            if (leftArrow && rightArrow) {
+                if (container.scrollLeft > 0) {
+                    leftArrow.classList.remove('hidden');
+                } else {
+                    leftArrow.classList.add('hidden');
+                }
+                
+                if (container.scrollLeft < container.scrollWidth - container.clientWidth - 2) {
+                    rightArrow.classList.remove('hidden');
+                } else {
+                    rightArrow.classList.add('hidden');
+                }
             }
         }
 
@@ -1219,17 +1222,6 @@
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path></svg> Expand
                                 </span>
                             </div>
-                        </div>
-                    \`;
-                } else {
-                    const slidesHtml = urls.map((url, i) => \`
-                        <div class="w-full shrink-0 relative cursor-pointer group snap-center" onclick="openImageModal('\${escapeHtml(url)}')">
-                            <img src="\${escapeHtml(url)}" alt="\${escapeHtml(log.title)} - \${i+1}" class="w-full h-auto max-h-64 object-cover rounded-lg border border-zinc-800 group-hover:border-blue-500 transition-colors">
-                            <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center rounded-lg">
-                                <span class="text-white text-sm mono flex items-center gap-2">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path></svg> Expand
-                                </span>
-                            </div>
                             <div class="absolute bottom-2 right-2 bg-black/70 text-zinc-300 text-[10px] px-2 py-1 rounded mono shadow backdrop-blur-sm">\${i+1} / \${urls.length}</div>
                         </div>
                     \`).join('');
@@ -1359,7 +1351,7 @@
         }, 100);
     ${scriptEnd}
 </body>
-</html>`;
+</html>`; // CLOSE TEMPLATE
 
             // Download Trigger
             const blob = new Blob([template], { type: 'text/html' });
