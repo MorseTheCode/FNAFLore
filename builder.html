@@ -437,6 +437,60 @@
             }
         }
 
+        function addLogImage(id) {
+            const input = document.getElementById(`new-img-url-${id}`);
+            const url = input.value.trim();
+            if (url) {
+                const log = appData.logs.find(l => l.id === id);
+                if (log) {
+                    if (!log.imageUrls) log.imageUrls = [];
+                    log.imageUrls = log.imageUrls.filter(u => u.trim() !== '');
+                    log.imageUrls.push(url);
+                    renderLogs();
+                }
+            }
+        }
+
+        function uploadLogImages(id, files) {
+            const log = appData.logs.find(l => l.id === id);
+            if (!log) return;
+            if (!log.imageUrls) log.imageUrls = [];
+            log.imageUrls = log.imageUrls.filter(u => u.trim() !== '');
+
+            let loadedCount = 0;
+            const total = files.length;
+
+            Array.from(files).forEach(file => {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    log.imageUrls.push(e.target.result);
+                    loadedCount++;
+                    if (loadedCount === total) renderLogs();
+                };
+                reader.readAsDataURL(file);
+            });
+        }
+
+        function moveLogImage(id, index, direction) {
+            const log = appData.logs.find(l => l.id === id);
+            if (!log || !log.imageUrls) return;
+            const newIndex = index + direction;
+            if (newIndex >= 0 && newIndex < log.imageUrls.length) {
+                const temp = log.imageUrls[index];
+                log.imageUrls[index] = log.imageUrls[newIndex];
+                log.imageUrls[newIndex] = temp;
+                renderLogs();
+            }
+        }
+
+        function removeLogImage(id, index) {
+            const log = appData.logs.find(l => l.id === id);
+            if (!log || !log.imageUrls) return;
+            log.imageUrls.splice(index, 1);
+            if (log.imageUrls.length === 0) log.imageUrls = [""];
+            renderLogs();
+        }
+
         function renderLogs() {
             const container = document.getElementById('logsContainer');
             container.innerHTML = '';
@@ -475,11 +529,39 @@
                         </div>
                     `;
                 } else if (log.type === 'image') {
-                    const urlsStr = (log.imageUrls || (log.imageUrl ? [log.imageUrl] : [])).join('\n');
+                    const urls = (log.imageUrls || (log.imageUrl ? [log.imageUrl] : [])).filter(u => u.trim() !== '');
+                    let galleryHtml = '<div class="flex gap-2 overflow-x-auto pb-2 mt-2 scrollbar-hide">';
+                    urls.forEach((url, i) => {
+                        galleryHtml += `
+                            <div class="relative shrink-0 w-24 h-24 border border-zinc-700 rounded bg-zinc-900 group">
+                                <img src="${escapeHtmlVal(url)}" class="w-full h-full object-contain rounded">
+                                <div class="absolute inset-0 bg-black/70 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-2 rounded">
+                                    <div class="flex gap-2">
+                                        <button class="w-6 h-6 flex items-center justify-center bg-zinc-800 hover:bg-zinc-600 rounded text-xs text-white" onclick="moveLogImage('${log.id}', ${i}, -1)" title="Move Left">◀</button>
+                                        <button class="w-6 h-6 flex items-center justify-center bg-zinc-800 hover:bg-zinc-600 rounded text-xs text-white" onclick="moveLogImage('${log.id}', ${i}, 1)" title="Move Right">▶</button>
+                                    </div>
+                                    <button class="px-2 py-0.5 bg-red-900/80 hover:bg-red-700 rounded text-[10px] uppercase text-white font-bold" onclick="removeLogImage('${log.id}', ${i})">Remove</button>
+                                </div>
+                            </div>
+                        `;
+                    });
+                    if (urls.length === 0) {
+                        galleryHtml += '<div class="text-zinc-500 text-xs italic py-4">No images added. Add a URL or upload files.</div>';
+                    }
+                    galleryHtml += '</div>';
+
                     dynamicFieldsHtml = `
                         <div class="mt-2 border-t border-zinc-800/50 pt-3">
-                            <label class="block text-blue-400 text-[10px] uppercase mb-1">Image URLs (One per line)</label>
-                            <textarea class="input-field min-h-[80px] resize-y border-blue-900/30 focus:border-blue-500" placeholder="https://example.com/img1.jpg&#10;https://example.com/img2.png" oninput="updateLog('${log.id}', 'imageUrls', this.value.split('\\n'))">${escapeHtmlVal(urlsStr)}</textarea>
+                            <label class="block text-blue-400 text-[10px] uppercase mb-1">Image Gallery</label>
+                            <div class="flex flex-col sm:flex-row gap-2 mb-2 items-stretch sm:items-center">
+                                <input type="text" id="new-img-url-${log.id}" class="input-field border-blue-900/30 focus:border-blue-500 py-1.5 text-xs flex-grow" placeholder="Paste image URL here...">
+                                <button class="btn btn-secondary py-1.5 px-3 text-xs whitespace-nowrap" onclick="addLogImage('${log.id}')">Add URL</button>
+                                <label class="btn btn-primary py-1.5 px-3 text-xs whitespace-nowrap cursor-pointer mb-0 text-center">
+                                    Upload Local Files
+                                    <input type="file" multiple accept="image/*" class="hidden" onchange="uploadLogImages('${log.id}', this.files)">
+                                </label>
+                            </div>
+                            ${galleryHtml}
                         </div>
                     `;
                 } else if (log.type === 'memo') {
@@ -1114,7 +1196,18 @@
                 } else if (urls.length === 1) {
                     cardBodyHtml = \`
                         <div class="mt-2 relative cursor-pointer group" onclick="openImageModal('\${escapeHtml(urls[0])}')">
-                            <img src="\${escapeHtml(urls[0])}" alt="\${escapeHtml(log.title)}" class="w-full h-auto max-h-64 object-cover rounded-lg border border-zinc-800 group-hover:border-blue-500 transition-colors">
+                            <img src="\${escapeHtml(urls[0])}" alt="\${escapeHtml(log.title)}" class="w-full h-auto max-h-64 object-contain rounded-lg border border-zinc-800 group-hover:border-blue-500 transition-colors">
+                            <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center rounded-lg">
+                                <span class="text-white text-sm mono flex items-center gap-2">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path></svg> Expand
+                                </span>
+                            </div>
+                        </div>
+                    \`;
+                } else {
+                    const slidesHtml = urls.map((url, i) => \`
+                        <div class="w-full shrink-0 relative cursor-pointer group snap-center" onclick="openImageModal('\${escapeHtml(url)}')">
+                            <img src="\${escapeHtml(url)}" alt="\${escapeHtml(log.title)} - \${i+1}" class="w-full h-auto max-h-64 object-contain rounded-lg border border-zinc-800 group-hover:border-blue-500 transition-colors">
                             <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center rounded-lg">
                                 <span class="text-white text-sm mono flex items-center gap-2">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path></svg> Expand
