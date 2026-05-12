@@ -299,6 +299,7 @@
                 isAudio: false,
                 audioUrl: "",
                 imageUrl: "",
+                imageUrls: [""],
                 memoDate: "",
                 memoTo: "",
                 memoFrom: "",
@@ -474,10 +475,11 @@
                         </div>
                     `;
                 } else if (log.type === 'image') {
+                    const urlsStr = (log.imageUrls || (log.imageUrl ? [log.imageUrl] : [])).join('\n');
                     dynamicFieldsHtml = `
                         <div class="mt-2 border-t border-zinc-800/50 pt-3">
-                            <label class="block text-blue-400 text-[10px] uppercase mb-1">Image URL</label>
-                            <input type="text" class="input-field border-blue-900/30 focus:border-blue-500" value="${escapeHtmlVal(log.imageUrl)}" placeholder="e.g. https://example.com/image.jpg" oninput="updateLog('${log.id}', 'imageUrl', this.value)">
+                            <label class="block text-blue-400 text-[10px] uppercase mb-1">Image URLs (One per line)</label>
+                            <textarea class="input-field min-h-[80px] resize-y border-blue-900/30 focus:border-blue-500" placeholder="https://example.com/img1.jpg&#10;https://example.com/img2.png" oninput="updateLog('${log.id}', 'imageUrls', this.value.split('\\n'))">${escapeHtmlVal(urlsStr)}</textarea>
                         </div>
                     `;
                 } else if (log.type === 'memo') {
@@ -586,6 +588,8 @@
                     appData.logs.forEach(l => {
                         l.type = l.type || (l.isAudio ? 'audio' : 'text'); // Normalization
                         l.tags = l.tags || [];
+                        if (l.imageUrl && !l.imageUrls) l.imageUrls = [l.imageUrl];
+                        if (!l.imageUrls) l.imageUrls = [""];
                     });
                     document.getElementById('pageHeader').value = appData.header;
                     document.getElementById('pageSubtitle').value = appData.subtitle;
@@ -658,7 +662,7 @@
                     legacyAudio.forEach((l, i) => {
                         appData.logs.push({
                             id: `AL_${Date.now()}_${i}`, title: l.title || '', location: l.location || '',
-                            content: l.content || '', type: 'audio', isAudio: true, audioUrl: l.audioUrl || '', tags: l.tags && l.tags.length > 0 ? l.tags : recoverTags(l)
+                            content: l.content || '', type: 'audio', isAudio: true, audioUrl: l.audioUrl || '', imageUrls: [""], tags: l.tags && l.tags.length > 0 ? l.tags : recoverTags(l)
                         });
                     });
                 }
@@ -666,7 +670,7 @@
                     legacyText.forEach((l, i) => {
                         appData.logs.push({
                             id: l.id || `TL_${Date.now()}_${i}`, title: l.title || '', location: l.location || '',
-                            content: l.content || '', type: 'text', isAudio: false, audioUrl: '', tags: l.tags && l.tags.length > 0 ? l.tags : recoverTags(l)
+                            content: l.content || '', type: 'text', isAudio: false, audioUrl: '', imageUrls: [""], tags: l.tags && l.tags.length > 0 ? l.tags : recoverTags(l)
                         });
                     });
                 }
@@ -700,6 +704,8 @@
                     log.title = generateShiftName();
                 }
                 log.tags = log.tags || [];
+                if (log.imageUrl && !log.imageUrls) log.imageUrls = [log.imageUrl];
+                if (!log.imageUrls) log.imageUrls = [""];
             });
 
             // Prevent script tags inside the JSON from breaking the HTML parser
@@ -845,6 +851,8 @@
         appData.logs.forEach(l => {
             l.type = l.type || (l.isAudio ? 'audio' : 'text'); // Normalization
             l.tags = l.tags || [];
+            if (l.imageUrl && !l.imageUrls) l.imageUrls = [l.imageUrl];
+            if (!l.imageUrls) l.imageUrls = [""];
         });
         
         let currentCategory = 'all';
@@ -1098,19 +1106,49 @@
                 \` : '';
                 cardBodyHtml = \`<div class="content-area text-zinc-400 text-sm flex-grow">\${displayContent}</div>\${audioPlayerHtml}\`;
             } else if (log.type === 'image') {
-                rawCopyText = log.imageUrl || '';
-                cardBodyHtml = \`
-                    \${log.imageUrl ? \`
-                    <div class="mt-2 relative cursor-pointer group" onclick="openImageModal('\${escapeHtml(log.imageUrl)}')">
-                        <img src="\${escapeHtml(log.imageUrl)}" alt="\${escapeHtml(log.title)}" class="w-full h-auto max-h-64 object-cover rounded-lg border border-zinc-800 group-hover:border-blue-500 transition-colors">
-                        <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center rounded-lg">
-                            <span class="text-white text-sm mono flex items-center gap-2">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path></svg> Expand
-                            </span>
+                const urls = (log.imageUrls || (log.imageUrl ? [log.imageUrl] : [])).filter(u => u.trim() !== '');
+                rawCopyText = urls.join('\\n');
+                
+                if (urls.length === 0) {
+                    cardBodyHtml = \`<div class="text-zinc-600 text-sm italic">No image URLs provided.</div>\`;
+                } else if (urls.length === 1) {
+                    cardBodyHtml = \`
+                        <div class="mt-2 relative cursor-pointer group" onclick="openImageModal('\${escapeHtml(urls[0])}')">
+                            <img src="\${escapeHtml(urls[0])}" alt="\${escapeHtml(log.title)}" class="w-full h-auto max-h-64 object-cover rounded-lg border border-zinc-800 group-hover:border-blue-500 transition-colors">
+                            <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center rounded-lg">
+                                <span class="text-white text-sm mono flex items-center gap-2">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path></svg> Expand
+                                </span>
+                            </div>
                         </div>
-                    </div>
-                    \` : \`<div class="text-zinc-600 text-sm italic">No image URL provided.</div>\`}
-                \`;
+                    \`;
+                } else {
+                    const slidesHtml = urls.map((url, i) => \`
+                        <div class="w-full shrink-0 relative cursor-pointer group snap-center" onclick="openImageModal('\${escapeHtml(url)}')">
+                            <img src="\${escapeHtml(url)}" alt="\${escapeHtml(log.title)} - \${i+1}" class="w-full h-auto max-h-64 object-cover rounded-lg border border-zinc-800 group-hover:border-blue-500 transition-colors">
+                            <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center rounded-lg">
+                                <span class="text-white text-sm mono flex items-center gap-2">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path></svg> Expand
+                                </span>
+                            </div>
+                            <div class="absolute bottom-2 right-2 bg-black/70 text-zinc-300 text-[10px] px-2 py-1 rounded mono shadow backdrop-blur-sm">\${i+1} / \${urls.length}</div>
+                        </div>
+                    \`).join('');
+
+                    cardBodyHtml = \`
+                        <div class="mt-2 relative group">
+                            <div class="flex overflow-x-auto snap-x snap-mandatory scrollbar-hide pb-2 gap-4" id="carousel-\${log.id}">
+                                \${slidesHtml}
+                            </div>
+                            <button onclick="event.stopPropagation(); document.getElementById('carousel-\${log.id}').scrollBy({left: -document.getElementById('carousel-\${log.id}').clientWidth, behavior: 'smooth'})" class="absolute left-2 top-1/2 -translate-y-1/2 w-8 h-8 flex items-center justify-center rounded-full bg-black/60 text-white border border-zinc-700 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-black hover:border-blue-500 z-10 shadow-lg">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                            </button>
+                            <button onclick="event.stopPropagation(); document.getElementById('carousel-\${log.id}').scrollBy({left: document.getElementById('carousel-\${log.id}').clientWidth, behavior: 'smooth'})" class="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 flex items-center justify-center rounded-full bg-black/60 text-white border border-zinc-700 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-black hover:border-blue-500 z-10 shadow-lg">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                            </button>
+                        </div>
+                    \`;
+                }
             } else if (log.type === 'memo') {
                 const memoLines = [];
                 if(log.memoDate) memoLines.push('Date: ' + log.memoDate);
