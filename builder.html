@@ -111,12 +111,12 @@
             <div class="flex gap-3">
                 <label class="btn btn-secondary flex items-center gap-2 cursor-pointer">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
-                    Import HTML
-                    <input type="file" id="importFile" accept=".html" class="hidden">
+                    Import File
+                    <input type="file" id="importFile" accept=".html,.json" class="hidden">
                 </label>
-                <button onclick="exportHTML()" class="btn btn-primary flex items-center gap-2">
+                <button onclick="exportFiles()" class="btn btn-primary flex items-center gap-2">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-                    Export / Create HTML
+                    Export Data
                 </button>
             </div>
         </div>
@@ -135,6 +135,16 @@
                         <div>
                             <label class="block text-zinc-400 text-xs mb-1 mono">Subtitle</label>
                             <input type="text" id="pageSubtitle" class="input-field" placeholder="e.g. Documenting Audio Captures..." oninput="updateData()">
+                        </div>
+                        
+                        <div class="mt-4 pt-4 border-t border-zinc-800">
+                            <label class="block text-zinc-400 text-xs mb-1 mono">Data Source URL (JSON Link)</label>
+                            <input type="text" id="jsonUrlInput" class="input-field" placeholder="content.json" value="content.json">
+                            
+                            <label class="flex items-center gap-2 mt-3 cursor-pointer text-zinc-300 text-sm mono">
+                                <input type="checkbox" id="generateHtmlCheck" class="accent-green-500 w-4 h-4" checked>
+                                Also Generate HTML Viewer Page
+                            </label>
                         </div>
                     </div>
                 </div>
@@ -333,7 +343,7 @@
         // --- Drag and Drop Logic ---
         let draggedLogEl = null;
         let dragPlaceholder = null;
-        let cachedDraggables = []; // Cache to eliminate layout thrashing lag
+        let cachedDraggables = []; 
         let currentDragTarget = undefined;
 
         function handleDragStart(e, id) {
@@ -352,7 +362,6 @@
             setTimeout(() => {
                 draggedLogEl.style.display = 'none';
                 draggedLogEl.parentNode.insertBefore(dragPlaceholder, draggedLogEl.nextSibling);
-                // Cache DOM elements ONCE at the start of the drag to fix extreme lag
                 cachedDraggables = [...document.querySelectorAll('#logsContainer .log-item:not(.dragging-source)')];
             }, 0);
         }
@@ -364,7 +373,6 @@
             const container = document.getElementById('logsContainer');
             const afterElement = getDragAfterElement(e.clientY);
             
-            // Prevent massive layout thrashing: only manipulate DOM if target actually changed
             if (afterElement !== currentDragTarget) {
                 currentDragTarget = afterElement;
                 if (afterElement == null) {
@@ -376,7 +384,6 @@
         }
 
         function getDragAfterElement(y) {
-            // Optimized check stopping at the first element below the cursor to avoid excessive loops
             return cachedDraggables.find(child => {
                 const box = child.getBoundingClientRect();
                 return y < box.top + box.height / 2;
@@ -396,7 +403,6 @@
             
             const currentIds = [...document.querySelectorAll('#logsContainer .log-item')].map(el => el.dataset.id);
             
-            // Map the new visual order directly to the underlying data
             let indices = currentIds.map(id => appData.logs.findIndex(l => l.id === id)).sort((a, b) => a - b);
             let newlyOrderedLogs = currentIds.map(id => appData.logs.find(l => l.id === id));
             
@@ -404,7 +410,7 @@
                 appData.logs[globalIndex] = newlyOrderedLogs[i];
             });
 
-            draggedLogEl.setAttribute('draggable', 'false'); // Reset draggability
+            draggedLogEl.setAttribute('draggable', 'false'); 
             draggedLogEl = null;
             dragPlaceholder = null;
             cachedDraggables = [];
@@ -429,11 +435,11 @@
             } else {
                 log[field] = value;
                 if (field === 'isAudio') {
-                    log.type = value ? 'audio' : 'text'; // Legacy bridge
+                    log.type = value ? 'audio' : 'text'; 
                     renderLogs();
                 }
                 if (field === 'type') {
-                    log.isAudio = value === 'audio'; // Legacy bridge
+                    log.isAudio = value === 'audio'; 
                     renderLogs();
                 }
             }
@@ -462,7 +468,6 @@
             const inputField = document.getElementById(`new-img-url-${id}`);
             let prefix = inputField ? inputField.value.trim() : "";
             
-            // Default to ./posters/ if the input box is empty
             if (!prefix) {
                 prefix = "./posters/";
             } else if (!prefix.endsWith('/')) {
@@ -470,11 +475,9 @@
             }
 
             Array.from(files).forEach(file => {
-                // Append the local path prefix to the actual file name
                 log.imageUrls.push(prefix + file.name);
             });
             
-            // Clear the input box after adding
             if (inputField) inputField.value = "";
             renderLogs();
         }
@@ -510,10 +513,9 @@
             document.getElementById('logCount').innerText = logsToRender.length;
 
             logsToRender.forEach((log, index) => {
-                log.type = log.type || (log.isAudio ? 'audio' : 'text'); // Normalization
+                log.type = log.type || (log.isAudio ? 'audio' : 'text'); 
                 const div = document.createElement('div');
                 div.className = `log-item p-4 rounded-lg flex flex-col gap-3 ${log.type}`;
-                // Set to false initially, only made true when gripping the handle
                 div.setAttribute('draggable', 'false');
                 div.setAttribute('data-id', log.id);
                 div.ondragstart = (e) => handleDragStart(e, log.id);
@@ -661,9 +663,29 @@
 
             const reader = new FileReader();
             reader.onload = function(evt) {
-                const html = evt.target.result;
-                parseImportedHTML(html);
-                this.value = ''; // reset input
+                const content = evt.target.result;
+                
+                if (file.name.endsWith('.json')) {
+                    try {
+                        appData = JSON.parse(content);
+                        appData.logs.forEach(l => {
+                            l.type = l.type || (l.isAudio ? 'audio' : 'text'); // Normalization
+                            l.tags = l.tags || [];
+                            if (l.imageUrl && !l.imageUrls) l.imageUrls = [l.imageUrl];
+                            if (!l.imageUrls) l.imageUrls = [""];
+                        });
+                        document.getElementById('pageHeader').value = appData.header || "";
+                        document.getElementById('pageSubtitle').value = appData.subtitle || "";
+                        renderCategories();
+                        renderLogs();
+                    } catch (err) {
+                        alert("Error parsing JSON file. Make sure it's valid.");
+                        console.error(err);
+                    }
+                } else {
+                    parseImportedHTML(content);
+                }
+                document.getElementById('importFile').value = ''; // reset input
             };
             reader.readAsText(file);
         });
@@ -723,7 +745,6 @@
                 const legacyAudio = extractArray('audioLogs');
                 const legacyText = extractArray('textLogs');
 
-                // Smart Legacy Tag Recovery
                 const recoverTags = (logObj) => {
                     const tags = [];
                     const searchStr = ((logObj.id || '') + " " + (logObj.title || '') + " " + (logObj.content || '')).toLowerCase();
@@ -745,7 +766,7 @@
                         if (cId === 'sleepymoon' && (key.includes('costumeback') || ['misc_31', 'misc_32'].includes(key))) tags.push(cId);
                     });
                     
-                    return [...new Set(tags)]; // return unique array
+                    return [...new Set(tags)]; 
                 };
 
                 if (legacyAudio) {
@@ -784,10 +805,9 @@
         }
 
         // --- Export / Generation ---
-        function exportHTML() {
+        function exportFiles() {
             updateData();
             
-            // Prepare clean export data
             const exportData = JSON.parse(JSON.stringify(appData));
             exportData.logs.forEach(log => {
                 if (!log.title || log.title.trim() === "") {
@@ -798,20 +818,31 @@
                 if (!log.imageUrls) log.imageUrls = [""];
             });
 
-            // Prevent script tags inside the JSON from breaking the HTML parser
-            const escapedJson = JSON.stringify(exportData).replace(/</g, '\\u003c');
-            
-            // Dynamically construct script tags to bypass HTML parser interference completely
-            const scriptStart = "<" + "script>";
-            const scriptEnd = "</" + "script>";
+            const jsonUrl = document.getElementById('jsonUrlInput').value.trim() || 'content.json';
+            const generateHtml = document.getElementById('generateHtmlCheck').checked;
 
-            // The exact template based on sotm.html
-            const template = `<!DOCTYPE html>
+            // 1. Export content.json (always happens)
+            const jsonBlob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
+            const jsonDownloadUrl = URL.createObjectURL(jsonBlob);
+            const aJson = document.createElement('a');
+            aJson.href = jsonDownloadUrl;
+            aJson.download = 'content.json';
+            document.body.appendChild(aJson);
+            aJson.click();
+            document.body.removeChild(aJson);
+            URL.revokeObjectURL(jsonDownloadUrl);
+
+            // 2. Export dynamic HTML wrapper (if checked)
+            if (generateHtml) {
+                const scriptStart = "<" + "script>";
+                const scriptEnd = "</" + "script>";
+
+                const template = `<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>${exportData.header}</title>
+    <title>Archive Logs</title>
     <script src="https://cdn.tailwindcss.com">${scriptEnd}
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Inter:wght@400;600&display=swap');
@@ -875,8 +906,8 @@
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
                 RETURN_TO_HUB
             </a>
-            <h1 class="text-3xl md:text-4xl font-bold mono text-green-400 mb-2">${exportData.header.replace(/</g, "&lt;")}</h1>
-            <p class="text-zinc-500 italic">${exportData.subtitle.replace(/</g, "&lt;")}</p>
+            <h1 id="page-title" class="text-3xl md:text-4xl font-bold mono text-green-400 mb-2">LOADING ARCHIVE...</h1>
+            <p id="page-subtitle" class="text-zinc-500 italic">Establishing connection to databank...</p>
         </div>
         
         <header class="sticky top-2 md:top-4 z-50 p-3 md:p-4 mb-6 border border-zinc-800/60 bg-[#0a0a0a]/85 backdrop-blur-xl rounded-xl md:rounded-2xl shadow-2xl">
@@ -895,8 +926,8 @@
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
                     </button>
                     <div id="filterBar" class="scroll-container w-full" onscroll="updateArrows('filterBar')">
+                        <!-- Injected via fetch -->
                         <button class="category-btn active shrink-0" data-cat="all">All Logs</button>
-                        ${exportData.categories.map(c => `<button class="category-btn shrink-0" data-cat="${c.id}">${c.label.replace(/</g, "&lt;")}</button>`).join('')}
                     </div>
                     <button class="scroll-arrow right-arrow hidden" onclick="scrollContainer('filterBar', 200)">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
@@ -925,7 +956,7 @@
         <div id="logDisplay" class="space-y-8"></div>
     </div>
 
-    <!-- Modal injected dynamically in output -->
+    <!-- Modal -->
     <div id="imageModal" class="fixed inset-0 z-[9999] bg-black/95 hidden items-center justify-center p-4 md:p-8 opacity-0 transition-opacity duration-300 backdrop-blur-sm" onclick="closeImageModal()">
         <div class="relative max-w-5xl w-full max-h-full flex items-center justify-center" onclick="event.stopPropagation()">
             <button class="absolute -top-12 right-0 text-zinc-400 hover:text-white transition-colors p-2" onclick="closeImageModal()">
@@ -935,19 +966,43 @@
         </div>
     </div>
 
-    <script id="archive-data" type="application/json">${escapedJson}${scriptEnd}
     ${scriptStart}
-        const appData = JSON.parse(document.getElementById('archive-data').textContent);
-        appData.logs.forEach(l => {
-            l.type = l.type || (l.isAudio ? 'audio' : 'text'); // Normalization
-            l.tags = l.tags || [];
-            if (l.imageUrl && !l.imageUrls) l.imageUrls = [l.imageUrl];
-            if (!l.imageUrls) l.imageUrls = [""];
-        });
+        const jsonSourceUrl = "${jsonUrl}";
+        let appData = { header: "", subtitle: "", categories: [], logs: [] };
         
         let currentCategory = 'all';
         let currentType = 'all';
         let currentSearch = '';
+
+        async function init() {
+            try {
+                const response = await fetch(jsonSourceUrl);
+                if(!response.ok) throw new Error("Network response was not ok");
+                appData = await response.json();
+                
+                document.getElementById('page-title').textContent = appData.header;
+                document.getElementById('page-subtitle').textContent = appData.subtitle;
+                document.title = appData.header;
+                
+                const filterBar = document.getElementById('filterBar');
+                filterBar.innerHTML = '<button class="category-btn active shrink-0" data-cat="all">All Logs</button>' + 
+                    appData.categories.map(c => \`<button class="category-btn shrink-0" data-cat="\${escapeHtml(c.id)}">\${escapeHtml(c.label)}</button>\`).join('');
+                
+                appData.logs.forEach(l => {
+                    l.type = l.type || (l.isAudio ? 'audio' : 'text');
+                    l.tags = l.tags || [];
+                    if (l.imageUrl && !l.imageUrls) l.imageUrls = [l.imageUrl];
+                    if (!l.imageUrls) l.imageUrls = [""];
+                });
+                
+                render();
+                setTimeout(() => { updateArrows('filterBar'); }, 100);
+            } catch (error) {
+                console.error("Failed to load archive data:", error);
+                document.getElementById('page-title').textContent = "CONNECTION ERROR";
+                document.getElementById('page-subtitle').textContent = "Failed to retrieve databank. Make sure content.json is accessible.";
+            }
+        }
 
         function escapeRegExp(string) { return string.replace(/[.*+?^\\$\\{\\}()|\\[\\]\\\\]/g, '\\\\$&'); }
         function escapeHtml(unsafe) {
@@ -1042,7 +1097,7 @@
                 match: (l) => (l.tags || []).includes(cat.id)
             }));
             
-            groups.push({ name: "Uncategorized Archives", match: (l) => true });
+            groups.push({ name: "Uncategorized Archives", match: (l) => !l.tags || l.tags.length === 0 });
 
             const result = [];
             const processedIds = new Set();
@@ -1344,25 +1399,28 @@
                 render();
             }
         });
-
-        render();
-        setTimeout(() => {
-            updateArrows('filterBar');
-        }, 100);
+        
+        // Start execution
+        init();
     ${scriptEnd}
 </body>
 </html>`; // CLOSE TEMPLATE
 
-            // Download Trigger
-            const blob = new Blob([template], { type: 'text/html' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `${exportData.header.replace(/\s+/g, '_').toLowerCase()}.html`;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
+                // 3. Download generated HTML
+                const htmlBlob = new Blob([template], { type: 'text/html' });
+                const htmlDownloadUrl = URL.createObjectURL(htmlBlob);
+                const aHtml = document.createElement('a');
+                aHtml.href = htmlDownloadUrl;
+                aHtml.download = `${exportData.header.replace(/\s+/g, '_').toLowerCase()}.html`;
+                
+                // Slight delay to prevent browser from blocking multiple file downloads
+                setTimeout(() => {
+                    document.body.appendChild(aHtml);
+                    aHtml.click();
+                    document.body.removeChild(aHtml);
+                    URL.revokeObjectURL(htmlDownloadUrl);
+                }, 500);
+            }
         }
     </script>
 </body>
