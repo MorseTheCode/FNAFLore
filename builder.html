@@ -809,6 +809,7 @@
             updateData();
             
             const exportData = JSON.parse(JSON.stringify(appData));
+            exportData._lastModified = Date.now();
             exportData.logs.forEach(log => {
                 if (!log.title || log.title.trim() === "") {
                     log.title = generateShiftName();
@@ -975,33 +976,54 @@
         let currentSearch = '';
 
         async function init() {
+            const cacheKey = 'mcm_archive_cache_' + btoa(jsonSourceUrl).substring(0, 16).replace(/[^a-zA-Z0-9]/g, '');
+            const cached = localStorage.getItem(cacheKey);
+            
+            if (cached) {
+                try {
+                    appData = JSON.parse(cached);
+                    populateUI();
+                    render();
+                    setTimeout(() => { updateArrows('filterBar'); }, 100);
+                } catch(e) {}
+            }
+
             try {
-                const response = await fetch(jsonSourceUrl);
+                const response = await fetch(jsonSourceUrl + '?t=' + Date.now(), { cache: 'no-store' });
                 if(!response.ok) throw new Error("Network response was not ok");
-                appData = await response.json();
+                const serverData = await response.json();
                 
-                document.getElementById('page-title').textContent = appData.header;
-                document.getElementById('page-subtitle').textContent = appData.subtitle;
-                document.title = appData.header;
-                
-                const filterBar = document.getElementById('filterBar');
-                filterBar.innerHTML = '<button class="category-btn active shrink-0" data-cat="all">All Logs</button>' + 
-                    appData.categories.map(c => \`<button class="category-btn shrink-0" data-cat="\${escapeHtml(c.id)}">\${escapeHtml(c.label)}</button>\`).join('');
-                
-                appData.logs.forEach(l => {
-                    l.type = l.type || (l.isAudio ? 'audio' : 'text');
-                    l.tags = l.tags || [];
-                    if (l.imageUrl && !l.imageUrls) l.imageUrls = [l.imageUrl];
-                    if (!l.imageUrls) l.imageUrls = [""];
-                });
-                
-                render();
-                setTimeout(() => { updateArrows('filterBar'); }, 100);
+                if (!cached || !appData._lastModified || serverData._lastModified > appData._lastModified) {
+                    appData = serverData;
+                    localStorage.setItem(cacheKey, JSON.stringify(appData));
+                    populateUI();
+                    render();
+                    setTimeout(() => { updateArrows('filterBar'); }, 100);
+                }
             } catch (error) {
                 console.error("Failed to load archive data:", error);
-                document.getElementById('page-title').textContent = "CONNECTION ERROR";
-                document.getElementById('page-subtitle').textContent = "Failed to retrieve databank. Make sure content.json is accessible.";
+                if (!cached) {
+                    document.getElementById('page-title').textContent = "CONNECTION ERROR";
+                    document.getElementById('page-subtitle').textContent = "Failed to retrieve databank. Make sure content.json is accessible.";
+                }
             }
+        }
+
+        function populateUI() {
+            document.getElementById('page-title').textContent = appData.header;
+            document.getElementById('page-subtitle').textContent = appData.subtitle;
+            document.title = appData.header;
+            
+            const filterBar = document.getElementById('filterBar');
+            filterBar.innerHTML = '<button class="category-btn active shrink-0" data-cat="all">All Logs</button>' + 
+                appData.categories.map(c => \`<button class="category-btn shrink-0" data-cat="\${escapeHtml(c.id)}">\${escapeHtml(c.label)}</button>\`).join('');
+            
+            appData.logs.forEach(l => {
+                l.type = l.type || (l.isAudio ? 'audio' : 'text');
+                l.tags = l.tags || [];
+                if (l.imageUrl && !l.imageUrls) l.imageUrls = [l.imageUrl];
+                if (!l.imageUrls) l.imageUrls = [""];
+            });
         }
 
         function escapeRegExp(string) { return string.replace(/[.*+?^\\$\\{\\}()|\\[\\]\\\\]/g, '\\\\$&'); }
