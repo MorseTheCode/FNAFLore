@@ -128,7 +128,7 @@
     </div>
 
     <script>
-        const jsonSourceUrl = "https://raw.githubusercontent.com/MorseTheCode/FNAFLore/refs/heads/main/content.json";
+        const jsonSourceUrl = "https://raw.githubusercontent.com/MorseTheCode/FNAFLore/refs/heads/main/sotm.json";
         let appData = { header: "", subtitle: "", categories: [], logs: [] };
         
         let currentCategory = 'all';
@@ -164,7 +164,7 @@
                 console.error("Failed to load archive data:", error);
                 if (!cached) {
                     document.getElementById('page-title').textContent = "CONNECTION ERROR";
-                    document.getElementById('page-subtitle').textContent = "Failed to retrieve databank. Make sure content.json is accessible.";
+                    document.getElementById('page-subtitle').textContent = "Failed to retrieve databank. Make sure sotm.json is accessible.";
                 }
             }
         }
