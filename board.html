@@ -7,6 +7,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Space+Mono:wght@400;700&display=swap');
+
         body { 
             background-color: #0a0a0a; 
             color: #e5e5e5; 
@@ -201,14 +202,14 @@
         <button class="control-btn w-auto px-3" id="btn-import-trigger" title="Import Board">Import</button>
         <div class="w-px h-10 bg-zinc-700 mx-1"></div>
         <div class="grid grid-cols-3 gap-1">
-            <button class="control-btn w-14 px-1 text-red-400 hover:text-red-300 text-[11px] !h-6" id="btn-clear-notes" title="Clear Notes">Notes</button>
-            <button class="control-btn w-14 px-1 text-red-400 hover:text-red-300 text-[11px] !h-6" id="btn-clear-images" title="Clear Images">Images</button>
-            <button class="control-btn w-14 px-1 text-red-400 hover:text-red-300 text-[11px] !h-6" id="btn-clear-nodes" title="Clear Small Nodes">Nodes</button>
-            <button class="control-btn w-14 px-1 text-red-400 hover:text-red-300 text-[11px] !h-6" id="btn-clear-lines" title="Clear Lines">Lines</button>
-            <button class="control-btn w-14 px-1 text-red-400 hover:text-red-300 text-[11px] !h-6" id="btn-clear-drawings" title="Clear Drawings">Draws</button>
-            <button class="control-btn w-14 px-1 text-red-400 hover:text-red-300 text-[11px] !h-6" id="btn-clear-videos" title="Clear Videos">Videos</button>
+            <button class="control-btn w-[72px] px-1 text-red-400 hover:text-red-300 text-[11px] !h-7" id="btn-clear-notes" title="Clear Notes">Notes</button>
+            <button class="control-btn w-[72px] px-1 text-red-400 hover:text-red-300 text-[11px] !h-7" id="btn-clear-images" title="Clear Images">Images</button>
+            <button class="control-btn w-[72px] px-1 text-red-400 hover:text-red-300 text-[11px] !h-7" id="btn-clear-nodes" title="Clear Small Nodes">Nodes</button>
+            <button class="control-btn w-[72px] px-1 text-red-400 hover:text-red-300 text-[11px] !h-7" id="btn-clear-lines" title="Clear Lines">Lines</button>
+            <button class="control-btn w-[72px] px-1 text-red-400 hover:text-red-300 text-[11px] !h-7" id="btn-clear-drawings" title="Clear Drawings">Draws</button>
+            <button class="control-btn w-[72px] px-1 text-red-400 hover:text-red-300 text-[11px] !h-7" id="btn-clear-videos" title="Clear Videos">Videos</button>
         </div>
-        <button class="control-btn w-auto px-4 text-red-500 hover:text-red-400 font-bold ml-1 !h-[52px]" id="btn-clear-all" title="Clear All">Clear All</button>
+        <button class="control-btn w-auto px-4 text-red-500 hover:text-red-400 font-bold ml-1 !h-[60px]" id="btn-clear-all" title="Clear All">Clear All</button>
         <input type="file" id="import-input" accept=".json" class="hidden">
         <input type="file" id="image-upload-input" accept="image/*" class="hidden">
     </div>
@@ -718,8 +719,18 @@
                     <div class="resize-handle pointer-events-auto"></div>
                 `;
                 if(!item.locked) {
-                    el.querySelector('h2').addEventListener('blur', (e) => { item.title = e.target.innerText; saveState(); updateSidebar(); });
-                    el.querySelector('.node-content').addEventListener('blur', (e) => { item.content = e.target.innerText; el.innerHTML = el.innerHTML.replace(e.target.innerHTML, formatText(e.target.innerText)); saveState(); updateSidebar(); });
+                    el.querySelector('h2').addEventListener('blur', (e) => { 
+                        item.title = e.target.innerText.replace(/\n/g, ' ').trim();
+                        e.target.innerText = item.title;
+                        saveState(); 
+                        updateSidebar(); 
+                    });
+                    el.querySelector('.node-content').addEventListener('blur', (e) => { 
+                        item.content = e.target.innerText; 
+                        e.target.innerHTML = formatText(e.target.innerText); 
+                        saveState(); 
+                        updateSidebar(); 
+                    });
                 }
 
             } else if (item.type === 'frame') {
@@ -733,7 +744,12 @@
                     <div class="resize-handle pointer-events-auto border-green-400"></div>
                 `;
                 if(!item.locked) {
-                    el.querySelector('h2').addEventListener('blur', (e) => { item.title = e.target.innerText; saveState(); updateSidebar(); });
+                    el.querySelector('h2').addEventListener('blur', (e) => { 
+                        item.title = e.target.innerText.replace(/\n/g, ' ').trim();
+                        e.target.innerText = item.title;
+                        saveState(); 
+                        updateSidebar(); 
+                    });
                 }
 
             } else if (item.type === 'image') {
