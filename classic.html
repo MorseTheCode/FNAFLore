@@ -128,7 +128,7 @@
     </div>
 
     <script>
-        const jsonSourceUrl = "https://raw.githubusercontent.com/MorseTheCode/FNAFLore/refs/heads/main/classic.json";
+        const jsonSourceUrl = "classic.json";
         let appData = { header: "", subtitle: "", categories: [], logs: [] };
         
         let currentCategory = 'all';
@@ -331,7 +331,7 @@
             display.innerHTML = '';
 
             const subFilterWrapper = document.getElementById('subFilterWrapper');
-            if (['all', 'text', 'audio', 'image', 'memo', 'order'].includes(currentCategory)) {
+            if (['text', 'audio', 'image', 'memo', 'order'].includes(currentCategory)) {
                 subFilterWrapper.classList.add('hidden');
                 subFilterWrapper.classList.remove('flex');
                 currentType = 'all';
