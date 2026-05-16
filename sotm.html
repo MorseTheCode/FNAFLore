@@ -136,7 +136,8 @@
         let currentSearch = '';
 
         async function init() {
-            const cacheKey = 'mcm_archive_cache_' + btoa(jsonSourceUrl).substring(0, 16).replace(/[^a-zA-Z0-9]/g, '');
+            const absoluteUrl = new URL(jsonSourceUrl, window.location.href).href;
+            const cacheKey = 'mcm_archive_cache_' + absoluteUrl.replace(/[^a-zA-Z0-9]/g, '_');
             const cached = localStorage.getItem(cacheKey);
             
             if (cached) {
@@ -153,13 +154,11 @@
                 if(!response.ok) throw new Error("Network response was not ok");
                 const serverData = await response.json();
                 
-                if (!cached || !appData._lastModified || serverData._lastModified > appData._lastModified) {
-                    appData = serverData;
-                    localStorage.setItem(cacheKey, JSON.stringify(appData));
-                    populateUI();
-                    render();
-                    setTimeout(() => { updateArrows('filterBar'); }, 100);
-                }
+                appData = serverData;
+                localStorage.setItem(cacheKey, JSON.stringify(appData));
+                populateUI();
+                render();
+                setTimeout(() => { updateArrows('filterBar'); }, 100);
             } catch (error) {
                 console.error("Failed to load archive data:", error);
                 if (!cached) {
