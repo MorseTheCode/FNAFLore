@@ -98,7 +98,7 @@
 <body class="p-4 md:p-8 relative">
     <div class="scanline"></div>
 
-    <div class="max-w-6xl mx-auto">
+    <div class="max-w-[100rem] mx-auto px-4 lg:px-8">
         <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
             <div>
                 <a href="index.html" class="inline-flex items-center gap-2 text-zinc-400 hover:text-green-400 transition-colors mono text-sm mb-4">
@@ -235,7 +235,11 @@
                 div.className = `flex gap-2 items-center px-2 py-1 mb-1 rounded border transition-colors ${isActive ? 'bg-green-900/20 border-green-500/30' : 'border-transparent hover:bg-zinc-900/50'}`;
                 
                 div.innerHTML = `
-                    <div class="flex-grow cursor-pointer" onclick="setBuilderFilter('${cat.id}')">
+                    <div class="flex flex-col items-center justify-center shrink-0 pr-1 border-r border-zinc-800/50">
+                        <button onclick="moveCategory(${index}, -1)" class="text-zinc-500 hover:text-green-400 px-1 text-xs" title="Move Up">▲</button>
+                        <button onclick="moveCategory(${index}, 1)" class="text-zinc-500 hover:text-green-400 px-1 text-xs" title="Move Down">▼</button>
+                    </div>
+                    <div class="flex-grow cursor-pointer pl-1" onclick="setBuilderFilter('${cat.id}')">
                         <input type="text" value="${cat.label.replace(/"/g, '&quot;')}" class="w-full bg-transparent border-b border-transparent focus:border-green-500 outline-none text-sm ${isActive ? 'text-green-400 font-bold' : 'text-zinc-200'}" onclick="event.stopPropagation()" onchange="updateCatLabel(${index}, this.value)">
                         <div class="text-[10px] text-zinc-500 mono mt-1">ID: ${cat.id}</div>
                     </div>
@@ -243,6 +247,16 @@
                 `;
                 container.appendChild(div);
             });
+        }
+
+        function moveCategory(index, direction) {
+            if (index + direction >= 0 && index + direction < appData.categories.length) {
+                const temp = appData.categories[index];
+                appData.categories[index] = appData.categories[index + direction];
+                appData.categories[index + direction] = temp;
+                renderCategories();
+                renderLogs();
+            }
         }
 
         function addCategory() {
@@ -726,7 +740,7 @@
                 const catRegex = /<button[^>]*class="category-btn[^"]*"[^>]*data-cat="([^"]+)"[^>]*>(.*?)<\/button>/g;
                 let match;
                 while ((match = catRegex.exec(html)) !== null) {
-                    if (!['all', 'text', 'audio', 'image', 'memo', 'order'].includes(match[1])) {
+                    if (!['all', 'text', 'audio', 'image', 'memo', 'order'].includes(match[1]) && !match[1].includes('$')) {
                         appData.categories.push({ id: match[1], label: match[2] });
                     }
                 }
@@ -822,12 +836,17 @@
             const jsonUrl = document.getElementById('jsonUrlInput').value.trim() || 'content.json';
             const generateHtml = document.getElementById('generateHtmlCheck').checked;
 
-            // 1. Export content.json (always happens)
+            let jsonFileName = jsonUrl.split('/').pop().split('?')[0].split('#')[0] || 'content.json';
+            if (!jsonFileName.toLowerCase().endsWith('.json')) {
+                jsonFileName += '.json';
+            }
+
+            // 1. Export JSON file
             const jsonBlob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
             const jsonDownloadUrl = URL.createObjectURL(jsonBlob);
             const aJson = document.createElement('a');
             aJson.href = jsonDownloadUrl;
-            aJson.download = 'content.json';
+            aJson.download = jsonFileName;
             document.body.appendChild(aJson);
             aJson.click();
             document.body.removeChild(aJson);
@@ -837,6 +856,7 @@
             if (generateHtml) {
                 const scriptStart = "<" + "script>";
                 const scriptEnd = "</" + "script>";
+                const safeJsonData = JSON.stringify(exportData).replace(/<\/script>/gi, '<\\/script>');
 
                 const template = `<!DOCTYPE html>
 <html lang="en">
@@ -901,7 +921,7 @@
 </head>
 <body class="pb-8 relative">
     <div class="scanline"></div>
-    <div class="max-w-7xl mx-auto px-4 md:px-8 relative">
+    <div class="max-w-[100rem] mx-auto px-4 md:px-12 xl:px-24 relative">
         <div class="pt-6 md:pt-10 mb-4">
             <a href="index.html" class="inline-flex items-center gap-2 text-zinc-400 hover:text-green-400 transition-colors mono text-sm mb-6">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
@@ -913,12 +933,19 @@
         
         <header class="sticky top-2 md:top-4 z-50 p-3 md:p-4 mb-6 border border-zinc-800/60 bg-[#0a0a0a]/85 backdrop-blur-xl rounded-xl md:rounded-2xl shadow-2xl">
             <div class="flex flex-col gap-3">
-                <div class="relative w-full flex items-center">
-                    <svg class="absolute left-3 text-zinc-500" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-                    <input type="text" id="searchInput" placeholder="Search archives..." 
-                           class="w-full bg-zinc-900/80 border border-zinc-700/50 rounded-lg pl-9 pr-24 py-2.5 focus:outline-none focus:border-green-500/50 mono text-green-400 text-sm transition-colors shadow-inner">
-                    <div class="absolute right-3 text-zinc-500 text-[10px] mono pointer-events-none flex items-center gap-1 pl-2">
-                        <span id="logCount" class="text-green-500 font-bold text-xs">0</span> <span class="hidden sm:inline">ENTRIES</span>
+                <div class="flex flex-col md:flex-row gap-3">
+                    <div class="relative w-full flex items-center">
+                        <svg class="absolute left-3 text-zinc-500" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                        <input type="text" id="searchInput" placeholder="Search archives..." 
+                               class="w-full bg-zinc-900/80 border border-zinc-700/50 rounded-lg pl-9 pr-24 py-2.5 focus:outline-none focus:border-green-500/50 mono text-green-400 text-sm transition-colors shadow-inner">
+                        <div class="absolute right-3 text-zinc-500 text-[10px] mono pointer-events-none flex items-center gap-1 pl-2">
+                            <span id="logCount" class="text-green-500 font-bold text-xs">0</span> <span class="hidden sm:inline">ENTRIES</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-between md:justify-start gap-3 shrink-0 bg-zinc-900/80 border border-zinc-700/50 rounded-lg px-3 py-2.5">
+                        <label class="text-[10px] text-zinc-500 mono whitespace-nowrap">GRID COLS</label>
+                        <input type="range" id="colSlider" min="1" max="5" value="2" class="accent-green-500 w-24" oninput="render()">
+                        <span id="colValue" class="text-[10px] text-green-500 mono font-bold w-2 text-right">2</span>
                     </div>
                 </div>
 
@@ -967,6 +994,7 @@
         </div>
     </div>
 
+    <script id="archive-data" type="application/json">${safeJsonData}${scriptEnd}
     ${scriptStart}
         const jsonSourceUrl = "${jsonUrl}";
         let appData = { header: "", subtitle: "", categories: [], logs: [] };
@@ -1003,7 +1031,7 @@
                 console.error("Failed to load archive data:", error);
                 if (!cached) {
                     document.getElementById('page-title').textContent = "CONNECTION ERROR";
-                    document.getElementById('page-subtitle').textContent = "Failed to retrieve databank. Make sure content.json is accessible.";
+                    document.getElementById('page-subtitle').textContent = "Failed to retrieve databank. Make sure content json is accessible.";
                 }
             }
         }
@@ -1204,6 +1232,15 @@
 
             document.getElementById('logCount').innerText = filtered.length;
 
+            let cols = parseInt(document.getElementById('colSlider').value);
+            document.getElementById('colValue').textContent = cols;
+            let gridClass = 'grid gap-6';
+            if (cols === 1) gridClass += ' grid-cols-1';
+            else if (cols === 2) gridClass += ' grid-cols-1 md:grid-cols-2';
+            else if (cols === 3) gridClass += ' grid-cols-1 md:grid-cols-2 lg:grid-cols-3';
+            else if (cols === 4) gridClass += ' grid-cols-1 md:grid-cols-2 lg:grid-cols-4';
+            else if (cols === 5) gridClass += ' grid-cols-1 md:grid-cols-3 lg:grid-cols-5';
+
             if ((currentCategory === 'all' || ['text', 'audio', 'image', 'memo', 'order'].includes(currentCategory)) && !currentSearch) {
                 const grouped = getGroupedLogs(filtered);
                 grouped.forEach(group => {
@@ -1212,7 +1249,7 @@
                     groupSection.innerHTML = \`<div class="group-header mono">\${escapeHtml(group.title)}</div>\`;
                     
                     const grid = document.createElement('div');
-                    grid.className = 'grid grid-cols-1 md:grid-cols-2 gap-4';
+                    grid.className = gridClass;
                     
                     group.logs.forEach(log => grid.appendChild(createCard(log)));
                     groupSection.appendChild(grid);
@@ -1220,7 +1257,7 @@
                 });
             } else {
                 const grid = document.createElement('div');
-                grid.className = 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6';
+                grid.className = gridClass;
                 filtered.forEach(log => grid.appendChild(createCard(log)));
                 display.appendChild(grid);
             }
