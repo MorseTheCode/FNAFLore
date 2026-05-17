@@ -986,11 +986,16 @@
 
     <!-- Modal -->
     <div id="imageModal" class="fixed inset-0 z-[9999] bg-black/95 hidden items-center justify-center p-4 md:p-8 opacity-0 transition-opacity duration-300 backdrop-blur-sm" onclick="closeImageModal()">
-        <div class="relative max-w-5xl w-full max-h-full flex items-center justify-center" onclick="event.stopPropagation()">
-            <button class="absolute -top-12 right-0 text-zinc-400 hover:text-white transition-colors p-2" onclick="closeImageModal()">
-                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-            </button>
-            <img id="modalImage" src="" class="max-w-full max-h-[85vh] object-contain rounded-lg border border-zinc-800 shadow-2xl">
+        <div class="relative flex items-center justify-center">
+            <div class="absolute -top-14 right-0 flex gap-2">
+                <a id="modalDownloadBtn" href="#" download target="_blank" class="text-zinc-400 hover:text-green-400 transition-colors p-2" onclick="event.stopPropagation()" title="Download Image">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                </a>
+                <button class="text-zinc-400 hover:text-white transition-colors p-2" onclick="closeImageModal(); event.stopPropagation();" title="Close">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                </button>
+            </div>
+            <img id="modalImage" src="" class="max-w-[95vw] max-h-[90vh] object-contain rounded-lg border border-zinc-800 shadow-2xl" onclick="event.stopPropagation()">
         </div>
     </div>
 
@@ -1068,6 +1073,7 @@
         function openImageModal(url) {
             const modal = document.getElementById('imageModal');
             document.getElementById('modalImage').src = url;
+            document.getElementById('modalDownloadBtn').href = url;
             modal.classList.remove('hidden');
             modal.classList.add('flex');
             setTimeout(() => modal.classList.remove('opacity-0'), 10);
@@ -1125,14 +1131,36 @@
             var timeDisplay = container.querySelector('.time-display');
             timeDisplay.textContent = '0:00 / ' + formatTime(audio.duration || 0);
         }
-        function seekAudio(e, audioId) {
-            var audio = document.getElementById(audioId);
-            var bar = e.currentTarget;
-            var rect = bar.getBoundingClientRect();
-            var clickX = e.clientX - rect.left;
-            var percent = clickX / rect.width;
-            audio.currentTime = percent * audio.duration;
+        
+        let isScrubbing = false;
+        let currentScrubAudio = null;
+        let currentScrubBar = null;
+
+        function startScrub(e, audioId) {
+            isScrubbing = true;
+            currentScrubAudio = document.getElementById(audioId);
+            currentScrubBar = e.currentTarget;
+            doScrub(e);
         }
+
+        function doScrub(e) {
+            if (!isScrubbing || !currentScrubAudio || !currentScrubBar) return;
+            const rect = currentScrubBar.getBoundingClientRect();
+            let clickX = e.clientX - rect.left;
+            clickX = Math.max(0, Math.min(clickX, rect.width));
+            const percent = clickX / rect.width;
+            currentScrubAudio.currentTime = percent * currentScrubAudio.duration;
+        }
+
+        function stopScrub() {
+            isScrubbing = false;
+            currentScrubAudio = null;
+            currentScrubBar = null;
+        }
+
+        document.addEventListener('mousemove', doScrub);
+        document.addEventListener('mouseup', stopScrub);
+
         function formatTime(seconds) {
             if (isNaN(seconds) || !isFinite(seconds)) return "0:00";
             var m = Math.floor(seconds / 60);
@@ -1297,14 +1325,17 @@
             
             if (log.type === 'audio') {
                 const audioPlayerHtml = log.audioUrl ? \`
-                    <div class="audio-player-container bg-[#121212] border border-zinc-800 p-3 rounded-lg flex items-center gap-4 mt-4">
+                    <div class="audio-player-container bg-[#121212] border border-zinc-800 p-3 rounded-lg flex items-center gap-3 mt-4">
                         <button class="play-pause-btn text-purple-400 hover:text-purple-300 transition-colors flex-shrink-0" onclick="toggleAudio(this, 'audio-\${log.id}')">
                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
                         </button>
-                        <div class="bg-zinc-800 h-2 flex-grow rounded cursor-pointer relative" onclick="seekAudio(event, 'audio-\${log.id}')">
+                        <div class="bg-zinc-800 h-2 flex-grow rounded cursor-pointer relative" onmousedown="startScrub(event, 'audio-\${log.id}')">
                             <div class="progress-fill bg-purple-500 h-full rounded w-0 pointer-events-none transition-all duration-75"></div>
                         </div>
                         <span class="time-display text-zinc-500 text-xs mono pointer-events-none w-24 text-right flex-shrink-0">0:00 / 0:00</span>
+                        <a href="\${escapeHtml(log.audioUrl)}" download target="_blank" class="text-zinc-500 hover:text-purple-400 transition-colors flex-shrink-0 ml-1" title="Download Audio">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                        </a>
                         <audio id="audio-\${log.id}" src="\${escapeHtml(log.audioUrl)}" ontimeupdate="updateProgress(this)" onloadedmetadata="setDuration(this)" onended="resetPlayer(this)"></audio>
                     </div>
                 \` : '';
@@ -1318,8 +1349,11 @@
                 } else if (urls.length === 1) {
                     cardBodyHtml = \`
                         <div class="mt-2 relative cursor-pointer group" onclick="openImageModal('\${escapeHtml(urls[0])}')">
+                            <a href="\${escapeHtml(urls[0])}" download target="_blank" onclick="event.stopPropagation()" class="absolute top-2 right-2 bg-black/70 text-zinc-300 p-1.5 rounded hover:text-green-400 hover:bg-black transition-colors z-10 opacity-0 group-hover:opacity-100" title="Download Image">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                            </a>
                             <img src="\${escapeHtml(urls[0])}" alt="\${escapeHtml(log.title)}" class="w-full h-auto max-h-64 object-contain rounded-lg border border-zinc-800 group-hover:border-blue-500 transition-colors">
-                            <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center rounded-lg">
+                            <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center rounded-lg pointer-events-none">
                                 <span class="text-white text-sm mono flex items-center gap-2">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path></svg> Expand
                                 </span>
@@ -1329,8 +1363,11 @@
                 } else {
                     const slidesHtml = urls.map((url, i) => \`
                         <div class="w-full shrink-0 relative cursor-pointer group snap-center" onclick="openImageModal('\${escapeHtml(url)}')">
+                            <a href="\${escapeHtml(url)}" download target="_blank" onclick="event.stopPropagation()" class="absolute top-2 right-2 bg-black/70 text-zinc-300 p-1.5 rounded hover:text-green-400 hover:bg-black transition-colors z-10 opacity-0 group-hover:opacity-100" title="Download Image">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                            </a>
                             <img src="\${escapeHtml(url)}" alt="\${escapeHtml(log.title)} - \${i+1}" class="w-full h-auto max-h-64 object-contain rounded-lg border border-zinc-800 group-hover:border-blue-500 transition-colors">
-                            <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center rounded-lg">
+                            <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center rounded-lg pointer-events-none">
                                 <span class="text-white text-sm mono flex items-center gap-2">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path></svg> Expand
                                 </span>
