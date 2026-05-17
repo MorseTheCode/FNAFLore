@@ -15,7 +15,7 @@
       "label": "Fiona"
     },
     {
-      "id": "wa",
+      "id": "afton__leak",
       "label": "Afton & Leak"
     },
     {
@@ -27,7 +27,7 @@
       "label": "Blueprints & Concepts"
     },
     {
-      "id": "mcm",
+      "id": "mcm_business__complaints",
       "label": "MCM Business & Complaints"
     },
     {
@@ -1138,7 +1138,7 @@
       "id": "AL_1",
       "title": "Meet Up",
       "location": "Showroom Lobby",
-      "content": "Edwin: Excuse me. Can I borrow your voice for a project?\nFiona: What for? I don't even know you. I'm brand new here. Let's start again. I'm Fiona. And you are?\nEdwin: Edwin, Edwin Murray. This is my dad's place. But that doesn't matter... I heard you were a puppeteer and I wanted to record your voice.\nFiona: Oh. Well, yes. I used to be.\nEdwin: That's great! Do you mind if I record you for a test?\nFiona: So you want to record me that that? What is it?\nEdwin: It's a new type of audio cassette recorder.\nFiona: I've never seen one like that before.\nEdwin: I made it. It's part of this new system I'm working on. Just speak into the microphone and it'll be sent to me like a work memo. The message will be recorded on a tape drive so that I can listen to it when I get back to my desk on the other side of the building.\nFiona: That's incredible. What do you call it?\nEdwin: Oh. I don't know. I haven't thought of a name yet.\nFiona: Well, how would you describe it in one word?\nEdwin: I guess I would have to say, \"helpful.\" At its core, it is helpful.\nFiona: That's a great name. And I would be delighted to help. What kind of voice should I do?",
+      "content": "[[Edwin]] Excuse me. Can I borrow your voice for a project?\n[[Fiona]] What for? I don't even know you. I'm brand new here. Let's start again. I'm Fiona. And you are?\n[[Edwin]] Edwin, Edwin Murray. This is my dad's place. But that doesn't matter... I heard you were a puppeteer and I wanted to record your voice.\n[[Fiona]] Oh. Well, yes. I used to be.\n[[Edwin]] That's great! Do you mind if I record you for a test?\n[[Fiona]] So you want to record me that that? What is it?\n[[Edwin]] It's a new type of audio cassette recorder.\n[[Fiona]] I've never seen one like that before.\n[[Edwin]] I made it. It's part of this new system I'm working on. Just speak into the microphone and it'll be sent to me like a work memo. The message will be recorded on a tape drive so that I can listen to it when I get back to my desk on the other side of the building.\n[[Fiona]] That's incredible. What do you call it?\n[[Edwin]] Oh. I don't know. I haven't thought of a name yet.\n[[Fiona]] Well, how would you describe it in one word?\n[[Edwin]] I guess I would have to say, \"helpful.\" At its core, it is helpful.\n[[Fiona]] That's a great name. And I would be delighted to help. What kind of voice should I do?",
       "isAudio": true,
       "audioUrl": "./audios/sotm/MeetUp.WAV",
       "tags": [
@@ -1154,7 +1154,7 @@
       "id": "AL_2",
       "title": "Inheritance",
       "location": "Warehouse",
-      "content": "Fiona: Ed, honey, how are you holding up? I just heard the news.\nEdwin: I don't know. This is all so much... He's gone. He's gone and now everyone is asking me what to do? And I don't know anything. I can't run a company. I'm not ready... I can't fill his shoes. He knew it. Everyone knew it. The company is going to collapse and they're all going to hate me.\nFiona: Ed, you'll figure it out. Just take a deep breath. It's your company now. Your dad believed in you. Otherwise, he wouldn't have left it to you.\nEdwin: I guess so.\nFiona: If you could change anything you wanted, what would it be?\nEdwin: Maybe... rebrand? We could start making some of my inventions for real.",
+      "content": "[[Fiona]] Ed, honey, how are you holding up? I just heard the news.\n[[Edwin]] I don't know. This is all so much... He's gone. He's gone and now everyone is asking me what to do? And I don't know anything. I can't run a company. I'm not ready... I can't fill his shoes. He knew it. Everyone knew it. The company is going to collapse and they're all going to hate me.\n[[Fiona]] Ed, you'll figure it out. Just take a deep breath. It's your company now. Your dad believed in you. Otherwise, he wouldn't have left it to you.\n[[Edwin]] I guess so.\n[[Fiona]] If you could change anything you wanted, what would it be?\n[[Edwin]] Maybe... rebrand? We could start making some of my inventions for real.",
       "isAudio": true,
       "audioUrl": "./audios/sotm/Inheritance.WAV",
       "tags": [
@@ -1170,7 +1170,7 @@
       "id": "AL_3",
       "title": "Focus Needed",
       "location": "Warehouse",
-      "content": "Fiona: Ed, you're not going to want to hear this, but there's a lot of grumbling on the work floor. You have a lot of new ideas and new projects coming in, but the staff can't keep up with all your changes. Your creative energy's amazing and I love you for it... ...but I think you need to step back a little and focus on one project at a time.",
+      "content": "[[Fiona]] Ed, you're not going to want to hear this, but there's a lot of grumbling on the work floor. You have a lot of new ideas and new projects coming in, but the staff can't keep up with all your changes. Your creative energy's amazing and I love you for it... ...but I think you need to step back a little and focus on one project at a time.",
       "isAudio": true,
       "audioUrl": "./audios/sotm/FocusNeeded.WAV",
       "tags": [
@@ -1185,7 +1185,7 @@
       "id": "AL_8",
       "title": "Installation Worries",
       "location": "Roof Access",
-      "content": "Fiona: Ed, I hope this message reaches you as soon as you get a break. I have to go help the Fall Fest crew... just for a few days until the installation is finished. It's hard to explain... I just have this terrible feeling like I need to be there so nothing goes wrong... Just in case. Trisha will babysit David while I'm gone. I love you both and I'll be back next week.",
+      "content": "[[Fiona]] Ed, I hope this message reaches you as soon as you get a break. I have to go help the Fall Fest crew... just for a few days until the installation is finished. It's hard to explain... I just have this terrible feeling like I need to be there so nothing goes wrong... Just in case. Trisha will babysit David while I'm gone. I love you both and I'll be back next week.",
       "isAudio": true,
       "audioUrl": "./audios/sotm/Installation.WAV",
       "tags": [
@@ -1200,7 +1200,7 @@
       "id": "AL_4",
       "title": "Underground / Power Surge",
       "location": "IT Room",
-      "content": "Edwin: Attention all personnel. The power surges have become more... frequent. Please use extreme caution when venturing down into the tunnels.",
+      "content": "[[Edwin]] Attention all personnel. The power surges have become more... frequent. Please use extreme caution when venturing down into the tunnels.",
       "isAudio": true,
       "audioUrl": "./audios/sotm/Underground.WAV",
       "tags": [
@@ -1215,7 +1215,7 @@
       "id": "AL_6",
       "title": "Build to Spec",
       "location": "RnD's mockup woman restroom",
-      "content": "Edwin: Test test... journal entry. I got the change order from Hen last night. None of this makes sense. I'm almost done. Why change it now? It would be so much easier to keep using the Springlocks. Just hire some teens to wear the suits like we always do.",
+      "content": "[[Edwin]] Test test... journal entry. I got the change order from Hen last night. None of this makes sense. I'm almost done. Why change it now? It would be so much easier to keep using the Springlocks. Just hire some teens to wear the suits like we always do.",
       "isAudio": true,
       "audioUrl": "./audios/sotm/BuiltToSpec.WAV",
       "tags": [
@@ -1230,7 +1230,7 @@
       "id": "AL_5",
       "title": "Friends",
       "location": "Returns Room",
-      "content": "Edwin: What the hell was that? They treat me like some contractor to crack a whip at. Fiona was right. They don't think of me as a friend anymore. This is the last project I ever do for them.",
+      "content": "[[Edwin]] What the hell was that? They treat me like some contractor to crack a whip at. Fiona was right. They don't think of me as a friend anymore. This is the last project I ever do for them.",
       "isAudio": true,
       "audioUrl": "./audios/sotm/Friends.WAV",
       "tags": [
@@ -1245,7 +1245,7 @@
       "id": "AL_7",
       "title": "Creepy / Change Request",
       "location": "RnD's mockup Safe Room",
-      "content": "Edwin: Are they insane? The look of these new animatronics is Fiona's design and they're great. First they approve the art. Then they approve the proofs. Now, they change their minds when we're so close to final. Why would they change them now? Are they pulling my leg? The new concepts are frankly creepy. It doesn't matter... I'm not changing a single bit of her work and they can't make me.",
+      "content": "[[Edwin]] Are they insane? The look of these new animatronics is Fiona's design and they're great. First they approve the art. Then they approve the proofs. Now, they change their minds when we're so close to final. Why would they change them now? Are they pulling my leg? The new concepts are frankly creepy. It doesn't matter... I'm not changing a single bit of her work and they can't make me.",
       "isAudio": true,
       "audioUrl": "./audios/sotm/Creepy.WAV",
       "tags": [
@@ -1260,7 +1260,7 @@
       "id": "AL_9",
       "title": "Theater Shenanigans",
       "location": "Theater",
-      "content": "Edwin: Notice to all workers. All late night shenanigans are to stop immediately. I have some very important TV people coming to look at the show template. I can't have the projector breaking again!",
+      "content": "[[Edwin]] Notice to all workers. All late night shenanigans are to stop immediately. I have some very important TV people coming to look at the show template. I can't have the projector breaking again!",
       "isAudio": true,
       "audioUrl": "./audios/sotm/Theater Shenanigans.WAV",
       "tags": [
@@ -1275,7 +1275,7 @@
       "id": "AL_10",
       "title": "Death",
       "location": "Theater Backstage",
-      "content": "Edwin: Why did you go? You weren't even supposed to be there. You were supposed to be here with me and David. Ugh! How am I supposed to tell David that his mother is gone? How am I supposed to raise a kid on my own? His life is ruined... My life is ruined.",
+      "content": "[[Edwin]] Why did you go? You weren't even supposed to be there. You were supposed to be here with me and David. Ugh! How am I supposed to tell David that his mother is gone? How am I supposed to raise a kid on my own? His life is ruined... My life is ruined.",
       "isAudio": true,
       "audioUrl": "./audios/sotm/Death.WAV",
       "tags": [
@@ -1290,7 +1290,7 @@
       "id": "AL_11",
       "title": "The Frequency",
       "location": "Basement 2 secret workshop",
-      "content": "Edwin: Recording... Test. Test. Levels are good. This is where I heard it. It's her, or someone that sounds like her. Set frequency to 4625...\nRadio: (Static)\nEdwin: Hello. Hello? Is anyone there? Over.\nRadio: (Static)\nEdwin: Say something. It's me, Edwin. Over.\nRadio: (Static)\nFiona: That's great, honey, but you're missing the party.",
+      "content": "[[Edwin]] Recording... Test. Test. Levels are good. This is where I heard it. It's her, or someone that sounds like her. Set frequency to 4625...\n[[Radio]] (Static)\n[[Edwin]] Hello. Hello? Is anyone there? Over.\n[[Radio]] (Static)\n[[Edwin]] Say something. It's me, Edwin. Over.\n[[Radio]] (Static)\n[[Fiona]] That's great, honey, but you're missing the party.",
       "isAudio": true,
       "audioUrl": "./audios/sotm/TheFrequency.WAV",
       "tags": [
@@ -1306,7 +1306,7 @@
       "id": "AL_12",
       "title": "Training",
       "location": "Workshop's Springlock suits assembly room",
-      "content": "Edwin: David. I want you introduce you to someone. This is M1.\nDavid: Why does it look like that?\nEdwin: Look like what?\nDavid: It's scary.\nEdwin: It's an endo skeleton. It won't always look like this. It'll wear fun costumes.\nDavid: Like what?\nEdwin: Anything you want. It can fit into any costume we've created. Think of it as your new babysitter. But it doesn't get paid and go home. It'll stay with us and help around the house.",
+      "content": "[[Edwin]] David. I want you introduce you to someone. This is M1.\n[[David]] Why does it look like that?\n[[Edwin]] Look like what?\n[[David]] It's scary.\n[[Edwin]] It's an endo skeleton. It won't always look like this. It'll wear fun costumes.\n[[David]] Like what?\n[[Edwin]] Anything you want. It can fit into any costume we've created. Think of it as your new babysitter. But it doesn't get paid and go home. It'll stay with us and help around the house.",
       "isAudio": true,
       "audioUrl": "./audios/sotm/Training.WAV",
       "tags": [
@@ -1321,7 +1321,7 @@
       "id": "AL_13",
       "title": "Playground",
       "location": "Loading Docks",
-      "content": "Edwin: Look, I get your concerns, I do, but they're all just groundless. This is the perfect spot for David's playground. I can watch him play while I'm loading and unloading freight, and he'll be under watch at all times out there. The loading dock is like two hundred feet away, and there's a fence and everything. I know you're my lawyer and all, but there's no regulation that says I can't have it there, so just get off my back. Besides, David loves the new slide. It'll be fine.",
+      "content": "[[Edwin]] Look, I get your concerns, I do, but they're all just groundless. This is the perfect spot for David's playground. I can watch him play while I'm loading and unloading freight, and he'll be under watch at all times out there. The loading dock is like two hundred feet away, and there's a fence and everything. I know you're my lawyer and all, but there's no regulation that says I can't have it there, so just get off my back. Besides, David loves the new slide. It'll be fine.",
       "isAudio": true,
       "audioUrl": "./audios/sotm/Playground.WAV",
       "tags": [
@@ -1336,7 +1336,7 @@
       "id": "AL_14",
       "title": "Trust No One Fiona / Trust No One pt2",
       "location": "Inventor's House Library",
-      "content": "Fiona/M1: Edwin, you need to listen. I know you are excited, but you can't let them know about me. It's not safe. They wouldn't understand. Keep it between us for now.",
+      "content": "[[M1]] Edwin, you need to listen. I know you are excited, but you can't let them know about me. It's not safe. They wouldn't understand. Keep it between us for now.",
       "isAudio": true,
       "audioUrl": "./audios/sotm/TrustNoOnePt2.WAV",
       "tags": [
@@ -1351,7 +1351,7 @@
       "id": "AL_18",
       "title": "Trust No One",
       "location": "Story Time Showroom",
-      "content": "Edwin: Edwin, never forget. They're behind it. Don't trust them. Never tell them. They want to destroy you. Dad was right.",
+      "content": "[[Edwin]] Edwin, never forget. They're behind it. Don't trust them. Never tell them. They want to destroy you. Dad was right.",
       "isAudio": true,
       "audioUrl": "./audios/sotm/TrustNoOne.WAV",
       "tags": [
@@ -1366,7 +1366,7 @@
       "id": "AL_15",
       "title": "Here For You",
       "location": "RnD's Mimic Lair",
-      "content": "Fiona/M1: Edwin, it doesn't make sense. It's terrible and there's no logic behind it. It happened and you have to deal with it. You did it before. We can fix things together. I am here to help.",
+      "content": "[[M1]] Edwin, it doesn't make sense. It's terrible and there's no logic behind it. It happened and you have to deal with it. You did it before. We can fix things together. I am here to help.",
       "isAudio": true,
       "audioUrl": "./audios/sotm/HereForYou.WAV",
       "tags": [
@@ -1381,7 +1381,7 @@
       "id": "AL_17",
       "title": "Try Again",
       "location": "Inventor's House Workshop Room",
-      "content": "Fiona/M1: Edwin, you can't put it off any longer. You need to try again. Build another.",
+      "content": "[[M1]] Edwin, you can't put it off any longer. You need to try again. Build another.",
       "isAudio": true,
       "audioUrl": "./audios/sotm/TryAgain.WAV",
       "tags": [
@@ -1396,7 +1396,7 @@
       "id": "AL_16",
       "title": "Refusal",
       "location": "Inventor's House Workshop Room (with blueprints)",
-      "content": "Edwin: For the last time, NO. It wouldn't be him. Who am I kidding, you're not really you! Ugh, I've been so stupid.\nFiona/M1: Edwin, calm down and give it some thought. Try again. Make another and we can all be together.\nEdwin: All this time wasted! I should have been having fun with him, playing games and teaching him how to make things... But, I didn't. You. You! I let a machine raise my kid. You're not real. What was I thinking?!\nFiona/M1: You do not mean that. It is me. I'm Fiona.\nEdwin: Stop talking like her. You're not her. I never want to hear or even think about you ever again. Ever!",
+      "content": "[[Edwin]] For the last time, NO. It wouldn't be him. Who am I kidding, you're not really you! Ugh, I've been so stupid.\n[[M1]] Edwin, calm down and give it some thought. Try again. Make another and we can all be together.\n[[Edwin]] All this time wasted! I should have been having fun with him, playing games and teaching him how to make things... But, I didn't. You. You! I let a machine raise my kid. You're not real. What was I thinking?!\n[[M1]] You do not mean that. It is me. I'm Fiona.\n[[Edwin]] Stop talking like her. You're not her. I never want to hear or even think about you ever again. Ever!",
       "isAudio": true,
       "audioUrl": "./audios/sotm/Refusal.WAV",
       "tags": [
@@ -1412,7 +1412,7 @@
       "id": "AL_19",
       "title": "Make a Copy",
       "location": "Executive Suite",
-      "content": "Edwin: Project update. I figured it out. There's a leak. Someone told them about M2. Well, they can't have it. Every copy has failed. I don't even know why it worked the first time, but it did. It's just not ready.",
+      "content": "[[Edwin]] Project update. I figured it out. There's a leak. Someone told them about M2. Well, they can't have it. Every copy has failed. I don't even know why it worked the first time, but it did. It's just not ready.",
       "isAudio": true,
       "audioUrl": "./audios/sotm/MakeACopy.WAV",
       "tags": [
@@ -1427,7 +1427,7 @@
       "id": "AL_20",
       "title": "Announcement",
       "location": "Admin Wing",
-      "content": "Edwin: Attention traitors, admin wing permissions have been revoked. And no, you can't clear out your desks! You stole my work. Now your jackets, purses and coffee mugs and anything else belongs to me. Maybe I'll go find someone to sell your stuff to. How does that feel?",
+      "content": "[[Edwin]] Attention traitors, admin wing permissions have been revoked. And no, you can't clear out your desks! You stole my work. Now your jackets, purses and coffee mugs and anything else belongs to me. Maybe I'll go find someone to sell your stuff to. How does that feel?",
       "isAudio": true,
       "audioUrl": "./audios/sotm/Announcement.WAV",
       "tags": [
@@ -1443,7 +1443,7 @@
       "id": "AL_21",
       "title": "The Incident",
       "location": "Basement 2",
-      "content": "Edwin: ...Stop. You're not him. You're not! Stop sounding like him!",
+      "content": "[[Edwin]] ...Stop. You're not him. You're not! Stop sounding like him!",
       "isAudio": true,
       "audioUrl": "./audios/sotm/TheIncident.WAV",
       "tags": [
@@ -1458,7 +1458,7 @@
       "id": "AL_22",
       "title": "Turn Around",
       "location": "Inventor's House (Endgame)",
-      "content": "M2: Test test... Journal entry. Too bad. The new power test was a failure. Due to a minor... detonation, there is damage to my office interior as well as a small fire. Note to self. A portable cleaner that gets rid of smoke damage... Better yet, a Clown-O-Vac attachment.\nEdwin: Help... M2. Respond. Emergency... Call for help.\nM2: Daddy's busy, buddy. Why don't you go outside and play.\nEdwin: Please. I can't move. I can't feel my legs...\nM2: Speaking of legs. What do you think? I just finished mine. There are still a few kinks to work out...\nEdwin: I'm... I'm sorry, M2. I... lost my temper. I was always going to fix you... Please... call for help... M2. Respond.\nM2: Can't right now, buddy. We can do something fun tomorrow. I promise. Ask your mom, if she's not busy.\nEdwin: M2. Help...",
+      "content": "[[M2]] Test test... Journal entry. Too bad. The new power test was a failure. Due to a minor... detonation, there is damage to my office interior as well as a small fire. Note to self. A portable cleaner that gets rid of smoke damage... Better yet, a Clown-O-Vac attachment.\n[[Edwin]] Help... M2. Respond. Emergency... Call for help.\n[[M2]] Daddy's busy, buddy. Why don't you go outside and play.\n[[Edwin]] Please. I can't move. I can't feel my legs...\n[[M2]] Speaking of legs. What do you think? I just finished mine. There are still a few kinks to work out...\n[[Edwin]] I'm... I'm sorry, M2. I... lost my temper. I was always going to fix you... Please... call for help... M2. Respond.\n[[M2]] Can't right now, buddy. We can do something fun tomorrow. I promise. Ask your mom, if she's not busy.\n[[Edwin]] M2. Help...",
       "isAudio": true,
       "audioUrl": "./audios/sotm/TurnAround.WAV",
       "tags": [
@@ -1657,7 +1657,7 @@
       "isAudio": false,
       "audioUrl": "",
       "tags": [
-        "wa"
+        "afton__leak"
       ],
       "type": "text",
       "imageUrls": [
@@ -1672,7 +1672,7 @@
       "isAudio": false,
       "audioUrl": "",
       "tags": [
-        "wa"
+        "afton__leak"
       ],
       "type": "text",
       "imageUrls": [
@@ -1807,7 +1807,7 @@
       "isAudio": false,
       "audioUrl": "",
       "tags": [
-        "mcm"
+        "mcm_business__complaints"
       ],
       "type": "text",
       "imageUrls": [
@@ -1822,7 +1822,7 @@
       "isAudio": false,
       "audioUrl": "",
       "tags": [
-        "mcm"
+        "mcm_business__complaints"
       ],
       "type": "text",
       "imageUrls": [
@@ -1837,7 +1837,7 @@
       "isAudio": false,
       "audioUrl": "",
       "tags": [
-        "mcm"
+        "mcm_business__complaints"
       ],
       "type": "text",
       "imageUrls": [
@@ -1852,7 +1852,7 @@
       "isAudio": false,
       "audioUrl": "",
       "tags": [
-        "mcm"
+        "mcm_business__complaints"
       ],
       "type": "text",
       "imageUrls": [
@@ -1867,7 +1867,7 @@
       "isAudio": false,
       "audioUrl": "",
       "tags": [
-        "wa"
+        "afton__leak"
       ],
       "type": "text",
       "imageUrls": [
@@ -1882,7 +1882,7 @@
       "isAudio": false,
       "audioUrl": "",
       "tags": [
-        "mcm"
+        "mcm_business__complaints"
       ],
       "type": "text",
       "imageUrls": [
@@ -2092,7 +2092,7 @@
       "isAudio": false,
       "audioUrl": "",
       "tags": [
-        "mcm"
+        "mcm_business__complaints"
       ],
       "type": "text",
       "imageUrls": [
@@ -2107,7 +2107,7 @@
       "isAudio": false,
       "audioUrl": "",
       "tags": [
-        "mcm"
+        "mcm_business__complaints"
       ],
       "type": "text",
       "imageUrls": [
@@ -2122,7 +2122,7 @@
       "isAudio": false,
       "audioUrl": "",
       "tags": [
-        "mcm"
+        "mcm_business__complaints"
       ],
       "type": "text",
       "imageUrls": [
@@ -2137,7 +2137,7 @@
       "isAudio": false,
       "audioUrl": "",
       "tags": [
-        "mcm"
+        "mcm_business__complaints"
       ],
       "type": "text",
       "imageUrls": [
@@ -2152,7 +2152,7 @@
       "isAudio": false,
       "audioUrl": "",
       "tags": [
-        "mcm"
+        "mcm_business__complaints"
       ],
       "type": "text",
       "imageUrls": [
@@ -2167,7 +2167,7 @@
       "isAudio": false,
       "audioUrl": "",
       "tags": [
-        "mcm"
+        "mcm_business__complaints"
       ],
       "type": "text",
       "imageUrls": [
@@ -2400,5 +2400,5 @@
       ]
     }
   ],
-  "_lastModified": 1778999695247
+  "_lastModified": 1779002233191
 }
