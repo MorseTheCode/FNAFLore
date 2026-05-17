@@ -166,9 +166,10 @@
                     <h2 class="text-xl font-bold mono text-white">Media Logs (<span id="logCount">0</span>)</h2>
                     <button onclick="addLog()" class="btn btn-secondary text-xs py-1">Add New Log</button>
                 </div>
-                <div class="text-[10px] text-zinc-400 mb-3 border border-zinc-800 p-2 rounded bg-zinc-900/50 flex gap-4">
+                <div class="text-[10px] text-zinc-400 mb-3 border border-zinc-800 p-2 rounded bg-zinc-900/50 flex flex-wrap gap-4">
                     <span><b class="text-zinc-300">Strikethrough:</b> ~~text~~</span>
                     <span><b class="text-zinc-300">Circle text:</b> ((text))</span>
+                    <span><b class="text-zinc-300">Speaker Tag:</b> [[Name]]</span>
                 </div>
                 <div id="logsContainer" class="space-y-4 flex-grow overflow-y-auto pr-2" ondragover="handleDragOver(event)">
                     <!-- Logs injected here -->
@@ -187,6 +188,7 @@
             if (!s) return '';
             s = s.replace(/~~(.*?)~~/g, '<del class="opacity-70 text-red-400 decoration-red-500">$1</del>');
             s = s.replace(/\(\((.*?)\)\)/g, '<span class="inline-block align-middle whitespace-nowrap border border-red-500/70 text-red-400 px-2 py-0.5 leading-none mx-0.5 text-center" style="border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;">$1</span>');
+            s = s.replace(/\[\[(.*?)\]\]/g, '<span class="inline-block bg-[#3b0764] text-[#d8b4fe] border border-[#7e22ce] rounded px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider align-middle mr-1 font-mono leading-none">$1</span>');
             return s;
         }
 
@@ -1066,6 +1068,7 @@
             if (!s) return '';
             s = s.replace(/~~(.*?)~~/g, '<del class="opacity-70 text-red-400 decoration-red-500">$1</del>');
             s = s.replace(/\\(\\((.*?)\\)\\)/g, '<span class="inline-block align-middle whitespace-nowrap border border-red-500/70 text-red-400 px-2 py-0.5 leading-none mx-0.5 text-center" style="border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;">$1</span>');
+            s = s.replace(/\\[\\[(.*?)\\]\\]/g, '<span class="inline-block bg-[#3b0764] text-[#d8b4fe] border border-[#7e22ce] rounded px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider align-middle mr-1 font-mono leading-none">$1</span>');
             return s;
         }
 
