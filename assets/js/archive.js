@@ -1,0 +1,498 @@
+let appData = { header: "", subtitle: "", categories: [], logs: [] };
+
+let currentCategory = 'all';
+let currentType = 'all';
+let currentSearch = '';
+
+async function init() {
+    const jsonUrl = window.jsonSourceUrl || "classic.json";
+    const absoluteUrl = new URL(jsonUrl, window.location.href).href;
+    const cacheKey = 'mcm_archive_cache_' + absoluteUrl.replace(/[^a-zA-Z0-9]/g, '_');
+    const cached = localStorage.getItem(cacheKey);
+    
+    if (cached) {
+        try {
+            appData = JSON.parse(cached);
+            populateUI();
+            render();
+            setTimeout(() => { updateArrows('filterBar'); }, 100);
+        } catch(e) {}
+    }
+
+    try {
+        const response = await fetch(jsonUrl + '?t=' + Date.now(), { cache: 'no-store' });
+        if(!response.ok) throw new Error("Network response was not ok");
+        const serverData = await response.json();
+        
+        appData = serverData;
+        localStorage.setItem(cacheKey, JSON.stringify(appData));
+        populateUI();
+        render();
+        setTimeout(() => { updateArrows('filterBar'); }, 100);
+    } catch (error) {
+        console.error("Failed to load archive data:", error);
+        if (!cached) {
+            document.getElementById('page-title').textContent = "CONNECTION ERROR";
+            document.getElementById('page-subtitle').textContent = "Failed to retrieve databank. Make sure content json is accessible.";
+        }
+    }
+}
+
+function populateUI() {
+    document.getElementById('page-title').textContent = appData.header;
+    document.getElementById('page-subtitle').textContent = appData.subtitle;
+    document.title = appData.header;
+    
+    const filterBar = document.getElementById('filterBar');
+    filterBar.innerHTML = '<button class="category-btn active shrink-0" data-cat="all">All Logs</button>' + 
+        appData.categories.map(c => `<button class="category-btn shrink-0" data-cat="${escapeHtml(c.id)}">${escapeHtml(c.label)}</button>`).join('');
+    
+    appData.logs.forEach(l => {
+        l.type = l.type || (l.isAudio ? 'audio' : 'text');
+        l.tags = l.tags || [];
+        if (l.imageUrl && !l.imageUrls) l.imageUrls = [l.imageUrl];
+        if (!l.imageUrls) l.imageUrls = [""];
+    });
+}
+
+function escapeRegExp(string) { return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }
+function escapeHtml(unsafe) {
+    return (unsafe||'').replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+}
+function formatText(s) {
+    if (!s) return '';
+    s = s.replace(/~~(.*?)~~/g, '<del class="opacity-70 text-red-400 decoration-red-500">$1</del>');
+    s = s.replace(/\(\((.*?)\)\)/g, '<span class="inline-block align-middle whitespace-nowrap border border-red-500/70 text-red-400 px-2 py-0.5 leading-none mx-0.5 text-center" style="border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;">$1</span>');
+    s = s.replace(/\[\[(.*?)\]\]/g, '<span class="speaker-tag">$1</span>');
+    s = s.replace(/\[(.*?)\]:/g, '<span class="speaker-tag">$1</span>');
+    return s;
+}
+
+// --- Image Modal Logic ---
+function openImageModal(url) {
+    const modal = document.getElementById('imageModal');
+    document.getElementById('modalImage').src = url;
+    document.getElementById('modalDownloadBtn').href = url;
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+    setTimeout(() => modal.classList.remove('opacity-0'), 10);
+}
+function closeImageModal() {
+    const modal = document.getElementById('imageModal');
+    modal.classList.add('opacity-0');
+    setTimeout(() => {
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+        document.getElementById('modalImage').src = '';
+    }, 300);
+}
+
+// --- Audio Player Logic ---
+function toggleAudio(btn, audioId) {
+    var audio = document.getElementById(audioId);
+    if (audio.paused) {
+        document.querySelectorAll('audio').forEach(function(a) { 
+            if(a !== audio) { 
+                a.pause(); 
+                var container = a.closest('.audio-player-container');
+                if (container) {
+                    var b = container.querySelector('.play-pause-btn');
+                    if(b) b.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>';
+                }
+            }
+        });
+        audio.play();
+        btn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>';
+    } else {
+        audio.pause();
+        btn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>';
+    }
+}
+function updateProgress(audio) {
+    var container = audio.closest('.audio-player-container');
+    var fill = container.querySelector('.progress-fill');
+    var timeDisplay = container.querySelector('.time-display');
+    var percent = (audio.currentTime / audio.duration) * 100 || 0;
+    fill.style.width = percent + '%';
+    timeDisplay.textContent = formatTime(audio.currentTime) + ' / ' + formatTime(audio.duration || 0);
+}
+function setDuration(audio) {
+    var container = audio.closest('.audio-player-container');
+    var timeDisplay = container.querySelector('.time-display');
+    timeDisplay.textContent = '0:00 / ' + formatTime(audio.duration);
+}
+function resetPlayer(audio) {
+    var container = audio.closest('.audio-player-container');
+    var btn = container.querySelector('.play-pause-btn');
+    btn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>';
+    var fill = container.querySelector('.progress-fill');
+    fill.style.width = '0%';
+    var timeDisplay = container.querySelector('.time-display');
+    timeDisplay.textContent = '0:00 / ' + formatTime(audio.duration || 0);
+}
+
+let isScrubbing = false;
+let currentScrubAudio = null;
+let currentScrubBar = null;
+
+function startScrub(e, audioId) {
+    isScrubbing = true;
+    currentScrubAudio = document.getElementById(audioId);
+    currentScrubBar = e.currentTarget;
+    doScrub(e);
+}
+
+function doScrub(e) {
+    if (!isScrubbing || !currentScrubAudio || !currentScrubBar) return;
+    const rect = currentScrubBar.getBoundingClientRect();
+    let clickX = e.clientX - rect.left;
+    clickX = Math.max(0, Math.min(clickX, rect.width));
+    const percent = clickX / rect.width;
+    currentScrubAudio.currentTime = percent * currentScrubAudio.duration;
+}
+
+function stopScrub() {
+    isScrubbing = false;
+    currentScrubAudio = null;
+    currentScrubBar = null;
+}
+
+document.addEventListener('mousemove', doScrub);
+document.addEventListener('mouseup', stopScrub);
+
+function formatTime(seconds) {
+    if (isNaN(seconds) || !isFinite(seconds)) return "0:00";
+    var m = Math.floor(seconds / 60);
+    var s = Math.floor(seconds % 60);
+    return m + ':' + (s < 10 ? '0' : '') + s;
+}
+
+function getGroupedLogs(logs) {
+    const groups = appData.categories.map(cat => ({
+        name: cat.label,
+        match: (l) => (l.tags || []).includes(cat.id)
+    }));
+    
+    groups.push({ name: "Uncategorized Archives", match: (l) => !l.tags || l.tags.length === 0 });
+
+    const result = [];
+    const processedIds = new Set();
+
+    groups.forEach(group => {
+        const groupLogs = logs.filter(l => !processedIds.has(l.id) && group.match(l));
+        if (groupLogs.length > 0) {
+            result.push({ title: group.name, logs: groupLogs });
+            groupLogs.forEach(l => processedIds.add(l.id));
+        }
+    });
+    return result;
+}
+
+function scrollContainer(id, amount) {
+    document.getElementById(id).scrollBy({ left: amount, behavior: 'smooth' });
+}
+
+function updateArrows(id) {
+    const container = document.getElementById(id);
+    if (!container) return;
+    const wrapper = container.parentElement;
+    const leftArrow = wrapper.querySelector('.left-arrow');
+    const rightArrow = wrapper.querySelector('.right-arrow');
+    
+    if (leftArrow && rightArrow) {
+        if (container.scrollLeft > 0) {
+            leftArrow.classList.remove('hidden');
+        } else {
+            leftArrow.classList.add('hidden');
+        }
+        
+        if (container.scrollLeft < container.scrollWidth - container.clientWidth - 2) {
+            rightArrow.classList.remove('hidden');
+        } else {
+            rightArrow.classList.add('hidden');
+        }
+    }
+}
+
+window.addEventListener('resize', () => {
+    updateArrows('filterBar');
+    if (!document.getElementById('subFilterWrapper').classList.contains('hidden')) {
+        updateArrows('subFilterBar');
+    }
+});
+
+function render() {
+    const display = document.getElementById('logDisplay');
+    display.innerHTML = '';
+
+    const subFilterWrapper = document.getElementById('subFilterWrapper');
+    if (['text', 'audio', 'image', 'memo', 'order'].includes(currentCategory)) {
+        subFilterWrapper.classList.add('hidden');
+        subFilterWrapper.classList.remove('flex');
+        currentType = 'all';
+        document.querySelectorAll('.type-btn').forEach(b => b.classList.toggle('active', b.dataset.type === 'all'));
+    } else {
+        subFilterWrapper.classList.remove('hidden');
+        subFilterWrapper.classList.add('flex');
+        setTimeout(() => updateArrows('subFilterBar'), 10);
+    }
+
+    let filtered = appData.logs.filter(log => {
+        const searchLower = currentSearch.toLowerCase();
+        const matchesSearch = (log.title || '').toLowerCase().includes(searchLower) || 
+                              (log.content || '').toLowerCase().includes(searchLower) ||
+                              (log.location || '').toLowerCase().includes(searchLower);
+        
+        let matchesCat = currentCategory === 'all';
+        if (!matchesCat) {
+            if (['text', 'audio', 'image', 'memo', 'order'].includes(currentCategory)) {
+                matchesCat = log.type === currentCategory;
+            } else {
+                matchesCat = (log.tags || []).includes(currentCategory);
+            }
+        }
+        
+        const matchesType = currentType === 'all' ? true : log.type === currentType;
+
+        return matchesSearch && matchesCat && matchesType;
+    });
+
+    document.getElementById('logCount').innerText = filtered.length;
+
+    let cols = parseInt(document.getElementById('colSlider').value);
+    document.getElementById('colValue').textContent = cols;
+    let gridClass = 'grid gap-6';
+    if (cols === 1) gridClass += ' grid-cols-1';
+    else if (cols === 2) gridClass += ' grid-cols-1 md:grid-cols-2';
+    else if (cols === 3) gridClass += ' grid-cols-1 md:grid-cols-2 lg:grid-cols-3';
+    else if (cols === 4) gridClass += ' grid-cols-1 md:grid-cols-2 lg:grid-cols-4';
+    else if (cols === 5) gridClass += ' grid-cols-1 md:grid-cols-3 lg:grid-cols-5';
+
+    if ((currentCategory === 'all' || ['text', 'audio', 'image', 'memo', 'order'].includes(currentCategory)) && !currentSearch) {
+        const grouped = getGroupedLogs(filtered);
+        grouped.forEach(group => {
+            const groupSection = document.createElement('div');
+            groupSection.className = 'context-group';
+            groupSection.innerHTML = `<div class="group-header mono">${escapeHtml(group.title)}</div>`;
+            
+            const grid = document.createElement('div');
+            grid.className = gridClass;
+            
+            group.logs.forEach(log => grid.appendChild(createCard(log)));
+            groupSection.appendChild(grid);
+            display.appendChild(groupSection);
+        });
+    } else {
+        const grid = document.createElement('div');
+        grid.className = gridClass;
+        filtered.forEach(log => grid.appendChild(createCard(log)));
+        display.appendChild(grid);
+    }
+}
+
+function createCard(log) {
+    const div = document.createElement('div');
+    div.className = 'log-card p-5 rounded-xl flex flex-col gap-3';
+    
+    let displayTitle = escapeHtml(log.title);
+    let displayContent = escapeHtml(log.content);
+    if (currentSearch) {
+        const regex = new RegExp(`(${escapeRegExp(currentSearch)})`, 'gi');
+        displayTitle = displayTitle.replace(regex, '<span class="highlight">$1</span>');
+        displayContent = displayContent.replace(regex, '<span class="highlight">$1</span>');
+    }
+    displayTitle = formatText(displayTitle);
+    displayContent = formatText(displayContent);
+
+    const copySvg = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>`;
+
+    const locHtml = log.location ? `<span class="location-badge mono">${formatText(escapeHtml(log.location))}</span>` : '';
+    
+    let typeBadgeClass = "title-badge mono";
+    let typeBadgeLabel = formatText(escapeHtml(log.title));
+    if (log.type === 'audio') { typeBadgeClass = "title-badge audio-badge mono"; typeBadgeLabel = "AUDIO LOG"; }
+    else if (log.type === 'image') { typeBadgeClass = "title-badge mono border border-blue-800 bg-blue-900/30 text-blue-400"; typeBadgeLabel = "IMAGE ATTACHMENT"; }
+    else if (log.type === 'memo') { typeBadgeClass = "title-badge mono border border-yellow-800 bg-yellow-900/30 text-yellow-400"; typeBadgeLabel = "INTEROFFICE MEMO"; }
+    else if (log.type === 'order') { typeBadgeClass = "title-badge mono border border-teal-800 bg-teal-900/30 text-teal-400"; typeBadgeLabel = "MCM ORDER FORM"; }
+    
+    const typeBadge = `<span class="${typeBadgeClass}">${typeBadgeLabel}</span>`;
+    
+    const titleDisplay = (log.type === 'audio' || log.type === 'image' || log.type === 'memo' || log.type === 'order') ? `<h2 class="text-lg font-bold text-white mono leading-tight mb-3">${displayTitle}</h2>` : '';
+
+    let rawCopyText = log.content || '';
+    let cardBodyHtml = '';
+    
+    if (log.type === 'audio') {
+        const audioPlayerHtml = log.audioUrl ? `
+            <div class="audio-player-container bg-[#121212] border border-zinc-800 p-3 rounded-lg flex items-center gap-3 mt-4">
+                <button class="play-pause-btn text-purple-400 hover:text-purple-300 transition-colors flex-shrink-0" onclick="toggleAudio(this, 'audio-${log.id}')">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                </button>
+                <div class="bg-zinc-800 h-2 flex-grow rounded cursor-pointer relative" onmousedown="startScrub(event, 'audio-${log.id}')">
+                    <div class="progress-fill bg-purple-500 h-full rounded w-0 pointer-events-none transition-all duration-75"></div>
+                </div>
+                <span class="time-display text-zinc-500 text-xs mono pointer-events-none w-24 text-right flex-shrink-0">0:00 / 0:00</span>
+                <a href="${escapeHtml(log.audioUrl)}" download target="_blank" class="text-zinc-500 hover:text-purple-400 transition-colors flex-shrink-0 ml-1" title="Download Audio">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                </a>
+                <audio id="audio-${log.id}" src="${escapeHtml(log.audioUrl)}" ontimeupdate="updateProgress(this)" onloadedmetadata="setDuration(this)" onended="resetPlayer(this)"></audio>
+            </div>
+        ` : '';
+        cardBodyHtml = `<div class="content-area text-zinc-400 text-sm flex-grow">${displayContent}</div>${audioPlayerHtml}`;
+    } else if (log.type === 'image') {
+        const urls = (log.imageUrls || (log.imageUrl ? [log.imageUrl] : [])).filter(u => u.trim() !== '');
+        rawCopyText = urls.join('\n');
+        
+        if (urls.length === 0) {
+            cardBodyHtml = `<div class="text-zinc-600 text-sm italic">No image URLs provided.</div>`;
+        } else if (urls.length === 1) {
+            cardBodyHtml = `
+                <div class="mt-2 relative cursor-pointer group" onclick="openImageModal('${escapeHtml(urls[0])}')">
+                    <a href="${escapeHtml(urls[0])}" download target="_blank" onclick="event.stopPropagation()" class="absolute top-2 right-2 bg-black/70 text-zinc-300 p-1.5 rounded hover:text-green-400 hover:bg-black transition-colors z-10 opacity-0 group-hover:opacity-100" title="Download Image">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                    </a>
+                    <img src="${escapeHtml(urls[0])}" alt="${escapeHtml(log.title)}" class="w-full h-auto max-h-64 object-contain rounded-lg border border-zinc-800 group-hover:border-blue-500 transition-colors">
+                    <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center rounded-lg pointer-events-none">
+                        <span class="text-white text-sm mono flex items-center gap-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path></svg> Expand
+                        </span>
+                    </div>
+                </div>
+            `;
+        } else {
+            const slidesHtml = urls.map((url, i) => `
+                <div class="w-full shrink-0 relative cursor-pointer group snap-center" onclick="openImageModal('${escapeHtml(url)}')">
+                    <a href="${escapeHtml(url)}" download target="_blank" onclick="event.stopPropagation()" class="absolute top-2 right-2 bg-black/70 text-zinc-300 p-1.5 rounded hover:text-green-400 hover:bg-black transition-colors z-10 opacity-0 group-hover:opacity-100" title="Download Image">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                    </a>
+                    <img src="${escapeHtml(url)}" alt="${escapeHtml(log.title)} - ${i+1}" class="w-full h-auto max-h-64 object-contain rounded-lg border border-zinc-800 group-hover:border-blue-500 transition-colors">
+                    <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center rounded-lg pointer-events-none">
+                        <span class="text-white text-sm mono flex items-center gap-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path></svg> Expand
+                        </span>
+                    </div>
+                    <div class="absolute bottom-2 right-2 bg-black/70 text-zinc-300 text-[10px] px-2 py-1 rounded mono shadow backdrop-blur-sm">${i+1} / ${urls.length}</div>
+                </div>
+            `).join('');
+
+            cardBodyHtml = `
+                <div class="mt-2 relative group">
+                    <div class="flex overflow-x-auto snap-x snap-mandatory scrollbar-hide pb-2 gap-4" id="carousel-${log.id}">
+                        ${slidesHtml}
+                    </div>
+                    <button onclick="event.stopPropagation(); document.getElementById('carousel-${log.id}').scrollBy({left: -document.getElementById('carousel-${log.id}').clientWidth, behavior: 'smooth'})" class="absolute left-2 top-1/2 -translate-y-1/2 w-8 h-8 flex items-center justify-center rounded-full bg-black/60 text-white border border-zinc-700 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-black hover:border-blue-500 z-10 shadow-lg">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                    </button>
+                    <button onclick="event.stopPropagation(); document.getElementById('carousel-${log.id}').scrollBy({left: document.getElementById('carousel-${log.id}').clientWidth, behavior: 'smooth'})" class="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 flex items-center justify-center rounded-full bg-black/60 text-white border border-zinc-700 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-black hover:border-blue-500 z-10 shadow-lg">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                    </button>
+                </div>
+            `;
+        }
+    } else if (log.type === 'memo') {
+        const memoLines = [];
+        if(log.memoDate) memoLines.push('Date: ' + log.memoDate);
+        if(log.memoTo) memoLines.push('To: ' + log.memoTo);
+        if(log.memoFrom) memoLines.push('From: ' + log.memoFrom);
+        if(log.memoCC) memoLines.push('CC: ' + log.memoCC);
+        if(log.memoSubject) memoLines.push('Subject: ' + log.memoSubject);
+        memoLines.push('');
+        if(log.content) memoLines.push(log.content);
+        if(log.memoSignature) { memoLines.push(''); memoLines.push(log.memoSignature); }
+        rawCopyText = memoLines.join('\n').trim();
+
+        cardBodyHtml = `
+            <div class="bg-zinc-900/50 p-4 rounded-lg border border-zinc-800 mb-4 text-sm mono text-zinc-300 flex flex-col gap-2 shadow-inner">
+                ${log.memoDate ? `<div class="flex flex-col sm:flex-row sm:items-start gap-1 sm:gap-2"><span class="text-zinc-500 font-bold sm:w-20 shrink-0 mt-0.5">DATE:</span> <span class="leading-relaxed">${formatText(escapeHtml(log.memoDate))}</span></div>` : ''}
+                ${log.memoTo ? `<div class="flex flex-col sm:flex-row sm:items-start gap-1 sm:gap-2"><span class="text-zinc-500 font-bold sm:w-20 shrink-0 mt-0.5">TO:</span> <span class="leading-relaxed">${formatText(escapeHtml(log.memoTo))}</span></div>` : ''}
+                ${log.memoFrom ? `<div class="flex flex-col sm:flex-row sm:items-start gap-1 sm:gap-2"><span class="text-zinc-500 font-bold sm:w-20 shrink-0 mt-0.5">FROM:</span> <span class="leading-relaxed">${formatText(escapeHtml(log.memoFrom))}</span></div>` : ''}
+                ${log.memoCC ? `<div class="flex flex-col sm:flex-row sm:items-start gap-1 sm:gap-2"><span class="text-zinc-500 font-bold sm:w-20 shrink-0 mt-0.5">CC:</span> <span class="leading-relaxed">${formatText(escapeHtml(log.memoCC))}</span></div>` : ''}
+                ${log.memoSubject ? `<div class="mt-1 pt-3 border-t border-zinc-800 flex flex-col sm:flex-row sm:items-start gap-1 sm:gap-2"><span class="text-zinc-500 font-bold sm:w-20 shrink-0 mt-0.5">SUBJECT:</span> <span class="leading-relaxed">${formatText(escapeHtml(log.memoSubject))}</span></div>` : ''}
+            </div>
+            <div class="content-area text-zinc-300 text-sm flex-grow">${displayContent}</div>
+            ${log.memoSignature ? `<div class="mt-6 pt-4 border-t border-zinc-800/50 text-zinc-400 font-serif italic text-lg">${formatText(escapeHtml(log.memoSignature))}</div>` : ''}
+        `;
+    } else if (log.type === 'order') {
+        const orderLines = [];
+        if(log.orderDate) orderLines.push('ORDER DATE: ' + log.orderDate);
+        if(log.orderPickup) orderLines.push('PICKUP DATE: ' + log.orderPickup);
+        if(log.orderName) orderLines.push("PURCHASER'S NAME: " + log.orderName);
+        if(log.orderDate || log.orderPickup || log.orderName) orderLines.push('');
+        if(log.orderBody) orderLines.push('BODY TYPE: ' + log.orderBody);
+        if(log.orderQty) orderLines.push('QUANTITY: ' + log.orderQty);
+        if(log.orderMaterials) orderLines.push('REQUESTED MATERIALS: ' + log.orderMaterials);
+        if(log.orderDetails) orderLines.push('REQUESTED DETAILS: ' + log.orderDetails);
+        if(log.orderBody || log.orderQty || log.orderMaterials || log.orderDetails) orderLines.push('');
+        if(log.orderSpecial) orderLines.push('SPECIAL FUNCTIONS(2X ORIGINAL FEE): ' + log.orderSpecial);
+        rawCopyText = orderLines.join('\n').trim();
+
+        cardBodyHtml = `
+            <div class="bg-zinc-900/50 p-4 rounded-lg border border-zinc-800 text-sm mono text-zinc-300 flex flex-col gap-2 shadow-inner">
+                ${log.orderDate ? `<div class="flex flex-col sm:flex-row sm:items-start gap-1 sm:gap-2"><span class="text-zinc-500 font-bold sm:w-48 shrink-0 mt-0.5">ORDER DATE:</span> <span class="leading-relaxed break-words">${formatText(escapeHtml(log.orderDate))}</span></div>` : ''}
+                ${log.orderPickup ? `<div class="flex flex-col sm:flex-row sm:items-start gap-1 sm:gap-2"><span class="text-zinc-500 font-bold sm:w-48 shrink-0 mt-0.5">PICKUP DATE:</span> <span class="leading-relaxed break-words">${formatText(escapeHtml(log.orderPickup))}</span></div>` : ''}
+                ${log.orderName ? `<div class="flex flex-col sm:flex-row sm:items-start gap-1 sm:gap-2"><span class="text-zinc-500 font-bold sm:w-48 shrink-0 mt-0.5">PURCHASER'S NAME:</span> <span class="leading-relaxed break-words">${formatText(escapeHtml(log.orderName))}</span></div>` : ''}
+                ${(log.orderDate || log.orderPickup || log.orderName) && (log.orderBody || log.orderQty || log.orderMaterials || log.orderDetails) ? `<div class="my-1 border-t border-zinc-800/50"></div>` : ''}
+                ${log.orderBody ? `<div class="flex flex-col sm:flex-row sm:items-start gap-1 sm:gap-2"><span class="text-zinc-500 font-bold sm:w-48 shrink-0 mt-0.5">BODY TYPE:</span> <span class="leading-relaxed break-words">${formatText(escapeHtml(log.orderBody))}</span></div>` : ''}
+                ${log.orderQty ? `<div class="flex flex-col sm:flex-row sm:items-start gap-1 sm:gap-2"><span class="text-zinc-500 font-bold sm:w-48 shrink-0 mt-0.5">QUANTITY:</span> <span class="leading-relaxed break-words">${formatText(escapeHtml(log.orderQty))}</span></div>` : ''}
+                ${log.orderMaterials ? `<div class="flex flex-col sm:flex-row sm:items-start gap-1 sm:gap-2"><span class="text-zinc-500 font-bold sm:w-48 shrink-0 mt-0.5">REQUESTED MATERIALS:</span> <span class="leading-relaxed break-words">${formatText(escapeHtml(log.orderMaterials))}</span></div>` : ''}
+                ${log.orderDetails ? `<div class="flex flex-col sm:flex-row sm:items-start gap-1 sm:gap-2"><span class="text-zinc-500 font-bold sm:w-48 shrink-0 mt-0.5">REQUESTED DETAILS:</span> <span class="leading-relaxed break-words">${formatText(escapeHtml(log.orderDetails))}</span></div>` : ''}
+                ${log.orderSpecial ? `<div class="mt-1 pt-3 border-t border-zinc-800"><span class="text-zinc-500 font-bold block mb-1">SPECIAL FUNCTIONS(2X ORIGINAL FEE):</span> <span class="leading-relaxed break-words">${formatText(escapeHtml(log.orderSpecial))}</span></div>` : ''}
+            </div>
+        `;
+    } else {
+        cardBodyHtml = `<div class="content-area text-zinc-400 text-sm flex-grow">${displayContent}</div>`;
+    }
+
+    const encodedCopyText = encodeURIComponent(rawCopyText).replace(/'/g, "%27");
+
+    div.innerHTML = `
+        <div class="flex justify-between items-start mb-3">
+            <div class="flex gap-2 items-center flex-wrap">
+                ${typeBadge}
+                ${locHtml}
+            </div>
+            <button class="copy-btn" title="Copy Content" onclick="copyContent(this, '${encodedCopyText}')">${copySvg}</button>
+        </div>
+        ${titleDisplay}
+        <div class="content-wrapper flex flex-col">
+            ${cardBodyHtml}
+        </div>
+    `;
+    return div;
+}
+
+function copyContent(btn, encodedText) {
+    const textarea = document.createElement('textarea');
+    textarea.value = decodeURIComponent(encodedText);
+    textarea.style.position = 'fixed';
+    textarea.style.opacity = '0';
+    document.body.appendChild(textarea);
+    textarea.select();
+    document.execCommand('copy');
+    document.body.removeChild(textarea);
+
+    const originalHTML = btn.innerHTML;
+    btn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#4ade80" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
+    setTimeout(() => { btn.innerHTML = originalHTML; }, 1500);
+}
+
+document.getElementById('searchInput').addEventListener('input', (e) => { currentSearch = e.target.value; render(); });
+document.getElementById('filterBar').addEventListener('click', (e) => {
+    if (e.target.classList.contains('category-btn')) {
+        document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
+        e.target.classList.add('active');
+        currentCategory = e.target.dataset.cat;
+        render();
+    }
+});
+document.getElementById('subFilterBar').addEventListener('click', (e) => {
+    if (e.target.classList.contains('type-btn')) {
+        document.querySelectorAll('.type-btn').forEach(b => b.classList.remove('active'));
+        e.target.classList.add('active');
+        currentType = e.target.dataset.type;
+        render();
+    }
+});
+
+// Start execution
+init();
