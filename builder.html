@@ -693,14 +693,34 @@
                 `).join('');
 
                 let dynamicFieldsHtml = '';
-                if (log.type === 'audio') {
-                    dynamicFieldsHtml = `
-                        <div class="mt-2 border-t border-zinc-800/50 pt-3">
-                            <label class="block text-purple-400 text-[10px] uppercase mb-1">Audio File URL (Optional)</label>
-                            <input type="text" class="input-field border-purple-900/30 focus:border-purple-500" value="${escapeHtmlVal(log.audioUrl)}" placeholder="e.g. https://example.com/audio.mp3" oninput="updateLog('${log.id}', 'audioUrl', this.value)">
-                        </div>
-                    `;
-                } else if (log.type === 'image') {
+                  if (log.type === 'audio' || log.type === 'kiosk') {
+                      if (!log.audios) log.audios = [];
+                      if (log.type === 'kiosk' && log.audios.length !== 6) {
+                          const kNames = ['Basic', 'Security', 'Repair', 'Creator', 'Admin', 'Executive'];
+                          let newAudios = [];
+                          for (let i=0; i<6; i++) {
+                              newAudios.push(log.audios[i] || { name: kNames[i], url: '' });
+                              newAudios[i].name = kNames[i];
+                          }
+                          log.audios = newAudios;
+                      }
+                      
+                      let audiosHtml = '<div class="mt-2 border-t border-zinc-800/50 pt-3 space-y-2">';
+                      log.audios.forEach((a, i) => {
+                          audiosHtml += `
+                              <div class="flex gap-2 items-center">
+                                  <input type="text" class="input-field border-purple-900/30 focus:border-purple-500 w-1/3" value="${escapeHtmlVal(a.name)}" ${log.type === 'kiosk' ? 'readonly' : ''} placeholder="Label" oninput="updateAudio('${log.id}', ${i}, 'name', this.value)">
+                                  <input type="text" class="input-field border-purple-900/30 focus:border-purple-500 w-2/3" value="${escapeHtmlVal(a.url)}" placeholder="Audio URL" oninput="updateAudio('${log.id}', ${i}, 'url', this.value)">
+                                  ${log.type === 'audio' ? `<button class="text-red-400 hover:text-red-300 px-2 flex-shrink-0" onclick="removeAudio('${log.id}', ${i})">X</button>` : ''}
+                              </div>
+                          `;
+                      });
+                      if (log.type === 'audio') {
+                          audiosHtml += `<button class="btn btn-secondary text-xs py-1 mt-2" onclick="addAudio('${log.id}')">+ Add Audio</button>`;
+                      }
+                      audiosHtml += '</div>';
+                      dynamicFieldsHtml = audiosHtml;
+                  } else if (log.type === 'image') {
                     const urls = (log.imageUrls || (log.imageUrl ? [log.imageUrl] : [])).filter(u => u.trim() !== '');
                     let galleryHtml = '<div class="flex gap-2 overflow-x-auto pb-2 mt-2 scrollbar-hide">';
                     urls.forEach((url, i) => {
@@ -941,7 +961,7 @@
                     legacyAudio.forEach((l, i) => {
                         appData.logs.push({
                             id: `AL_${Date.now()}_${i}`, title: l.title || '', location: l.location || '',
-                            content: l.content || '', type: 'audio', isAudio: true, audioUrl: l.audioUrl || '', imageUrls: [""], tags: l.tags && l.tags.length > 0 ? l.tags : recoverTags(l)
+                            content: l.content || '', type: 'audio', isAudio: true, audios: l.audios || (l.audioUrl ? [{name: 'Audio', url: l.audioUrl}] : []), imageUrls: [""], tags: l.tags && l.tags.length > 0 ? l.tags : recoverTags(l)
                         });
                     });
                 }
@@ -949,7 +969,7 @@
                     legacyText.forEach((l, i) => {
                         appData.logs.push({
                             id: l.id || `TL_${Date.now()}_${i}`, title: l.title || '', location: l.location || '',
-                            content: l.content || '', type: 'text', isAudio: false, audioUrl: '', imageUrls: [""], tags: l.tags && l.tags.length > 0 ? l.tags : recoverTags(l)
+                            content: l.content || '', type: 'text', isAudio: false, audios: [], imageUrls: [""], tags: l.tags && l.tags.length > 0 ? l.tags : recoverTags(l)
                         });
                     });
                 }
@@ -1291,7 +1311,18 @@
             var timeDisplay = container.querySelector('.time-display');
             timeDisplay.textContent = '0:00 / ' + formatTime(audio.duration);
         }
-        function resetPlayer(audio) {
+        
+          function switchKioskAudio(id, url) {
+              const audio = document.getElementById('audio-' + id);
+              if (audio) {
+                  const isPlaying = !audio.paused;
+                  audio.src = url;
+                  audio.load();
+                  if (isPlaying) audio.play();
+              }
+          }
+
+          function resetPlayer(audio) {
             var container = audio.closest('.audio-player-container');
             var btn = container.querySelector('.play-pause-btn');
             btn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>';
@@ -1480,14 +1511,14 @@
             
             let typeBadgeClass = "title-badge mono";
             let typeBadgeLabel = formatText(escapeHtml(log.title));
-            if (log.type === 'audio') { typeBadgeClass = "title-badge audio-badge mono"; typeBadgeLabel = "AUDIO LOG"; }
+            if (log.type === 'audio' || log.type === 'kiosk') { typeBadgeClass = "title-badge audio-badge mono"; typeBadgeLabel = (log.type === 'kiosk') ? "KIOSK LOG" : "AUDIO LOG"; }
             else if (log.type === 'image') { typeBadgeClass = "title-badge mono border border-blue-800 bg-blue-900/30 text-blue-400"; typeBadgeLabel = "IMAGE ATTACHMENT"; }
             else if (log.type === 'memo') { typeBadgeClass = "title-badge mono border border-yellow-800 bg-yellow-900/30 text-yellow-400"; typeBadgeLabel = "INTEROFFICE MEMO"; }
             else if (log.type === 'order') { typeBadgeClass = "title-badge mono border border-teal-800 bg-teal-900/30 text-teal-400"; typeBadgeLabel = "MCM ORDER FORM"; }
             
             const typeBadge = \`<span class="\${typeBadgeClass}">\${typeBadgeLabel}</span>\`;
             
-            const titleDisplay = (log.type === 'audio' || log.type === 'image' || log.type === 'memo' || log.type === 'order') ? \`<h2 class="text-lg font-bold text-white mono leading-tight mb-3">\${displayTitle}</h2>\` : '';
+            const titleDisplay = (log.type === 'audio' || log.type === 'image' || log.type === 'memo' || log.type === 'order' || log.type === 'kiosk') ? \`<h2 class="text-lg font-bold text-white mono leading-tight mb-3">\${displayTitle}</h2>\` : '';
 
             let rawCopyText = log.content || '';
             let cardBodyHtml = '';

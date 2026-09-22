@@ -862,13 +862,15 @@
             "content": "[Therapist]: Hello, Vanessa. How are you feeling today? You look a little tired.\n[Therapist]: Hmm... Well, it's been a while since we last spoke. How's your anxiety been? You did so well with your calming protocols when we first worked together. Are you still using those? Yes? Ok, good. Well, now I understand there's a new issue. It came on just recently? Rather suddenly? Can you tell me about it?\n[Vanessa]: What issue? I've been doing my job. I come in and sit and my desk and do my work.\n[Therapist]: Yes, yes of course you do. Your performance reviews are good, but a routine check of your online history has revealed that you've spent quite a bit of time with someone in an encrypted conversation. We have transcripts and I've read them, but it's not clear what you're talking about in these conversations. I can't make sense of it. You must be getting something from these that I'm not getting, right? Who are you talking to in these?\n[Vanessa]: No one! Sometimes I talk with Luis, he's in the marketing department. He's nice, I guess.\n[Therapist]: Yes, I see Luis here, but there's someone else.",
             "memoTo": "",
             "memoDate": "Retro CD",
-            "audioUrls": [
-                "audios/sb/Play_Tape_1_7139 (614110966).wav"
-            ],
             "imageUrls": [
                 ""
             ],
-            "audioUrl": "./audios/sb/Play_Tape_1_7139 (614110966).wav"
+            "audios": [
+                {
+                    "name": "Audio",
+                    "url": "./audios/sb/Play_Tape_1_7139 (614110966).wav"
+                }
+            ]
         },
         {
             "id": "cd_9baf0b4b",
@@ -881,13 +883,15 @@
             "content": "[Therapist]: Good morning. Isn't it a pretty day? No? What's the matter? Oh, right, too bright. I'll pull the shades. Better? When the shade's pulled it feels like we're in a cubby hole or a cave, yeah?\n[Therapist]: Hmm... so you're not talking to me again today? (Sigh) This isn't all that productive, you know? Don't you think these sessions are more successful when you talk to me? You know everyone associated with this company gets performance reviews, right? When my sessions don't get results my reviews aren't very good. If you don't wanna talk for your own sake, how about for mine? You don't want me to get in trouble, do you? I could be put in the corner for a timeout. Yeah, you think that's funny, huh?",
             "memoTo": "",
             "memoDate": "Retro CD",
-            "audioUrls": [
-                "audios/sb/Play_Tape_2_4672 (1057895991).wav"
-            ],
             "imageUrls": [
                 ""
             ],
-            "audioUrl": "./audios/sb/Play_Tape_2_4672 (1057895991).wav"
+            "audios": [
+                {
+                    "name": "Audio",
+                    "url": "./audios/sb/Play_Tape_2_4672 (1057895991).wav"
+                }
+            ]
         },
         {
             "id": "cd_ab5ea234",
@@ -900,13 +904,15 @@
             "content": "[Therapist]: Hi. Go ahead, sit down.\n[Vanessa]: I don't know you. What happened to...\n[Therapist]: Oh, we'll get to know each other in no time. I've read through all your files so I feel like we've been talking for weeks. I feel like I know your dad too. Bill, right? Your dad's name was Bill? (\n[Vanessa]: Indistinct muttering)\n[Therapist]: I'm sorry, what did you say?\n[Vanessa]: I try to do what I'm supposed to do.\n[Therapist]: I know you do. Your supervisor notes that you follow instructions perfectly. Your dad made you follow instructions, didn't he? I'm talking about the custody battle between your mom and your dad. Your dad didn't play fair, did he? He used to make your mom look bad in court. I'm so sorry that happened to you. Do you want to talk about how that felt?\n[Therapist]: I suppose I don't need you to tell me it felt bad to have a parent scare you into saying things that weren't true. He manipulated you. It wasn't your fault. It's really sad, but it's common for one parent to use their child to hurt the other parent. I know your mom (STATIC) after she lost the custody case.\n[Vanessa]: I was supposed to be a good girl.\n[Therapist]: What happened to her had nothing to do with you even though it was your testimony that did it. Was that testimony true?\n[Therapist]: No. I didn't think so, but your dad is to blame, not you.",
             "memoTo": "",
             "memoDate": "Retro CD",
-            "audioUrls": [
-                "audios/sb/Play_Tape_3_7140 (1000207041).wav"
-            ],
             "imageUrls": [
                 ""
             ],
-            "audioUrl": "./audios/sb/Play_Tape_3_7140 (1000207041).wav"
+            "audios": [
+                {
+                    "name": "Audio",
+                    "url": "./audios/sb/Play_Tape_3_7140 (1000207041).wav"
+                }
+            ]
         },
         {
             "id": "cd_1c7d4d23",
@@ -919,13 +925,15 @@
             "content": "[Therapist]: You're not going to talk to me? No? What's the problem? Oh, the flowers? Yes, these are particularly fragrant today, aren't they? I'll move them. There. Now, let's see. What are you looking at? You're amazingly alert, aren't you? Alright, well I'd like to have you tell me about yourself, but I can see that you're not going to do that, or are you?\n[Therapist]: Alright then, if you aren't going to talk to me I'll just go by these notes. You just sit there and be comfy. Or not. That chair doesn't really fit you, does it? Well, this won't take long. Let's see, your previous counselor is no longer available. Does that bother you? No? You don't look surprised to see me sitting here instead of your last therapist.\n[Therapist]: Well then, let's get to it. I'll admit that some of what's in your file is a little surprising. Overall, you don't come across as a troublemaker, but if you read between the lines it's clear that you have a little rebellious side, right?\n[Therapist]: And I'm surprised by your knowledge of computers. You're something of a phenom. Do you know what that word means? It means you have unusual skill, like a hacker. I assume you know what a hacker is, yes? Do you think of yourself as a hacker?",
             "memoTo": "",
             "memoDate": "Retro CD",
-            "audioUrls": [
-                "audios/sb/Play_Tape_4_4673 (628814834).wav"
-            ],
             "imageUrls": [
                 ""
             ],
-            "audioUrl": "./audios/sb/Play_Tape_4_4673 (628814834).wav"
+            "audios": [
+                {
+                    "name": "Audio",
+                    "url": "./audios/sb/Play_Tape_4_4673 (628814834).wav"
+                }
+            ]
         },
         {
             "id": "cd_b3c1902e",
@@ -938,13 +946,15 @@
             "content": "[Therapist]: Good morning, Vanessa. Let's jump right in, shall we? I got a message last night about you and I have to be honest it was upsetting. Apparently, the IT department has put together a pretty lengthy report chronicling non-job related communications that have been coming to your computer. The fact that you're still doing something obviously not work related on the job is disturbing enough, but what bothers me about what I read is that the messages you're getting seem very manipulative in nature. Do you know who I'm talking about?\n[Vanessa]: I get a lot of messages from friends. I like when Luis writes to me, he's funny.\n[Therapist]: I'm not talking about Luis. You know who I'm talking about. Why won't you open up about it? (Sigh)\n[Therapist]: What you might not know is that this person who's been sending you messages has been hacking into your personal files too. These are the same files I have here. These files are full of details about your life. Do you know what that means?\n[Vanessa]: I'm not in the tech department, I just type on the computers.\n[Therapist]: I know that, but what matters here is that this person who is contacting you knows a lot about you.\n[Vanessa]: Lots of people know more than I do. Sometimes I need to listen.",
             "memoTo": "",
             "memoDate": "Retro CD",
-            "audioUrls": [
-                "audios/sb/Play_Tape_5_7141 (1008470055).wav"
-            ],
             "imageUrls": [
                 ""
             ],
-            "audioUrl": "./audios/sb/Play_Tape_5_7141 (1008470055).wav"
+            "audios": [
+                {
+                    "name": "Audio",
+                    "url": "./audios/sb/Play_Tape_5_7141 (1008470055).wav"
+                }
+            ]
         },
         {
             "id": "cd_8d4ed295",
@@ -957,13 +967,15 @@
             "content": "[Therapist]: Good morning! It's good to meet you! I've read your files, so I'm up to speed on what you and your previous therapists have worked on.\n[Therapist]: Sure, you can have a candy. I'll have one too. You look chill sitting there like that. Not a care in the world, huh? Alright, well I'd like to start with talking about your parents. What happened to them, and you, was tragic, but when I looked through the notes I didn't get a sense that you've processed that emotionally. When I read your account of what happened it came across as, well, more of an objective rather than a subjective narrative. Oh, sorry, you don't know what that means, do you? What I mean is that the way you told the story is more like you were reading something from a book than you were talking about your own past. That makes me think you've cut yourself off from it, is that right? Not sure? Well, I see it in your file that you spend a lot of time by yourself and are good at self-dialogue, you know what I mean? Asking yourself questions and getting answers? So, maybe you should ask yourself how you really feel about your past. Maybe you should give yourself a chance to really look at what happened and let yourself be upset about it. So you can let it go.",
             "memoTo": "",
             "memoDate": "Retro CD",
-            "audioUrls": [
-                "audios/sb/Play_Tape_6_4674 (772559081).wav"
-            ],
             "imageUrls": [
                 ""
             ],
-            "audioUrl": "./audios/sb/Play_Tape_6_4674 (772559081).wav"
+            "audios": [
+                {
+                    "name": "Audio",
+                    "url": "./audios/sb/Play_Tape_6_4674 (772559081).wav"
+                }
+            ]
         },
         {
             "id": "cd_f4d68315",
@@ -976,13 +988,15 @@
             "content": "[Therapist]: Hi, Vanessa. Would you like a candy? Butterscotch today.\n[Vanessa]: No, thank you. Those have 35 calories a piece.\n[Therapist]: Hmm, well they taste good to me! Ok, I thought we could do something today that will help us get to know one another better. It looks like you've never taken an ink blot test, right? No? Ok. Then I'm going to show you some ink blots like this one and I want you to tell me the first thing it makes you think of. Here we go. What do you see here?\n[Vanessa]: A treehouse.\n[Therapist]: Hmm, it does look sort of like a treehouse, doesn't it? Do you like treehouses?\n[Vanessa]: I like to sit outside and read.\n[Therapist]: That's good. Now, what about this one?\n[Vanessa]: A beetle.\n[Therapist]: Really? Looks like a face to me. That's very interesting.",
             "memoTo": "",
             "memoDate": "Retro CD",
-            "audioUrls": [
-                "audios/sb/Play_Tape_7_7142 (129077551).wav"
-            ],
             "imageUrls": [
                 ""
             ],
-            "audioUrl": "./audios/sb/Play_Tape_7_7142 (129077551).wav"
+            "audios": [
+                {
+                    "name": "Audio",
+                    "url": "./audios/sb/Play_Tape_7_7142 (129077551).wav"
+                }
+            ]
         },
         {
             "id": "cd_2a14e083",
@@ -995,13 +1009,15 @@
             "content": "[Therapist]: Have you thought more about what we talked about? In our last session you told me you were sad and scared about what happened to you. I suggested you write down exactly what made you so sad and scared, did you do that?\n[Therapist]: You know, I work with people of all ages, from little kids to the very elderly, and everyone reacts to tragedy differently. Tragedy always leads to a feeling of loss. It's a hole that feels funny, right? Yeah, so if you could process those feelings, how do you think it would affect your fantasies? Would you keep them in the way they are?",
             "memoTo": "",
             "memoDate": "Retro CD",
-            "audioUrls": [
-                "audios/sb/Play_Tape_8_4675 (797245215).wav"
-            ],
             "imageUrls": [
                 ""
             ],
-            "audioUrl": "./audios/sb/Play_Tape_8_4675 (797245215).wav"
+            "audios": [
+                {
+                    "name": "Audio",
+                    "url": "./audios/sb/Play_Tape_8_4675 (797245215).wav"
+                }
+            ]
         },
         {
             "id": "cd_fb1a360b",
@@ -1014,13 +1030,15 @@
             "content": "[Therapist]: What are you doing? Oh, you like those? I do too. They smell so sweet, don't they? Apparently, the janitor on this floor has a garden and has been putting bouquets in the offices here for years. Do you ever grow things? No?\n[Vanessa]: I work a lot.\n[Therapist]: I know you do, maybe more than you should. More free time would do you good. Do you have a hobby? No? Perhaps we could find one for you, like a sport. No? Hmm... I have a craft space in my basement. Maybe I could come up with something you could learn to do.\n[Vanessa]: I don't like dark basements.",
             "memoTo": "",
             "memoDate": "Retro CD",
-            "audioUrls": [
-                "audios/sb/Play_Tape_9_7143 (472777).wav"
-            ],
             "imageUrls": [
                 ""
             ],
-            "audioUrl": "./audios/sb/Play_Tape_9_7143 (472777).wav"
+            "audios": [
+                {
+                    "name": "Audio",
+                    "url": "./audios/sb/Play_Tape_9_7143 (472777).wav"
+                }
+            ]
         },
         {
             "id": "cd_526eeab1",
@@ -1033,13 +1051,15 @@
             "content": "[Therapist]: I'd say make yourself comfortable, but I think you already are. It looks like you could take a nap. That's a nice chair, isn't it? According to these message logs, you've been working pretty late over the last couple of weeks... Or not working. Are you ready to talk about who you're interacting with? From what I can see here the interaction is getting more serious. Is it distracting you from your work?\n[Vanessa]: My work is important. There's a non-disclosure agreement.",
             "memoTo": "",
             "memoDate": "Retro CD",
-            "audioUrls": [
-                "audios/sb/Play_Tape_10_7144 (193099864).wav"
-            ],
             "imageUrls": [
                 ""
             ],
-            "audioUrl": "./audios/sb/Play_Tape_10_7144 (193099864).wav"
+            "audios": [
+                {
+                    "name": "Audio",
+                    "url": "./audios/sb/Play_Tape_10_7144 (193099864).wav"
+                }
+            ]
         },
         {
             "id": "cd_5657de14",
@@ -1052,13 +1072,15 @@
             "content": "[Therapist]: Good morning, Vanessa. Well, I can't blame you for looking out the window instead of listening to me. It's a gorgeous day, isn't it?\n[Vanessa]: I like the blue sky.\n[Therapist]: Hmm, so do I. Now, let's see what we can get done on this nice sunny day. Ok, here we go. I know part of your job requires you to do online searches, but a routine audit of your search history has revealed that you're doing a little private searching on company time. Is that right?\n[Vanessa]: I get breaks.\n[Therapist]: That's true. So, on your breaks it looks like you were shopping for a costume. You purchased some fake fur material. What are you going to make? (\n[Vanessa]: Indistinct muttering)\n[Therapist]: What was that? Did you say the costume is a secret? Why is that?\n[Vanessa]: I can't talk about this. He said he would always be watching. He could be here or there or anywhere in-between.\n[Therapist]: Are you talking about your dad? Have those feelings come up again? I hate sounding like a broken record, but this is something you really need to resolve if you're ever going to be happy.\n[Vanessa]: I have! I compartmentalized him. He's locked away.\n[Therapist]: No, that's not what I mean. You can't just ignore an issue. You have to face your memory of the experiences and process them so you can let it go. So you don't get triggered anymore. You can use a sort of self-dialogue to release these things.\n[Vanessa]: I don't like doing that. Hmm, well, ok. We'll get back to that. I'd really like to know something about this costume. What's it for?",
             "memoTo": "",
             "memoDate": "Retro CD",
-            "audioUrls": [
-                "audios/sb/Play_Tape_11_7145 (720735174).wav"
-            ],
             "imageUrls": [
                 ""
             ],
-            "audioUrl": "./audios/sb/Play_Tape_11_7145 (720735174).wav"
+            "audios": [
+                {
+                    "name": "Audio",
+                    "url": "./audios/sb/Play_Tape_11_7145 (720735174).wav"
+                }
+            ]
         },
         {
             "id": "cd_ee7c2fb3",
@@ -1071,13 +1093,15 @@
             "content": "[Therapist]: I understand you'll be transferring to a different location soon. I'll be sorry to see you go. I think we've been making progress, don't you? You can request to come back and speak with me more on your own time though. Did you know that? Our sessions don't have to be company mandated. I have all sorts of clients, Vanessa. I don't just work with corporations. I work with individuals and small groups, I even work in schools. I'm wherever I'm needed.\n[Vanessa]: I'm needed somewhere else now. Thank you.",
             "memoTo": "",
             "memoDate": "Retro CD",
-            "audioUrls": [
-                "audios/sb/Play_Tape_12_7146 (138120847).wav"
-            ],
             "imageUrls": [
                 ""
             ],
-            "audioUrl": "./audios/sb/Play_Tape_12_7146 (138120847).wav"
+            "audios": [
+                {
+                    "name": "Audio",
+                    "url": "./audios/sb/Play_Tape_12_7146 (138120847).wav"
+                }
+            ]
         },
         {
             "id": "cd_87d6ea8a",
@@ -1090,13 +1114,15 @@
             "content": "[Therapist]: When I'm getting to know a new client, I like to start by finding out directly from them what they like to do. How do you spend all the time you have? Nothing? Well... how do you feel about sports? You like sports? Yeah? No? Oh, I get it. You like to watch them, but not play them. You like being inside, don't you? I get that. Lots of weird stuff outdoors, isn't there? Yeah, I understand. Well, I hate to do this right off the bat, but I've been directed to ask you about this. Apparently, I'm the fourth therapist you've had, and apparently all three of your former therapists have gone missing. Or, two of them are missing. I don't want to scare you, but I have to tell you that one of them was found dead.\n[Therapist]: That doesn't seem to upset you. Well then, I guess I'll go ahead and tell you that the woman's body was pretty messed up. It looked like it was mangled by machinery. That doesn't bother you either? Hmm... it's all pretty strange, I think. I'm not clear on the circumstances. Apparently, the police don't have any evidence. How does all of this make you feel? Chuckles) Maybe I should be watching my back. Yeah, that's funny, isn't it? Ok, shall we move on to something lighter?",
             "memoTo": "",
             "memoDate": "Retro CD",
-            "audioUrls": [
-                "audios/sb/Play_Tape_13_4676 (812447513).wav"
-            ],
             "imageUrls": [
                 ""
             ],
-            "audioUrl": "./audios/sb/Play_Tape_13_4676 (812447513).wav"
+            "audios": [
+                {
+                    "name": "Audio",
+                    "url": "./audios/sb/Play_Tape_13_4676 (812447513).wav"
+                }
+            ]
         },
         {
             "id": "cd_06a894bd",
@@ -1109,13 +1135,15 @@
             "content": "[Therapist]: Do you know a place called Freddy Fazbear's Mega Pizzaplex? I'll take your silence as a yes. And besides, I know you know it. Because the technicians who work for Pizzaplex know you. Or rather, I guess it would be better to say that they think they do. They report that they have caught you on camera, or at least it appears to be you. Nothing to say about that? Well, the techs are convinced that you've hacked into their system many times. Although, I'll admit I don't see any proof here. Seems like they have more of a gut feeling than fact. But apparently the hacks are causing all kinds of problems. Hmm, you get a kick out of that? The idea of techs running around like chickens with their heads cut off? Yeah, that's a funny image, isn't it? But seriously, I have to say that I think it's weird that you'd spend so much time in such a busy, social place. You seem like more of a loner to me. Lots of time by yourself instead of with friends. Lots of time talking to yourself, right? Is it the electronics you like? I saw in your file that you've developed software programs that talk to you and repeat phrases, right? The program asks you questions and prompts you for responses. It's kind of like your own self therapy, isn't it? Another way of talking to yourself to work things out, right? When I saw some of your recent encrypted conversation logs, that's what I thought I was looking at. It felt like I was watching someone go back and forth in their own head, but the techs found something that's different than that. When I read what they found, at first, I thought I was looking at more examples of you just talking with yourself, then I realized it was different. When I study this, it sounds like there is someone else responding to you. Who is it?",
             "memoTo": "",
             "memoDate": "Retro CD",
-            "audioUrls": [
-                "audios/sb/Play_Tape_14_4677 (304958034).wav"
-            ],
             "imageUrls": [
                 ""
             ],
-            "audioUrl": "./audios/sb/Play_Tape_14_4677 (304958034).wav"
+            "audios": [
+                {
+                    "name": "Audio",
+                    "url": "./audios/sb/Play_Tape_14_4677 (304958034).wav"
+                }
+            ]
         },
         {
             "id": "cd_8c2eb487",
@@ -1128,13 +1156,15 @@
             "content": "[Therapist]: I saw some ink blot test results in your file. I like ink blot tests. You wanna do one? Yes? Ok. How about this one? What do you see? What? You wanna hold it? Ok.\n[Therapist]: You think it's a mask? It reminds you of a mask? Like a disguise? Yeah, I can see that. You like the idea of being disguised? Disguises let you be sort of invisible, don't they? You can get away with almost anything when you're invisible, can't you? (chuckles). Yeah? You like that idea, huh? Well ok, moving on. I have another report we need to talk about. Apparently, the techs were reviewing communications going in and out of this building and they came across some interesting things. They say you're in communication with someone... or maybe something. Pretty strange. What do you think about that? Nothing? Well, the techs say it looked to them like it was an attempt to manipulate you, or maybe to lure you somewhere.\n[Therapist]: There, that's better. On this side of the desk, I can see your eyes. The thing is, when I read the communications, I get something different out of them. I don't think you're being manipulated here. I think you're the one doing the manipulating. No comment, huh? Ok... then how about this? I have this still shot the techs pulled from the security footage that recorded you in the Pizzaplex. That's you, isn't it? I know this image is distorted, but I think it looks like you. And you're not alone here. You're talking to someone, or something, it's hard to tell. What are those things? They almost look like rabbit ears. What? You find that amusing? Well, I guess it is.",
             "memoTo": "",
             "memoDate": "Retro CD",
-            "audioUrls": [
-                "audios/sb/Play_Tape_15_4678 (823019201).wav"
-            ],
             "imageUrls": [
                 ""
             ],
-            "audioUrl": "./audios/sb/Play_Tape_15_4678 (823019201).wav"
+            "audios": [
+                {
+                    "name": "Audio",
+                    "url": "./audios/sb/Play_Tape_15_4678 (823019201).wav"
+                }
+            ]
         },
         {
             "id": "cd_8fe7870d",
@@ -1147,13 +1177,15 @@
             "content": "[Therapist]: I got another message from the techs at the Pizzaplex. I'm afraid it's about you again. The techs have been struggling to fix some serious glitches with the robots. I'm not sure what exactly is wrong except that it's making the robots more eerie than entertaining. You like that? Eerie instead of entertaining? Thanks, but it's really not that funny. Apparently, the glitch extended beyond the robots. It went system wide. It began infecting all the machines and when the techs traced the glitch back to its origin it led them to you. And I'm not going to pretend to understand everything I'm reading here, but what I get is that the system wide glitch was like a cascade that was broadcasting a very dangerous message. While the techs were trying to reprogram the system to remove the glitch, the source of the glitch shifted. You'll have to excuse me, I'm not all that familiar with computer programming so I might get this wrong, but what I understand is that the glitch stopped being a glitch and turned into an intentional set of sub-routines that were aimed at creating the same thing the glitch created. Those sub-routines seem to have come from you. Can you explain that?\n[Therapist]: Listen, I'm on your side here. Our sessions are just between you and me. The techs can't prove what they think, so you're not in trouble. I just thought you could tell me what you're trying to do. Maybe if we could get to the bottom of that it could help you. What do you think? Still not talking? Alright, well then let's do this. Why don't we talk about the research I did in your past, shall we? Some therapists think they should only focus on information they get from their clients, but some therapists, like me, think it's helpful to find out about clients from other sources. Wanna guess what I found out when I looked into the tragedy of your past? All that stuff about your parents? You aren't even gonna look at me? Fine, you can look at the floor all you want, but it won't change the fact that none of what you said in your file about your parents was true. The truth is, you had great parents, a great childhood. Why did you lie? Look at me. Tell me why you lied. You - (clears throat) Well, I can understand why you might feel angry about the way I just confronted you. Why don't we come back to this another day? You're shaking your head as though that's not going to happen.",
             "memoTo": "",
             "memoDate": "Retro CD",
-            "audioUrls": [
-                "audios/sb/Play_Tape_16_4679 (146958370).wav"
-            ],
             "imageUrls": [
                 ""
             ],
-            "audioUrl": "./audios/sb/Play_Tape_16_4679 (146958370).wav"
+            "audios": [
+                {
+                    "name": "Audio",
+                    "url": "./audios/sb/Play_Tape_16_4679 (146958370).wav"
+                }
+            ]
         }
     ],
     "_lastModified": 1790088431783,
