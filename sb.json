@@ -3,6 +3,10 @@
   "subtitle": "Tales from the Pizzaplex",
   "categories": [
     {
+      "id": "retro_cds",
+      "label": "Retro CDs"
+    },
+    {
       "id": "arcade_conspiracy",
       "label": "Arcade Conspiracy"
     },
@@ -37,10 +41,6 @@
     {
       "id": "misc",
       "label": "Miscellaneous"
-    },
-    {
-      "id": "retro_cds",
-      "label": "Retro CDs"
     }
   ],
   "logs": [
@@ -1156,5 +1156,5 @@
       "audioUrl": "./audios/sb/Play_Tape_16_4679 (146958370).wav"
     }
   ],
-  "_lastModified": 1790064868011
+  "_lastModified": 1790088431783
 }
