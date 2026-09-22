@@ -127,9 +127,7 @@
                         <button class="type-btn text-xs px-3 py-1.5 mono shrink-0" data-type="text">Text Only</button>
                         <button class="type-btn text-xs px-3 py-1.5 mono shrink-0" data-type="audio">Audio Only</button>
                         <button class="type-btn text-xs px-3 py-1.5 mono shrink-0" data-type="image">Image Only</button>
-                        <button class="type-btn text-xs px-3 py-1.5 mono shrink-0" data-type="memo">Memo Only</button>
-                        <button class="type-btn text-xs px-3 py-1.5 mono shrink-0" data-type="order">Order Form</button>
-                    </div>
+                        </div>
                     <button class="scroll-arrow right-arrow hidden" onclick="scrollContainer('subFilterBar', 200)">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
                     </button>
@@ -385,7 +383,7 @@
             display.innerHTML = '';
 
             const subFilterWrapper = document.getElementById('subFilterWrapper');
-            if (['text', 'audio', 'image', 'memo', 'order'].includes(currentCategory)) {
+            if (['text', 'audio', 'image'].includes(currentCategory)) {
                 subFilterWrapper.classList.add('hidden');
                 subFilterWrapper.classList.remove('flex');
                 currentType = 'all';
@@ -404,7 +402,7 @@
                 
                 let matchesCat = currentCategory === 'all';
                 if (!matchesCat) {
-                    if (['text', 'audio', 'image', 'memo', 'order'].includes(currentCategory)) {
+                    if (['text', 'audio', 'image'].includes(currentCategory)) {
                         matchesCat = log.type === currentCategory;
                     } else {
                         matchesCat = (log.tags || []).includes(currentCategory);
@@ -427,7 +425,7 @@
             else if (cols === 4) gridClass += ' grid-cols-1 md:grid-cols-2 lg:grid-cols-4';
             else if (cols === 5) gridClass += ' grid-cols-1 md:grid-cols-3 lg:grid-cols-5';
 
-            if ((currentCategory === 'all' || ['text', 'audio', 'image', 'memo', 'order'].includes(currentCategory)) && !currentSearch) {
+            if ((currentCategory === 'all' || ['text', 'audio', 'image'].includes(currentCategory)) && !currentSearch) {
                 const grouped = getGroupedLogs(filtered);
                 grouped.forEach(group => {
                     const groupSection = document.createElement('div');

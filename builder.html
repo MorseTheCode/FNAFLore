@@ -175,6 +175,16 @@
                         <!-- Categories injected here -->
                     </div>
                 </div>
+                
+                <div class="panel p-6">
+                    <div class="flex justify-between items-center mb-4 border-b border-zinc-800 pb-2">
+                        <h2 class="text-xl font-bold mono text-white">Type Filters</h2>
+                        <button onclick="addTypeFilter()" class="text-green-400 hover:text-green-300" title="Add Type Filter">+</button>
+                    </div>
+                    <div id="typeFiltersContainer" class="space-y-3">
+                        <!-- Type Filters injected here -->
+                    </div>
+                </div>
             </div>
 
             <!-- Right Panel: Logs -->
@@ -217,6 +227,13 @@
                 { id: "admin", label: "Admin" },
                 { id: "staff_chat", label: "Staff Chat" }
             ],
+            typeFilters: [
+                { id: "text", label: "Text Only" },
+                { id: "audio", label: "Audio Only" },
+                { id: "image", label: "Image Only" },
+                { id: "memo", label: "Memo Only" },
+                { id: "order", label: "Order Form" }
+            ],
             logs: []
         };
 
@@ -226,6 +243,7 @@
         document.getElementById('pageHeader').value = appData.header;
         document.getElementById('pageSubtitle').value = appData.subtitle;
         renderCategories();
+        renderTypeFilters();
         renderLogs();
 
         // Data Update Helpers
@@ -238,7 +256,8 @@
         function setBuilderFilter(id) {
             currentBuilderFilter = id;
             renderCategories();
-            renderLogs();
+                        renderTypeFilters();
+                        renderLogs();
         }
 
         function renderCategories() {
@@ -269,13 +288,83 @@
             });
         }
 
+        
+        function renderTypeFilters() {
+            const container = document.getElementById('typeFiltersContainer');
+            appData.typeFilters = appData.typeFilters || [
+                { id: "text", label: "Text Only" },
+                { id: "audio", label: "Audio Only" },
+                { id: "image", label: "Image Only" },
+                { id: "memo", label: "Memo Only" },
+                { id: "order", label: "Order Form" }
+            ];
+            container.innerHTML = '';
+            appData.typeFilters.forEach((tf, index) => {
+                const div = document.createElement('div');
+                div.className = `flex gap-2 items-center px-2 py-1 mb-1 rounded border border-transparent hover:bg-zinc-900/50`;
+                
+                div.innerHTML = `
+                    <div class="flex flex-col items-center justify-center shrink-0 pr-1 border-r border-zinc-800/50">
+                        <button onclick="moveTypeFilter(${index}, -1)" class="text-zinc-500 hover:text-green-400 px-1 text-xs" title="Move Up">▲</button>
+                        <button onclick="moveTypeFilter(${index}, 1)" class="text-zinc-500 hover:text-green-400 px-1 text-xs" title="Move Down">▼</button>
+                    </div>
+                    <div class="flex-grow pl-1">
+                        <div class="text-sm font-semibold text-zinc-300">${tf.label}</div>
+                        <div class="text-xs font-mono text-zinc-500">${tf.id}</div>
+                    </div>
+                    <div class="flex flex-col gap-1 shrink-0">
+                        <button onclick="editTypeFilter(${index})" class="text-xs text-blue-400 hover:text-blue-300 text-right">Edit</button>
+                        <button onclick="deleteTypeFilter(${index})" class="text-xs text-red-400 hover:text-red-300 text-right">Delete</button>
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+        }
+        
+        function moveTypeFilter(index, direction) {
+            if (index + direction < 0 || index + direction >= appData.typeFilters.length) return;
+            const temp = appData.typeFilters[index];
+            appData.typeFilters[index] = appData.typeFilters[index + direction];
+            appData.typeFilters[index + direction] = temp;
+            renderTypeFilters();
+            renderLogs();
+        }
+        
+        function addTypeFilter() {
+            const id = prompt("Enter type filter ID (no spaces, e.g. text):");
+            if (!id) return;
+            const label = prompt("Enter type filter Label (e.g. Text Only):");
+            if (!label) return;
+            appData.typeFilters.push({ id, label });
+            renderTypeFilters();
+            renderLogs();
+        }
+        
+        function editTypeFilter(index) {
+            const tf = appData.typeFilters[index];
+            const newLabel = prompt("Enter new Label:", tf.label);
+            if (!newLabel) return;
+            tf.label = newLabel;
+            renderTypeFilters();
+        }
+
+        function deleteTypeFilter(index) {
+            if(confirm("Delete this type filter?")) {
+                appData.typeFilters.splice(index, 1);
+                renderTypeFilters();
+                renderLogs();
+            }
+        }
+
+
         function moveCategory(index, direction) {
             if (index + direction >= 0 && index + direction < appData.categories.length) {
                 const temp = appData.categories[index];
                 appData.categories[index] = appData.categories[index + direction];
                 appData.categories[index + direction] = temp;
                 renderCategories();
-                renderLogs();
+                        renderTypeFilters();
+                        renderLogs();
             }
         }
 
@@ -288,7 +377,8 @@
             }
             appData.categories.push({ id: newId, label: newLabel });
             renderCategories();
-            renderLogs();
+                        renderTypeFilters();
+                        renderLogs();
         }
 
         function updateCatLabel(index, newLabel) {
@@ -318,7 +408,8 @@
             }
 
             renderCategories();
-            renderLogs();
+                        renderTypeFilters();
+                        renderLogs();
         }
 
         function removeCategory(index) {
@@ -331,7 +422,8 @@
                 currentBuilderFilter = 'all';
             }
             renderCategories();
-            renderLogs();
+                        renderTypeFilters();
+                        renderLogs();
         }
 
         // --- Logs Management ---
@@ -709,11 +801,7 @@
                             </div>
                             <div class="flex gap-2 w-full">
                                 <select class="input-field text-xs py-1 px-1 flex-grow" onchange="updateLog('${log.id}', 'type', this.value)">
-                                    <option value="text" ${log.type === 'text' ? 'selected' : ''}>Text</option>
-                                    <option value="audio" ${log.type === 'audio' ? 'selected' : ''}>Audio</option>
-                                    <option value="image" ${log.type === 'image' ? 'selected' : ''}>Image</option>
-                                    <option value="memo" ${log.type === 'memo' ? 'selected' : ''}>Memo</option>
-                                    <option value="order" ${log.type === 'order' ? 'selected' : ''}>MCM Order</option>
+                                    ${(appData.typeFilters || []).map(tf => `<option value="${tf.id}" ${log.type === tf.id ? 'selected' : ''}>${tf.label}</option>`).join('')}
                                 </select>
                                 <button onclick="removeLog('${log.id}')" class="btn btn-danger text-xs py-1 px-2" title="Delete Log">✕</button>
                             </div>
@@ -755,6 +843,7 @@
                         document.getElementById('pageHeader').value = appData.header || "";
                         document.getElementById('pageSubtitle').value = appData.subtitle || "";
                         renderCategories();
+                        renderTypeFilters();
                         renderLogs();
                     } catch (err) {
                         alert("Error parsing JSON file. Make sure it's valid.");
@@ -784,7 +873,8 @@
                     document.getElementById('pageHeader').value = appData.header;
                     document.getElementById('pageSubtitle').value = appData.subtitle;
                     renderCategories();
-                    renderLogs();
+                        renderTypeFilters();
+                        renderLogs();
                     return;
                 } catch (e) {
                     console.error("Failed to parse embedded JSON", e);
@@ -804,7 +894,7 @@
                 const catRegex = /<button[^>]*class="category-btn[^"]*"[^>]*data-cat="([^"]+)"[^>]*>(.*?)<\/button>/g;
                 let match;
                 while ((match = catRegex.exec(html)) !== null) {
-                    if (!['all', 'text', 'audio', 'image', 'memo', 'order'].includes(match[1]) && !match[1].includes('$')) {
+                    if (!['all'].includes(match[1]) && !(appData.typeFilters || []).map(tf => tf.id).includes(match[1]) && !match[1].includes('$')) {
                         appData.categories.push({ id: match[1], label: match[2] });
                     }
                 }
@@ -867,7 +957,8 @@
                 document.getElementById('pageHeader').value = appData.header;
                 document.getElementById('pageSubtitle').value = appData.subtitle;
                 renderCategories();
-                renderLogs();
+                        renderTypeFilters();
+                        renderLogs();
             } catch (err) {
                 alert("Error parsing file. Ensure it's a valid archive HTML.");
                 console.error(err);
@@ -1048,11 +1139,7 @@
                     </button>
                     <div id="subFilterBar" class="scroll-container w-full" onscroll="updateArrows('subFilterBar')">
                         <button class="type-btn active text-xs px-3 py-1.5 mono shrink-0" data-type="all">All Types</button>
-                        <button class="type-btn text-xs px-3 py-1.5 mono shrink-0" data-type="text">Text Only</button>
-                        <button class="type-btn text-xs px-3 py-1.5 mono shrink-0" data-type="audio">Audio Only</button>
-                        <button class="type-btn text-xs px-3 py-1.5 mono shrink-0" data-type="image">Image Only</button>
-                        <button class="type-btn text-xs px-3 py-1.5 mono shrink-0" data-type="memo">Memo Only</button>
-                        <button class="type-btn text-xs px-3 py-1.5 mono shrink-0" data-type="order">Order Form</button>
+                        ${(appData.typeFilters || []).map(tf => `<button class="type-btn text-xs px-3 py-1.5 mono shrink-0" data-type="${tf.id}">${tf.label}</button>`).join('')}
                     </div>
                     <button class="scroll-arrow right-arrow hidden" onclick="scrollContainer('subFilterBar', 200)">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
@@ -1309,7 +1396,7 @@
             display.innerHTML = '';
 
             const subFilterWrapper = document.getElementById('subFilterWrapper');
-            if (['text', 'audio', 'image', 'memo', 'order'].includes(currentCategory)) {
+            if ((appData.typeFilters || []).map(tf => tf.id).includes(currentCategory)) {
                 subFilterWrapper.classList.add('hidden');
                 subFilterWrapper.classList.remove('flex');
                 currentType = 'all';
@@ -1328,7 +1415,7 @@
                 
                 let matchesCat = currentCategory === 'all';
                 if (!matchesCat) {
-                    if (['text', 'audio', 'image', 'memo', 'order'].includes(currentCategory)) {
+                    if ((appData.typeFilters || []).map(tf => tf.id).includes(currentCategory)) {
                         matchesCat = log.type === currentCategory;
                     } else {
                         matchesCat = (log.tags || []).includes(currentCategory);
@@ -1351,7 +1438,7 @@
             else if (cols === 4) gridClass += ' grid-cols-1 md:grid-cols-2 lg:grid-cols-4';
             else if (cols === 5) gridClass += ' grid-cols-1 md:grid-cols-3 lg:grid-cols-5';
 
-            if ((currentCategory === 'all' || ['text', 'audio', 'image', 'memo', 'order'].includes(currentCategory)) && !currentSearch) {
+            if ((currentCategory === 'all' || (appData.typeFilters || []).map(tf => tf.id).includes(currentCategory)) && !currentSearch) {
                 const grouped = getGroupedLogs(filtered);
                 grouped.forEach(group => {
                     const groupSection = document.createElement('div');
