@@ -1,0 +1,1160 @@
+{
+  "header": "PIZZAPLEX_ARCHIVE",
+  "subtitle": "Tales from the Pizzaplex",
+  "categories": [
+    {
+      "id": "arcade_conspiracy",
+      "label": "Arcade Conspiracy"
+    },
+    {
+      "id": "sister_location_lore",
+      "label": "Sister Location Lore?"
+    },
+    {
+      "id": "complaint",
+      "label": "Customer Complaint"
+    },
+    {
+      "id": "maintenance",
+      "label": "Maintenance Log"
+    },
+    {
+      "id": "security",
+      "label": "Security Report"
+    },
+    {
+      "id": "errant",
+      "label": "Errant Behavior Report"
+    },
+    {
+      "id": "construction",
+      "label": "Construction Update"
+    },
+    {
+      "id": "staff",
+      "label": "Staff / Employees"
+    },
+    {
+      "id": "misc",
+      "label": "Miscellaneous"
+    },
+    {
+      "id": "retro_cds",
+      "label": "Retro CDs"
+    }
+  ],
+  "logs": [
+    {
+      "id": "bag_a68fcf9a",
+      "type": "text",
+      "isAudio": false,
+      "tags": [
+        "text",
+        "misc"
+      ],
+      "title": "Hello Gregory",
+      "content": "Hello, Gregory. It is me, Freddy, I will escort you to the main entrance. However, I am unable to leave this room. You should have no problem. There is a button on the wall that will open the door to the back room. I will make it accessible to you now.",
+      "memoTo": "",
+      "memoDate": "Automatically received from Glamrock Freddy at the start of the game.",
+      "imageUrls": [
+        ""
+      ]
+    },
+    {
+      "id": "bag_1c40aa7b",
+      "type": "text",
+      "isAudio": false,
+      "tags": [
+        "text",
+        "complaint"
+      ],
+      "title": "Party Foul",
+      "content": "CUSTOMER COMPLAINT - We paid for the Glam Freddy Mega Deluxe Party Package and Freddy broke down as soon as he got on stage. We paid to have him at the table and sing happy birthday. He was supposed to give her the cake! My daughter's birthday has been ruined. I demand a refund.",
+      "memoTo": "",
+      "memoDate": "On a bench in front of Glamrock Freddy's Green Room.",
+      "imageUrls": [
+        ""
+      ]
+    },
+    {
+      "id": "bag_f0742881",
+      "type": "text",
+      "isAudio": false,
+      "tags": [
+        "text",
+        "staff"
+      ],
+      "title": "Food Storage",
+      "content": "ATTENTION KITCHEN STAFF - All food materials must be securely stored at closing. Chica has been caught eating from the kitchen garbage after hours. The maintenance repairs are costly and will come out of kitchen staff paychecks. - MANAGEMENT",
+      "memoTo": "",
+      "memoDate": "To the left side of double doors after Glamrock Freddy charges for the first time.",
+      "imageUrls": [
+        ""
+      ]
+    },
+    {
+      "id": "bag_d42ef3e7",
+      "type": "text",
+      "isAudio": false,
+      "tags": [
+        "text",
+        "misc"
+      ],
+      "title": "Easy Money",
+      "content": "My cousin worked here. He said magnets screw with the ticket machines. Just head up to Faz Pad. You can get down to customer service through the back door and grab a stack of tickets. I'll be waiting for you outside. If you hear any robots, just hide until they leave. You'll be fine.",
+      "memoTo": "",
+      "memoDate": "On the edge of the fountain in the main lobby.",
+      "imageUrls": [
+        ""
+      ]
+    },
+    {
+      "id": "bag_223e3eed",
+      "type": "text",
+      "isAudio": false,
+      "tags": [
+        "text",
+        "misc"
+      ],
+      "title": "AC Inspection",
+      "content": "Thank you for contacting Low Budget Building Contractors. We have done a preliminary inspection and find nothing wrong with your ventilation system. The \"loud clanging\", \"banging\" and \"scraping\" noises which were reported don't appear to be reproducable. Call us if it happens again. Invoice attached. - Keith",
+      "memoTo": "",
+      "memoDate": "On a table in the back of Faz-Pad",
+      "imageUrls": [
+        ""
+      ]
+    },
+    {
+      "id": "bag_924d3e86",
+      "type": "text",
+      "isAudio": false,
+      "tags": [
+        "text",
+        "complaint"
+      ],
+      "title": "HI DAVE",
+      "content": "CUSTOMER COMPLAINT - You should fire Dave. He sucks.",
+      "memoTo": "",
+      "memoDate": "On the farthest left bench next to the lockers in Customer Service.",
+      "imageUrls": [
+        ""
+      ]
+    },
+    {
+      "id": "bag_4444be87",
+      "type": "text",
+      "isAudio": false,
+      "tags": [
+        "text",
+        "complaint"
+      ],
+      "title": "Night Terrors",
+      "content": "CUSTOMER COMPLAINT - My son never had sleeping problems. But after spending an evening in the daycare, he refuses to sleep with the lights out anymore! He just cries and cries. And then when I do let him keep the lights on, he wets the bed!",
+      "memoTo": "",
+      "memoDate": "In the male bathroom of the lobby before Daycare Pick-up.",
+      "imageUrls": [
+        ""
+      ]
+    },
+    {
+      "id": "bag_e946f76c",
+      "type": "text",
+      "isAudio": false,
+      "tags": [
+        "text",
+        "misc"
+      ],
+      "title": "Drink Fizzy Faz!!!!",
+      "content": "COPY FOR APPROVAL: Hey kids! Do you like Fizzy Faz? Think you can drink every flavor of Fizzy Faz in one day? Take the Superstar challenge! Grape, Lemonade, Cherry... Your Fazwatch keeps track of all your purchases. Drink them all. Be first! Be the raddest kid on your block.",
+      "memoTo": "",
+      "memoDate": "",
+      "imageUrls": [
+        ""
+      ]
+    },
+    {
+      "id": "bag_a1ce4f8f",
+      "type": "text",
+      "isAudio": false,
+      "tags": [
+        "text",
+        "security"
+      ],
+      "title": "Stolen property",
+      "content": "SECURITY REPORT - Well somehow someone broke into a Rockstar Row display case and stole the wind up toy Music Man prototypes. The case was smashed and there's glass on the floor but no sign of a break in. Nothing else seems to be missing. I have absolutely no idea how they got into the building and there's nothing on the security footage. Now what should I do? Should I call the police and report a break in? - Vanessa",
+      "memoTo": "",
+      "memoDate": "To the left of when exiting the Endo section.",
+      "imageUrls": [
+        ""
+      ]
+    },
+    {
+      "id": "bag_9d8db660",
+      "type": "text",
+      "isAudio": false,
+      "tags": [
+        "text",
+        "staff"
+      ],
+      "title": "Understudy",
+      "content": "MANAGEMENT REPORT - With Bonnie out of commision, we are making Monty the new bass player. Parts and Service has already done the proper adjustments. This could be a good thing. Monty could be even more popular than Bonnie.",
+      "memoTo": "",
+      "memoDate": "In the rehearsal room under the bleachers.",
+      "imageUrls": [
+        ""
+      ]
+    },
+    {
+      "id": "bag_29d3f4d0",
+      "type": "text",
+      "isAudio": false,
+      "tags": [
+        "text",
+        "security"
+      ],
+      "title": "False Alarm",
+      "content": "SECURITY REPORT - A local police officer came by tonight, He said he was responding to an emergency call from someone inside the Pizzaplex. There is no way that is possible. I was the only one here and I certainly didn't make any outside calls. He wanted to look around, but I sent him away. Just another prank call. - Vanessa",
+      "memoTo": "",
+      "memoDate": "In the entrance booth to the player's right (looking from the exit into the Lobby)",
+      "imageUrls": [
+        ""
+      ]
+    },
+    {
+      "id": "bag_1705e5ff",
+      "type": "text",
+      "isAudio": false,
+      "tags": [
+        "text",
+        "maintenance"
+      ],
+      "title": "BEHIND THE MAZE",
+      "content": "MAINTENANCE REPORT - I still can't find what is making all the clanging noise in the AC system. This is the fifth visit this week. If I could reach that stupid vent behind the exercise maze room, I could get to the catwalks over Gator Golf and take a look. Maybe someone who works in Mazercise knows how.",
+      "memoTo": "",
+      "memoDate": "In the security office in Monty's Gator Golf",
+      "imageUrls": [
+        ""
+      ]
+    },
+    {
+      "id": "bag_a0f4d551",
+      "type": "text",
+      "isAudio": false,
+      "tags": [
+        "text",
+        "errant"
+      ],
+      "title": "CHICA REPORT",
+      "content": "ERRANT BEHAVIOR REPORT - Chica's personality chip has always been a bit 'quirky', but the new Pizza Flavored Monty Mystery Mix Slushy Syrup has adverse effects on her programming. She has attacked patrons, employees and S.T.A.F.F. for it. It is recommended that Monty Mystery Mix should be recalled before we're inundated with lawsuits.",
+      "memoTo": "",
+      "memoDate": "Inside Chica's green room in Rockstar Row.",
+      "imageUrls": [
+        ""
+      ]
+    },
+    {
+      "id": "bag_e7a3c45d",
+      "type": "text",
+      "isAudio": false,
+      "tags": [
+        "text",
+        "errant"
+      ],
+      "title": "Monty Mischief",
+      "content": "ERRANT BEHAVIOR REPORT - Monty didn't show up for the main stage performance again. We found him in the same place we always do, the catwalks over Monty Golf. We can't have a repeat of last month. Someone hit the hole in one and the hurricane bucket knocked him down. Both legs were broken and required emergency parts and service work.",
+      "memoTo": "",
+      "memoDate": "On the desk inside Montgomery Gator's green room.",
+      "imageUrls": [
+        ""
+      ]
+    },
+    {
+      "id": "bag_6b6f040c",
+      "type": "text",
+      "isAudio": false,
+      "tags": [
+        "text",
+        "errant"
+      ],
+      "title": "Chasing cars",
+      "content": "ERRANT BEHAVIOR REPORT - Roxy never misses a race. She must be frying her circuits waiting for the raceway to reopen. Every time there is a test run on the track she gets in the way. If she keeps getting in the way, the track will never get fixed.",
+      "memoTo": "",
+      "memoDate": "Roxy Raceway Information",
+      "imageUrls": [
+        ""
+      ]
+    },
+    {
+      "id": "bag_8fd1a87b",
+      "type": "text",
+      "isAudio": false,
+      "tags": [
+        "text",
+        "staff"
+      ],
+      "title": "Re-theme",
+      "content": "MANAGEMENT REPORT - The bowling alley needs a re-theme. While most of the Bonnie art was removed, kids keep asking, \"Where's Bonnie?\" Do we have an officially approved response?",
+      "memoTo": "",
+      "memoDate": "On a pallet in the middle of Roxy Raceway.",
+      "imageUrls": [
+        ""
+      ]
+    },
+    {
+      "id": "bag_551752b8",
+      "type": "text",
+      "isAudio": false,
+      "tags": [
+        "text",
+        "security"
+      ],
+      "title": "MISSING",
+      "content": "SECURITY REPORT - 12:24AM - Bonnie is seen leaving his green room in Rockstar Row heading East towards the atrium. 2:40AM - Bonnie enters the East Arcade. 4:12AM - Bonnie enters Monty Golf.",
+      "memoTo": "",
+      "memoDate": "In a room nearby the First-Aid station Gregory must hide in during the start of the game.",
+      "imageUrls": [
+        ""
+      ]
+    },
+    {
+      "id": "bag_2171506e",
+      "type": "text",
+      "isAudio": false,
+      "tags": [
+        "text",
+        "misc"
+      ],
+      "title": "THE ANSWER",
+      "content": "MAZERCISE INSTRUCTIONS - Move dark green to the corner. You should be able to work it out from there.",
+      "memoTo": "",
+      "memoDate": "Daycare Theatre",
+      "imageUrls": [
+        ""
+      ]
+    },
+    {
+      "id": "bag_d0d8cea6",
+      "type": "text",
+      "isAudio": false,
+      "tags": [
+        "text",
+        "misc"
+      ],
+      "title": "Job Security",
+      "content": "Where is everyone? Leo was the only one who had a copy of the maze control key, but I haven't seen him for months. Maybe that creepy bot knows where the key is. Leo was supposed to train it to work the maze, instead he tricked the bot into doing busy work under the daycare theater. I'll check after the all staff meeting tonight.",
+      "memoTo": "",
+      "memoDate": "Inside the Mazercise control room.",
+      "imageUrls": [
+        ""
+      ]
+    },
+    {
+      "id": "bag_5c95e558",
+      "type": "text",
+      "isAudio": false,
+      "tags": [
+        "text",
+        "misc"
+      ],
+      "title": "No Flash Photography",
+      "content": "WARNING: No flash photography. Items will be confiscated and kept in the Monty Golf security office.",
+      "memoTo": "",
+      "memoDate": "Inside Monty's Gator Grub",
+      "imageUrls": [
+        ""
+      ]
+    },
+    {
+      "id": "bag_27a94561",
+      "type": "text",
+      "isAudio": false,
+      "tags": [
+        "text",
+        "misc"
+      ],
+      "title": "Hide the mix",
+      "content": "RECALL NOTICE - Please take all Monty Mystery Mix to the frozen ice cream storage behind the Bowling alley. Additional instructions to follow.",
+      "memoTo": "",
+      "memoDate": "In the Fazer Blast security office",
+      "imageUrls": [
+        ""
+      ]
+    },
+    {
+      "id": "bag_79612714",
+      "type": "text",
+      "isAudio": false,
+      "tags": [
+        "text",
+        "staff"
+      ],
+      "title": "SAFETY CHECK",
+      "content": "ATTENTION KITCHEN STAFF - Parts and Service is concerned that Chica will suffer heavy damage if she ever gets caught in the trash compactor.  Always double check the compactor before use. Do not use to compactor to dispose of pizza, pizza flavored items, or pizza scented materials (especially Monty's Mystery Mix!). Otherwise, her replacement cost will come out of your paycheck.",
+      "memoTo": "",
+      "memoDate": "In a corridor behind Bonnie Bowl, next to the Monty Mystery Mix.",
+      "imageUrls": [
+        ""
+      ]
+    },
+    {
+      "id": "bag_dde52a70",
+      "type": "text",
+      "isAudio": false,
+      "tags": [
+        "text",
+        "staff"
+      ],
+      "title": "COMPACTOR INSTRUCTIONS",
+      "content": "SAFETY FIRST - 1) Fill the garbage compactor. 2) Prime the compactor engine by pushing the button in the kitchen storage room (follow the cable). 3) Press the hanging activation button in front of the compactor. IMPORTANT: Make sure all employees and S.T.A.F.F. are clear of the compactor before step 3.",
+      "memoTo": "",
+      "memoDate": "Next to the trash compactor.",
+      "imageUrls": [
+        ""
+      ]
+    },
+    {
+      "id": "bag_7c790cbc",
+      "type": "text",
+      "isAudio": false,
+      "tags": [
+        "text",
+        "maintenance",
+        "arcade_conspiracy"
+      ],
+      "title": "BBW MAINT LOG",
+      "content": "MAINTENANCE LOG - The BB World game has been acting up. Customers have complained that it starts to glitch over time. I headed to the theater to fix it and now it's gone. I never saw a move request so it should still be there somewhere.  I guess I'll check again after the company meeting.",
+      "memoTo": "",
+      "memoDate": "On a bench in Fazbear Theater.",
+      "imageUrls": [
+        ""
+      ]
+    },
+    {
+      "id": "bag_3aa0848d",
+      "type": "text",
+      "isAudio": false,
+      "tags": [
+        "text",
+        "maintenance",
+        "arcade_conspiracy"
+      ],
+      "title": "CFF MAINT LOG",
+      "content": "MAINTENANCE LOG - Chica Feeding Frenzy in the bakery won't turn off. Even when unplugged, the game just kept running. There is no way it has that much residual charge.",
+      "memoTo": "",
+      "memoDate": "On the counter in Chica's bakery",
+      "imageUrls": [
+        ""
+      ]
+    },
+    {
+      "id": "bag_119a8fec",
+      "type": "text",
+      "isAudio": false,
+      "tags": [
+        "text",
+        "maintenance",
+        "arcade_conspiracy"
+      ],
+      "title": "AR-CADE MAINT LOG",
+      "content": "MAINTENANCE LOG - Why is the Monty Golf AR-Cade in the mini golf course? It makes absolutely no sense. It seems to work ok otherwise.",
+      "memoTo": "",
+      "memoDate": "In the back of Chica's bakery",
+      "imageUrls": [
+        ""
+      ]
+    },
+    {
+      "id": "bag_b96d8ff3",
+      "type": "text",
+      "isAudio": false,
+      "tags": [
+        "text",
+        "maintenance",
+        "arcade_conspiracy"
+      ],
+      "title": "PQ1 MAINT LOG",
+      "content": "MAINTENANCE LOG - There's a Princess Quest 1 machine somewhere in the building. An actual standup arcade! I guess the devs pulled it from that old mobile game. Why port to arcade?",
+      "memoTo": "",
+      "memoDate": "Top right in Bonnie Bowl",
+      "imageUrls": [
+        ""
+      ]
+    },
+    {
+      "id": "bag_270b08f0",
+      "type": "text",
+      "isAudio": false,
+      "tags": [
+        "text",
+        "maintenance",
+        "arcade_conspiracy"
+      ],
+      "title": "PQ2 MAINT LOG",
+      "content": "MAINTENANCE LOG - Princess Quest 2 - Won't boot properly. No idea why! Shuts down when I try to play? Like it's personal. Doesn't matter anyway. I still haven't found PQ1.",
+      "memoTo": "",
+      "memoDate": "In the middle of a storage room, connected to the go-kart storage. (This bag has a duplicate next to PQ2)",
+      "imageUrls": [
+        ""
+      ]
+    },
+    {
+      "id": "bag_183b8108",
+      "type": "text",
+      "isAudio": false,
+      "tags": [
+        "text",
+        "arcade_conspiracy"
+      ],
+      "title": "OUT OF ORDER",
+      "content": "INVENTORY CHECK - There is no record of a PQ3 arcade, yet there is a cabinet tucked away in Fazerblast. Won't work though. Sometimes I hear it in attract mode, but I have never seen a single image displayed. Too creepy. Leave it where it is. At least until I play part 1 and 2.",
+      "memoTo": "",
+      "memoDate": "Fazcade at the Daycare",
+      "imageUrls": [
+        ""
+      ]
+    },
+    {
+      "id": "bag_530f4401",
+      "type": "text",
+      "isAudio": false,
+      "tags": [
+        "text",
+        "maintenance",
+        "arcade_conspiracy"
+      ],
+      "title": "RED FLAG",
+      "content": "MAINTENANCE LOG - I did it!. I did what you wanted! I beat parts 1 and 2. Why won't you turn on? What else is there? Tell me!",
+      "memoTo": "",
+      "memoDate": "In a storage room accessible via the Glamrock Beauty Salon, near a Princess Quest arcade machine.",
+      "imageUrls": [
+        ""
+      ]
+    },
+    {
+      "id": "bag_88a5eff1",
+      "type": "text",
+      "isAudio": false,
+      "tags": [
+        "text",
+        "staff",
+        "arcade_conspiracy"
+      ],
+      "title": "ARCADE CONSPIRACY",
+      "content": "EXIT INTERVIEW: They are working together. The arcades. They are hiding something. The glitches. Glitch them all at the same time... then the Princess will recognize me. She's testing me. I am not yet worthy. The others are protecting it. Let me stay! I am so close! Just one more night, please! I can save the Princess!",
+      "memoTo": "",
+      "memoDate": "Daycare Attendant's room.",
+      "imageUrls": [
+        ""
+      ]
+    },
+    {
+      "id": "bag_f0149a97",
+      "type": "text",
+      "isAudio": false,
+      "tags": [
+        "text",
+        "staff"
+      ],
+      "title": "NO QUESTIONS ASKED",
+      "content": "NEW HIRE SUMMARY - Head Security Guard. No prior qualifications. Internal reference (name withheld).",
+      "memoTo": "",
+      "memoDate": "On the way to Vanny's room from the winner's elevator",
+      "imageUrls": [
+        ""
+      ]
+    },
+    {
+      "id": "bag_2f32ab3d",
+      "type": "text",
+      "isAudio": false,
+      "tags": [
+        "text",
+        "misc"
+      ],
+      "title": "QUESTION",
+      "content": "Are you going to the staff party? I don't want to stick around after my 14 hr shift, but I don't want to get laid off if I don't show up.",
+      "memoTo": "",
+      "memoDate": "At the back of the showers after leaving the kitchen.",
+      "imageUrls": [
+        ""
+      ]
+    },
+    {
+      "id": "bag_c4884ce4",
+      "type": "text",
+      "isAudio": false,
+      "tags": [
+        "text",
+        "staff"
+      ],
+      "title": "All Staff Meeting",
+      "content": "REMINDER TO ALL EMPLOYEES - The all staff meeting is this Thursday night at 11:30PM. All \"service team\" attendance is mandatory. There will be cake!",
+      "memoTo": "",
+      "memoDate": "In a Basement 1 hall",
+      "imageUrls": [
+        ""
+      ]
+    },
+    {
+      "id": "bag_4168c65d",
+      "type": "text",
+      "isAudio": false,
+      "tags": [
+        "text",
+        "staff"
+      ],
+      "title": "PINK SLIP",
+      "content": "ATTENTION EMPLOYEES - Good news! Due to the success of the S.T.A.F.F. project, we will no longer need nighttime employee coverage. We will be reducing nighttime hours effective immediately. Enjoy the additional time spent with your families.",
+      "memoTo": "",
+      "memoDate": "In the loading dock cafeteria",
+      "imageUrls": [
+        ""
+      ]
+    },
+    {
+      "id": "bag_f43fab8c",
+      "type": "text",
+      "isAudio": false,
+      "tags": [
+        "text",
+        "maintenance"
+      ],
+      "title": "CHICA UPGRADE",
+      "content": "MAINT LOG: Chica - Don't let her sing! Messes with the navigation of the other bots. Horrible results when she sang during live performance. S.T.A.F.F. bots dropping serving trays, chaos, guest injuries, 12 lawsuits. Experimental voice box test failed. Replacement advised.",
+      "memoTo": "",
+      "memoDate": "In parts and service next to Glamrock Chica's upgrade picture",
+      "imageUrls": [
+        ""
+      ]
+    },
+    {
+      "id": "bag_c131bdc7",
+      "type": "text",
+      "isAudio": false,
+      "tags": [
+        "text",
+        "maintenance"
+      ],
+      "title": "ROXY UPGRADE",
+      "content": "MAINT LOG: ROXY - Roxy sees things differently than the others. This upgrade was meant to help her win races. However, there are some side effects. Sometimes she will stare and talk to the other bots through walls.",
+      "memoTo": "",
+      "memoDate": "In parts and service next to Roxy's upgrade picture",
+      "imageUrls": [
+        ""
+      ]
+    },
+    {
+      "id": "bag_4d841944",
+      "type": "text",
+      "isAudio": false,
+      "tags": [
+        "text",
+        "maintenance"
+      ],
+      "title": "MONTY UPGRADE",
+      "content": "MAINT LOG: MONTY - Montgomery's Claw upgrades allow him to play the bass. Following performances, he mostly uses them to cause damage. The fence repairs are getting costly.",
+      "memoTo": "",
+      "memoDate": "In parts and service next to Monty's upgrade picture",
+      "imageUrls": [
+        ""
+      ]
+    },
+    {
+      "id": "bag_59c9a8cf",
+      "type": "text",
+      "isAudio": false,
+      "tags": [
+        "text",
+        "sister_location_lore"
+      ],
+      "title": "TORN PAPER",
+      "content": "It is there, but you can't see. Alone in the dark. I found the key.",
+      "memoTo": "",
+      "memoDate": "Before entering the sister location room",
+      "imageUrls": [
+        ""
+      ]
+    },
+    {
+      "id": "bag_e5b738fb",
+      "type": "text",
+      "isAudio": false,
+      "tags": [
+        "text",
+        "misc"
+      ],
+      "title": "BETTER EMPLOYEES",
+      "content": "\"Last week it was Jenkins forgetting to replace the urinal cakes after a single use, yesterday it was Elsa for showing up to work early, today it's me because Lilly H asked for Chicken Alfredo. I said we don't make that here. Her father (guy looked like Sasquatch, btw) demanded to speak to a manager. I get Dennis. Dennis asks me why I don't just get her what she wants. I say we don't have Chicken Alfredo! Dennis fires me on the spot.\nJokes on him though - Turns out our new S.T.A.F.F. bots (the \"better employees\") aren't programmed to make Chicken Alfredo, so HQ fired him for firing me.\nSweet revenge. Thanks, Lilly!\"",
+      "memoTo": "",
+      "memoDate": "In the kitchen inside the Atrium with the Chef-bot.",
+      "imageUrls": [
+        ""
+      ]
+    },
+    {
+      "id": "bag_d6ea6284",
+      "type": "text",
+      "isAudio": false,
+      "tags": [
+        "text",
+        "staff"
+      ],
+      "title": "NIGHT SHIFT",
+      "content": "EXIT INTERVIEW - Of course, I got stuck in the arcade. Every time I exit the Security Office, I get locked out. If it's not my low clearance level, then I need a stupid Party Pass. I'm on the security team. Shouldn't I have access to everything? I swear, those things are messing with me. This place is not safe. Give me my $100 and I'll go.",
+      "memoTo": "",
+      "memoDate": "On the center table on the seating area in the Superstar-cade",
+      "imageUrls": [
+        ""
+      ]
+    },
+    {
+      "id": "bag_5291a26f",
+      "type": "text",
+      "isAudio": false,
+      "tags": [
+        "text",
+        "complaint"
+      ],
+      "title": "RECYCLED PIZZA?",
+      "content": "CUSTOMER COMPLAINT - The pizza we ordered was weird. Some pieces were different sizes or didn't fit together. One slice even had different toppings. Did you recycle the old pizza from the trash? I am never coming back here unless I am given some some sort of major discount. - Angry Mom",
+      "memoTo": "",
+      "memoDate": "In a Party Room outside the Daycare.",
+      "imageUrls": [
+        ""
+      ]
+    },
+    {
+      "id": "bag_b583a56b",
+      "type": "text",
+      "isAudio": false,
+      "tags": [
+        "text",
+        "misc"
+      ],
+      "title": "SORE WINNER",
+      "content": "Roxy did it again. Another braindead S.T.A.F.F. bot decapitated because it got in her way on the racetrack. I'm getting real sick of trudging over to West Arcade to fix these things. Why isn't there a S.T.A.F.F. repair station any closer? At least I have an extra Dance Pass so I won't get locked out again.",
+      "memoTo": "",
+      "memoDate": "To the right of the old elevator in Roxy Raceway",
+      "imageUrls": [
+        ""
+      ]
+    },
+    {
+      "id": "bag_d060af39",
+      "type": "text",
+      "isAudio": false,
+      "tags": [
+        "text",
+        "misc"
+      ],
+      "title": "TEST DRIVERS WANTED",
+      "content": "EQUIPMENT REQUEST - We are running out of test bots for the raceway. At this point we are down to a single Driver Assist bot. For safe keeping, we are storing it at the back of the raceway near the Northwest stairs.",
+      "memoTo": "",
+      "memoDate": "To the left of the driver-assist bot",
+      "imageUrls": [
+        ""
+      ]
+    },
+    {
+      "id": "bag_ceba6075",
+      "type": "text",
+      "isAudio": false,
+      "tags": [
+        "text",
+        "complaint"
+      ],
+      "title": "IT IS HAPPENING AGAIN",
+      "content": "CUSTOMER COMPLAINT - Why did you reopen? Everyone remembers what happened to those kids.",
+      "memoTo": "",
+      "memoDate": "At the back of the currently closed structure next to Roxy Raceway",
+      "imageUrls": [
+        ""
+      ]
+    },
+    {
+      "id": "bag_13479e7f",
+      "type": "text",
+      "isAudio": false,
+      "tags": [
+        "text",
+        "construction"
+      ],
+      "title": "SINKHOLE",
+      "content": "CONSTRUCTION UPDATE - Every day there's a new problem. We pour a new section of track and as soon as it dries, we start to see cracks. I am worried we are building over a sinkhole here. Before construction was approved, there was a site evaluation, right?",
+      "memoTo": "",
+      "memoDate": "In front of the trophies of Roxy Raceway.",
+      "imageUrls": [
+        ""
+      ]
+    },
+    {
+      "id": "bag_445c407a",
+      "type": "text",
+      "isAudio": false,
+      "tags": [
+        "text",
+        "construction"
+      ],
+      "title": "POWER DRAIN",
+      "content": "CONSTRUCTION UPDATE - We keep getting these brown outs so I got fed up and did a little investigation. It looks like something is drawing a massive amount of power from the worksite. We've traced a high voltage cable that disappears right into the foundation. There is definitely something under us. We're going to bore back into the foundation and find out what it is.",
+      "memoTo": "",
+      "memoDate": "Roxy Raceway locker room/office",
+      "imageUrls": [
+        ""
+      ]
+    },
+    {
+      "id": "bag_70d0aa7e",
+      "type": "text",
+      "isAudio": false,
+      "tags": [
+        "text",
+        "construction"
+      ],
+      "title": "OLD ELEVATOR",
+      "content": "CONSTRUCTION UPDATE - Today, we broke through the foundation and found what looks like an old elevator shaft. Someone must have known about this, right? There's something down there pulling power. I'm taking a team down in the morning to check it out.",
+      "memoTo": "",
+      "memoDate": "Inside the old elevator",
+      "imageUrls": [
+        ""
+      ]
+    },
+    {
+      "id": "bag_0a7f77f4",
+      "type": "text",
+      "isAudio": false,
+      "tags": [
+        "text",
+        "staff"
+      ],
+      "title": "MARKED FOR DELETION",
+      "content": "INTERVIEW NOTES - As requested, here are my notes on today's Chief Security Officer interview. While Vanessa seemed eager and bright, she doesn't appear to have any relevant background experience. I realize the recommendation came from the top, but we need someone who has run security for a facility of this scale. I do not recommend her for this position.",
+      "memoTo": "",
+      "memoDate": "Small office to the left of the pizza-making kitchen",
+      "imageUrls": [
+        ""
+      ]
+    },
+    {
+      "id": "bag_f9cdb58c",
+      "type": "text",
+      "isAudio": false,
+      "tags": [
+        "text",
+        "misc"
+      ],
+      "title": "ULTIMATE PARTY HOST",
+      "content": "Congratulations on your installation of the new and improved DJMM. The DJMM features eons of musical enjoyment using a patented technique called 'improv' (royalty free!). No two songs are ever the same. Save a fortune on cleanup! Using a series of connected tubes, the DJMM can run cleaning routines between set lists. If the need ever arises, activate the new \"bouncer mode\". (Warning: Bouncer mode still under development. Use of the bouncer mode will void your warranty.)",
+      "memoTo": "",
+      "memoDate": "In the West Arcade next to the Head Deposit.",
+      "imageUrls": [
+        ""
+      ]
+    },
+    {
+      "id": "cd_3ade2f82",
+      "type": "audio",
+      "isAudio": true,
+      "tags": [
+        "retro_cds"
+      ],
+      "title": "Audio Tape 1-7139",
+      "content": "[Therapist]: Hello, Vanessa. How are you feeling today? You look a little tired.\n[Therapist]: Hmm... Well, it's been a while since we last spoke. How's your anxiety been? You did so well with your calming protocols when we first worked together. Are you still using those? Yes? Ok, good. Well, now I understand there's a new issue. It came on just recently? Rather suddenly? Can you tell me about it?\n[Vanessa]: What issue? I've been doing my job. I come in and sit and my desk and do my work.\n[Therapist]: Yes, yes of course you do. Your performance reviews are good, but a routine check of your online history has revealed that you've spent quite a bit of time with someone in an encrypted conversation. We have transcripts and I've read them, but it's not clear what you're talking about in these conversations. I can't make sense of it. You must be getting something from these that I'm not getting, right? Who are you talking to in these?\n[Vanessa]: No one! Sometimes I talk with Luis, he's in the marketing department. He's nice, I guess.\n[Therapist]: Yes, I see Luis here, but there's someone else.",
+      "memoTo": "",
+      "memoDate": "Retro CD",
+      "audioUrls": [
+        "audios/sb/Play_Tape_1_7139 (614110966).wav"
+      ],
+      "imageUrls": [
+        ""
+      ],
+      "audioUrl": "./audios/sb/Play_Tape_1_7139 (614110966).wav"
+    },
+    {
+      "id": "cd_9baf0b4b",
+      "type": "audio",
+      "isAudio": true,
+      "tags": [
+        "retro_cds"
+      ],
+      "title": "Audio Tape 2-4672",
+      "content": "[Therapist]: Good morning. Isn't it a pretty day? No? What's the matter? Oh, right, too bright. I'll pull the shades. Better? When the shade's pulled it feels like we're in a cubby hole or a cave, yeah?\n[Therapist]: Hmm... so you're not talking to me again today? (Sigh) This isn't all that productive, you know? Don't you think these sessions are more successful when you talk to me? You know everyone associated with this company gets performance reviews, right? When my sessions don't get results my reviews aren't very good. If you don't wanna talk for your own sake, how about for mine? You don't want me to get in trouble, do you? I could be put in the corner for a timeout. Yeah, you think that's funny, huh?",
+      "memoTo": "",
+      "memoDate": "Retro CD",
+      "audioUrls": [
+        "audios/sb/Play_Tape_2_4672 (1057895991).wav"
+      ],
+      "imageUrls": [
+        ""
+      ],
+      "audioUrl": "./audios/sb/Play_Tape_2_4672 (1057895991).wav"
+    },
+    {
+      "id": "cd_ab5ea234",
+      "type": "audio",
+      "isAudio": true,
+      "tags": [
+        "retro_cds"
+      ],
+      "title": "Audio Tape 3-7140",
+      "content": "[Therapist]: Hi. Go ahead, sit down.\n[Vanessa]: I don't know you. What happened to...\n[Therapist]: Oh, we'll get to know each other in no time. I've read through all your files so I feel like we've been talking for weeks. I feel like I know your dad too. Bill, right? Your dad's name was Bill? (\n[Vanessa]: Indistinct muttering)\n[Therapist]: I'm sorry, what did you say?\n[Vanessa]: I try to do what I'm supposed to do.\n[Therapist]: I know you do. Your supervisor notes that you follow instructions perfectly. Your dad made you follow instructions, didn't he? I'm talking about the custody battle between your mom and your dad. Your dad didn't play fair, did he? He used to make your mom look bad in court. I'm so sorry that happened to you. Do you want to talk about how that felt?\n[Therapist]: I suppose I don't need you to tell me it felt bad to have a parent scare you into saying things that weren't true. He manipulated you. It wasn't your fault. It's really sad, but it's common for one parent to use their child to hurt the other parent. I know your mom (STATIC) after she lost the custody case.\n[Vanessa]: I was supposed to be a good girl.\n[Therapist]: What happened to her had nothing to do with you even though it was your testimony that did it. Was that testimony true?\n[Therapist]: No. I didn't think so, but your dad is to blame, not you.",
+      "memoTo": "",
+      "memoDate": "Retro CD",
+      "audioUrls": [
+        "audios/sb/Play_Tape_3_7140 (1000207041).wav"
+      ],
+      "imageUrls": [
+        ""
+      ],
+      "audioUrl": "./audios/sb/Play_Tape_3_7140 (1000207041).wav"
+    },
+    {
+      "id": "cd_1c7d4d23",
+      "type": "audio",
+      "isAudio": true,
+      "tags": [
+        "retro_cds"
+      ],
+      "title": "Audio Tape 4-4673",
+      "content": "[Therapist]: You're not going to talk to me? No? What's the problem? Oh, the flowers? Yes, these are particularly fragrant today, aren't they? I'll move them. There. Now, let's see. What are you looking at? You're amazingly alert, aren't you? Alright, well I'd like to have you tell me about yourself, but I can see that you're not going to do that, or are you?\n[Therapist]: Alright then, if you aren't going to talk to me I'll just go by these notes. You just sit there and be comfy. Or not. That chair doesn't really fit you, does it? Well, this won't take long. Let's see, your previous counselor is no longer available. Does that bother you? No? You don't look surprised to see me sitting here instead of your last therapist.\n[Therapist]: Well then, let's get to it. I'll admit that some of what's in your file is a little surprising. Overall, you don't come across as a troublemaker, but if you read between the lines it's clear that you have a little rebellious side, right?\n[Therapist]: And I'm surprised by your knowledge of computers. You're something of a phenom. Do you know what that word means? It means you have unusual skill, like a hacker. I assume you know what a hacker is, yes? Do you think of yourself as a hacker?",
+      "memoTo": "",
+      "memoDate": "Retro CD",
+      "audioUrls": [
+        "audios/sb/Play_Tape_4_4673 (628814834).wav"
+      ],
+      "imageUrls": [
+        ""
+      ],
+      "audioUrl": "./audios/sb/Play_Tape_4_4673 (628814834).wav"
+    },
+    {
+      "id": "cd_b3c1902e",
+      "type": "audio",
+      "isAudio": true,
+      "tags": [
+        "retro_cds"
+      ],
+      "title": "Audio Tape 5-7141",
+      "content": "[Therapist]: Good morning, Vanessa. Let's jump right in, shall we? I got a message last night about you and I have to be honest it was upsetting. Apparently, the IT department has put together a pretty lengthy report chronicling non-job related communications that have been coming to your computer. The fact that you're still doing something obviously not work related on the job is disturbing enough, but what bothers me about what I read is that the messages you're getting seem very manipulative in nature. Do you know who I'm talking about?\n[Vanessa]: I get a lot of messages from friends. I like when Luis writes to me, he's funny.\n[Therapist]: I'm not talking about Luis. You know who I'm talking about. Why won't you open up about it? (Sigh)\n[Therapist]: What you might not know is that this person who's been sending you messages has been hacking into your personal files too. These are the same files I have here. These files are full of details about your life. Do you know what that means?\n[Vanessa]: I'm not in the tech department, I just type on the computers.\n[Therapist]: I know that, but what matters here is that this person who is contacting you knows a lot about you.\n[Vanessa]: Lots of people know more than I do. Sometimes I need to listen.",
+      "memoTo": "",
+      "memoDate": "Retro CD",
+      "audioUrls": [
+        "audios/sb/Play_Tape_5_7141 (1008470055).wav"
+      ],
+      "imageUrls": [
+        ""
+      ],
+      "audioUrl": "./audios/sb/Play_Tape_5_7141 (1008470055).wav"
+    },
+    {
+      "id": "cd_8d4ed295",
+      "type": "audio",
+      "isAudio": true,
+      "tags": [
+        "retro_cds"
+      ],
+      "title": "Audio Tape 6-4674",
+      "content": "[Therapist]: Good morning! It's good to meet you! I've read your files, so I'm up to speed on what you and your previous therapists have worked on.\n[Therapist]: Sure, you can have a candy. I'll have one too. You look chill sitting there like that. Not a care in the world, huh? Alright, well I'd like to start with talking about your parents. What happened to them, and you, was tragic, but when I looked through the notes I didn't get a sense that you've processed that emotionally. When I read your account of what happened it came across as, well, more of an objective rather than a subjective narrative. Oh, sorry, you don't know what that means, do you? What I mean is that the way you told the story is more like you were reading something from a book than you were talking about your own past. That makes me think you've cut yourself off from it, is that right? Not sure? Well, I see it in your file that you spend a lot of time by yourself and are good at self-dialogue, you know what I mean? Asking yourself questions and getting answers? So, maybe you should ask yourself how you really feel about your past. Maybe you should give yourself a chance to really look at what happened and let yourself be upset about it. So you can let it go.",
+      "memoTo": "",
+      "memoDate": "Retro CD",
+      "audioUrls": [
+        "audios/sb/Play_Tape_6_4674 (772559081).wav"
+      ],
+      "imageUrls": [
+        ""
+      ],
+      "audioUrl": "./audios/sb/Play_Tape_6_4674 (772559081).wav"
+    },
+    {
+      "id": "cd_f4d68315",
+      "type": "audio",
+      "isAudio": true,
+      "tags": [
+        "retro_cds"
+      ],
+      "title": "Audio Tape 7-7142",
+      "content": "[Therapist]: Hi, Vanessa. Would you like a candy? Butterscotch today.\n[Vanessa]: No, thank you. Those have 35 calories a piece.\n[Therapist]: Hmm, well they taste good to me! Ok, I thought we could do something today that will help us get to know one another better. It looks like you've never taken an ink blot test, right? No? Ok. Then I'm going to show you some ink blots like this one and I want you to tell me the first thing it makes you think of. Here we go. What do you see here?\n[Vanessa]: A treehouse.\n[Therapist]: Hmm, it does look sort of like a treehouse, doesn't it? Do you like treehouses?\n[Vanessa]: I like to sit outside and read.\n[Therapist]: That's good. Now, what about this one?\n[Vanessa]: A beetle.\n[Therapist]: Really? Looks like a face to me. That's very interesting.",
+      "memoTo": "",
+      "memoDate": "Retro CD",
+      "audioUrls": [
+        "audios/sb/Play_Tape_7_7142 (129077551).wav"
+      ],
+      "imageUrls": [
+        ""
+      ],
+      "audioUrl": "./audios/sb/Play_Tape_7_7142 (129077551).wav"
+    },
+    {
+      "id": "cd_2a14e083",
+      "type": "audio",
+      "isAudio": true,
+      "tags": [
+        "retro_cds"
+      ],
+      "title": "Audio Tape 8-4675",
+      "content": "[Therapist]: Have you thought more about what we talked about? In our last session you told me you were sad and scared about what happened to you. I suggested you write down exactly what made you so sad and scared, did you do that?\n[Therapist]: You know, I work with people of all ages, from little kids to the very elderly, and everyone reacts to tragedy differently. Tragedy always leads to a feeling of loss. It's a hole that feels funny, right? Yeah, so if you could process those feelings, how do you think it would affect your fantasies? Would you keep them in the way they are?",
+      "memoTo": "",
+      "memoDate": "Retro CD",
+      "audioUrls": [
+        "audios/sb/Play_Tape_8_4675 (797245215).wav"
+      ],
+      "imageUrls": [
+        ""
+      ],
+      "audioUrl": "./audios/sb/Play_Tape_8_4675 (797245215).wav"
+    },
+    {
+      "id": "cd_fb1a360b",
+      "type": "audio",
+      "isAudio": true,
+      "tags": [
+        "retro_cds"
+      ],
+      "title": "Audio Tape 9-7143",
+      "content": "[Therapist]: What are you doing? Oh, you like those? I do too. They smell so sweet, don't they? Apparently, the janitor on this floor has a garden and has been putting bouquets in the offices here for years. Do you ever grow things? No?\n[Vanessa]: I work a lot.\n[Therapist]: I know you do, maybe more than you should. More free time would do you good. Do you have a hobby? No? Perhaps we could find one for you, like a sport. No? Hmm... I have a craft space in my basement. Maybe I could come up with something you could learn to do.\n[Vanessa]: I don't like dark basements.",
+      "memoTo": "",
+      "memoDate": "Retro CD",
+      "audioUrls": [
+        "audios/sb/Play_Tape_9_7143 (472777).wav"
+      ],
+      "imageUrls": [
+        ""
+      ],
+      "audioUrl": "./audios/sb/Play_Tape_9_7143 (472777).wav"
+    },
+    {
+      "id": "cd_526eeab1",
+      "type": "audio",
+      "isAudio": true,
+      "tags": [
+        "retro_cds"
+      ],
+      "title": "Audio Tape 10-7144",
+      "content": "[Therapist]: I'd say make yourself comfortable, but I think you already are. It looks like you could take a nap. That's a nice chair, isn't it? According to these message logs, you've been working pretty late over the last couple of weeks... Or not working. Are you ready to talk about who you're interacting with? From what I can see here the interaction is getting more serious. Is it distracting you from your work?\n[Vanessa]: My work is important. There's a non-disclosure agreement.",
+      "memoTo": "",
+      "memoDate": "Retro CD",
+      "audioUrls": [
+        "audios/sb/Play_Tape_10_7144 (193099864).wav"
+      ],
+      "imageUrls": [
+        ""
+      ],
+      "audioUrl": "./audios/sb/Play_Tape_10_7144 (193099864).wav"
+    },
+    {
+      "id": "cd_5657de14",
+      "type": "audio",
+      "isAudio": true,
+      "tags": [
+        "retro_cds"
+      ],
+      "title": "Audio Tape 11-7145",
+      "content": "[Therapist]: Good morning, Vanessa. Well, I can't blame you for looking out the window instead of listening to me. It's a gorgeous day, isn't it?\n[Vanessa]: I like the blue sky.\n[Therapist]: Hmm, so do I. Now, let's see what we can get done on this nice sunny day. Ok, here we go. I know part of your job requires you to do online searches, but a routine audit of your search history has revealed that you're doing a little private searching on company time. Is that right?\n[Vanessa]: I get breaks.\n[Therapist]: That's true. So, on your breaks it looks like you were shopping for a costume. You purchased some fake fur material. What are you going to make? (\n[Vanessa]: Indistinct muttering)\n[Therapist]: What was that? Did you say the costume is a secret? Why is that?\n[Vanessa]: I can't talk about this. He said he would always be watching. He could be here or there or anywhere in-between.\n[Therapist]: Are you talking about your dad? Have those feelings come up again? I hate sounding like a broken record, but this is something you really need to resolve if you're ever going to be happy.\n[Vanessa]: I have! I compartmentalized him. He's locked away.\n[Therapist]: No, that's not what I mean. You can't just ignore an issue. You have to face your memory of the experiences and process them so you can let it go. So you don't get triggered anymore. You can use a sort of self-dialogue to release these things.\n[Vanessa]: I don't like doing that. Hmm, well, ok. We'll get back to that. I'd really like to know something about this costume. What's it for?",
+      "memoTo": "",
+      "memoDate": "Retro CD",
+      "audioUrls": [
+        "audios/sb/Play_Tape_11_7145 (720735174).wav"
+      ],
+      "imageUrls": [
+        ""
+      ],
+      "audioUrl": "./audios/sb/Play_Tape_11_7145 (720735174).wav"
+    },
+    {
+      "id": "cd_ee7c2fb3",
+      "type": "audio",
+      "isAudio": true,
+      "tags": [
+        "retro_cds"
+      ],
+      "title": "Audio Tape 12-7146",
+      "content": "[Therapist]: I understand you'll be transferring to a different location soon. I'll be sorry to see you go. I think we've been making progress, don't you? You can request to come back and speak with me more on your own time though. Did you know that? Our sessions don't have to be company mandated. I have all sorts of clients, Vanessa. I don't just work with corporations. I work with individuals and small groups, I even work in schools. I'm wherever I'm needed.\n[Vanessa]: I'm needed somewhere else now. Thank you.",
+      "memoTo": "",
+      "memoDate": "Retro CD",
+      "audioUrls": [
+        "audios/sb/Play_Tape_12_7146 (138120847).wav"
+      ],
+      "imageUrls": [
+        ""
+      ],
+      "audioUrl": "./audios/sb/Play_Tape_12_7146 (138120847).wav"
+    },
+    {
+      "id": "cd_87d6ea8a",
+      "type": "audio",
+      "isAudio": true,
+      "tags": [
+        "retro_cds"
+      ],
+      "title": "Audio Tape 13-4676",
+      "content": "[Therapist]: When I'm getting to know a new client, I like to start by finding out directly from them what they like to do. How do you spend all the time you have? Nothing? Well... how do you feel about sports? You like sports? Yeah? No? Oh, I get it. You like to watch them, but not play them. You like being inside, don't you? I get that. Lots of weird stuff outdoors, isn't there? Yeah, I understand. Well, I hate to do this right off the bat, but I've been directed to ask you about this. Apparently, I'm the fourth therapist you've had, and apparently all three of your former therapists have gone missing. Or, two of them are missing. I don't want to scare you, but I have to tell you that one of them was found dead.\n[Therapist]: That doesn't seem to upset you. Well then, I guess I'll go ahead and tell you that the woman's body was pretty messed up. It looked like it was mangled by machinery. That doesn't bother you either? Hmm... it's all pretty strange, I think. I'm not clear on the circumstances. Apparently, the police don't have any evidence. How does all of this make you feel? Chuckles) Maybe I should be watching my back. Yeah, that's funny, isn't it? Ok, shall we move on to something lighter?",
+      "memoTo": "",
+      "memoDate": "Retro CD",
+      "audioUrls": [
+        "audios/sb/Play_Tape_13_4676 (812447513).wav"
+      ],
+      "imageUrls": [
+        ""
+      ],
+      "audioUrl": "./audios/sb/Play_Tape_13_4676 (812447513).wav"
+    },
+    {
+      "id": "cd_06a894bd",
+      "type": "audio",
+      "isAudio": true,
+      "tags": [
+        "retro_cds"
+      ],
+      "title": "Audio Tape 14-4677",
+      "content": "[Therapist]: Do you know a place called Freddy Fazbear's Mega Pizzaplex? I'll take your silence as a yes. And besides, I know you know it. Because the technicians who work for Pizzaplex know you. Or rather, I guess it would be better to say that they think they do. They report that they have caught you on camera, or at least it appears to be you. Nothing to say about that? Well, the techs are convinced that you've hacked into their system many times. Although, I'll admit I don't see any proof here. Seems like they have more of a gut feeling than fact. But apparently the hacks are causing all kinds of problems. Hmm, you get a kick out of that? The idea of techs running around like chickens with their heads cut off? Yeah, that's a funny image, isn't it? But seriously, I have to say that I think it's weird that you'd spend so much time in such a busy, social place. You seem like more of a loner to me. Lots of time by yourself instead of with friends. Lots of time talking to yourself, right? Is it the electronics you like? I saw in your file that you've developed software programs that talk to you and repeat phrases, right? The program asks you questions and prompts you for responses. It's kind of like your own self therapy, isn't it? Another way of talking to yourself to work things out, right? When I saw some of your recent encrypted conversation logs, that's what I thought I was looking at. It felt like I was watching someone go back and forth in their own head, but the techs found something that's different than that. When I read what they found, at first, I thought I was looking at more examples of you just talking with yourself, then I realized it was different. When I study this, it sounds like there is someone else responding to you. Who is it?",
+      "memoTo": "",
+      "memoDate": "Retro CD",
+      "audioUrls": [
+        "audios/sb/Play_Tape_14_4677 (304958034).wav"
+      ],
+      "imageUrls": [
+        ""
+      ],
+      "audioUrl": "./audios/sb/Play_Tape_14_4677 (304958034).wav"
+    },
+    {
+      "id": "cd_8c2eb487",
+      "type": "audio",
+      "isAudio": true,
+      "tags": [
+        "retro_cds"
+      ],
+      "title": "Audio Tape 15-4678",
+      "content": "[Therapist]: I saw some ink blot test results in your file. I like ink blot tests. You wanna do one? Yes? Ok. How about this one? What do you see? What? You wanna hold it? Ok.\n[Therapist]: You think it's a mask? It reminds you of a mask? Like a disguise? Yeah, I can see that. You like the idea of being disguised? Disguises let you be sort of invisible, don't they? You can get away with almost anything when you're invisible, can't you? (chuckles). Yeah? You like that idea, huh? Well ok, moving on. I have another report we need to talk about. Apparently, the techs were reviewing communications going in and out of this building and they came across some interesting things. They say you're in communication with someone... or maybe something. Pretty strange. What do you think about that? Nothing? Well, the techs say it looked to them like it was an attempt to manipulate you, or maybe to lure you somewhere.\n[Therapist]: There, that's better. On this side of the desk, I can see your eyes. The thing is, when I read the communications, I get something different out of them. I don't think you're being manipulated here. I think you're the one doing the manipulating. No comment, huh? Ok... then how about this? I have this still shot the techs pulled from the security footage that recorded you in the Pizzaplex. That's you, isn't it? I know this image is distorted, but I think it looks like you. And you're not alone here. You're talking to someone, or something, it's hard to tell. What are those things? They almost look like rabbit ears. What? You find that amusing? Well, I guess it is.",
+      "memoTo": "",
+      "memoDate": "Retro CD",
+      "audioUrls": [
+        "audios/sb/Play_Tape_15_4678 (823019201).wav"
+      ],
+      "imageUrls": [
+        ""
+      ],
+      "audioUrl": "./audios/sb/Play_Tape_15_4678 (823019201).wav"
+    },
+    {
+      "id": "cd_8fe7870d",
+      "type": "audio",
+      "isAudio": true,
+      "tags": [
+        "retro_cds"
+      ],
+      "title": "Audio Tape 16-4679",
+      "content": "[Therapist]: I got another message from the techs at the Pizzaplex. I'm afraid it's about you again. The techs have been struggling to fix some serious glitches with the robots. I'm not sure what exactly is wrong except that it's making the robots more eerie than entertaining. You like that? Eerie instead of entertaining? Thanks, but it's really not that funny. Apparently, the glitch extended beyond the robots. It went system wide. It began infecting all the machines and when the techs traced the glitch back to its origin it led them to you. And I'm not going to pretend to understand everything I'm reading here, but what I get is that the system wide glitch was like a cascade that was broadcasting a very dangerous message. While the techs were trying to reprogram the system to remove the glitch, the source of the glitch shifted. You'll have to excuse me, I'm not all that familiar with computer programming so I might get this wrong, but what I understand is that the glitch stopped being a glitch and turned into an intentional set of sub-routines that were aimed at creating the same thing the glitch created. Those sub-routines seem to have come from you. Can you explain that?\n[Therapist]: Listen, I'm on your side here. Our sessions are just between you and me. The techs can't prove what they think, so you're not in trouble. I just thought you could tell me what you're trying to do. Maybe if we could get to the bottom of that it could help you. What do you think? Still not talking? Alright, well then let's do this. Why don't we talk about the research I did in your past, shall we? Some therapists think they should only focus on information they get from their clients, but some therapists, like me, think it's helpful to find out about clients from other sources. Wanna guess what I found out when I looked into the tragedy of your past? All that stuff about your parents? You aren't even gonna look at me? Fine, you can look at the floor all you want, but it won't change the fact that none of what you said in your file about your parents was true. The truth is, you had great parents, a great childhood. Why did you lie? Look at me. Tell me why you lied. You - (clears throat) Well, I can understand why you might feel angry about the way I just confronted you. Why don't we come back to this another day? You're shaking your head as though that's not going to happen.",
+      "memoTo": "",
+      "memoDate": "Retro CD",
+      "audioUrls": [
+        "audios/sb/Play_Tape_16_4679 (146958370).wav"
+      ],
+      "imageUrls": [
+        ""
+      ],
+      "audioUrl": "./audios/sb/Play_Tape_16_4679 (146958370).wav"
+    }
+  ],
+  "_lastModified": 1790064868011
+}

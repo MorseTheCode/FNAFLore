@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Archive Logs</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Inter:wght@400;600&display=swap');
+        body { 
+            background-color: #0a0a0a; 
+            color: #e5e5e5; 
+            font-family: 'Inter', sans-serif;
+            background-image: radial-gradient(circle at 50% 50%, #1a1a1a 0%, #0a0a0a 100%);
+            min-height: 100vh;
+        }
+        .mono { font-family: 'Space Mono', monospace; }
+        .log-card { background: #1a1a1a; border: 1px solid #333; transition: all 0.2s ease; height: 100%; display: flex; flex-direction: column; }
+        .log-card:hover { border-color: #4ade80; box-shadow: 0 0 15px rgba(74, 222, 128, 0.1); }
+        .category-btn { background: #1a1a1a; border: 1px solid #333; color: #a1a1aa; padding: 6px 14px; border-radius: 6px; font-size: 0.85rem; transition: all 0.2s; white-space: nowrap; cursor: pointer; }
+        .category-btn:hover { background: #27272a; color: #f4f4f5; }
+        .category-btn.active { background: #4ade80; color: #0a0a0a; border-color: #4ade80; font-weight: 600; }
+        .type-btn { background: #18181b; border: 1px solid #3f3f46; color: #a1a1aa; transition: all 0.2s; cursor: pointer; border-radius: 6px; }
+        .type-btn.active { background: #3f3f46; color: #f4f4f5; border-color: #52525b; }
+        .scroll-arrow { background: #121212; border: 1px solid #333; color: #a1a1aa; width: 32px; display: flex; align-items: center; justify-content: center; border-radius: 6px; cursor: pointer; transition: all 0.2s; flex-shrink: 0; }
+        .scroll-arrow:hover { border-color: #4ade80; color: #4ade80; background: #1a1a1a; }
+        .scroll-container { display: flex; flex-wrap: nowrap; gap: 0.5rem; overflow-x: auto; scroll-behavior: smooth; }
+        .scroll-container::-webkit-scrollbar { display: none; }
+        .scroll-container { -ms-overflow-style: none; scrollbar-width: none; }
+        .title-badge { background: #2d2d2d; color: #4ade80; padding: 2px 8px; border-radius: 4px; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.05em; }
+        .audio-badge { background: #3b0764; color: #d8b4fe; border: 1px solid #7e22ce; }
+        .location-badge { background: #1e293b; color: #94a3b8; padding: 2px 8px; border-radius: 4px; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.05em; }
+        .context-group { border-left: 2px solid #4ade80; padding-left: 1.5rem; margin-bottom: 3rem; }
+        .group-header { margin-bottom: 1rem; color: #4ade80; font-size: 0.9rem; font-weight: bold; text-transform: uppercase; letter-spacing: 0.1em; }
+        .content-area { line-height: 1.4; white-space: pre-line; word-break: break-word; margin-top: -3px; display: block; }
+        .content-wrapper { border-top: 1px solid #333; padding-top: 0.75rem; margin-top: 0; flex-grow: 1; }
+        .highlight { background-color: rgba(74, 222, 128, 0.3); color: #fff; }
+        .speaker-tag {
+            display: inline-block;
+            background-color: #3b0764;
+            color: #d8b4fe;
+            border: 1px solid #7e22ce;
+            border-radius: 0.25rem;
+            padding: 0.125rem 0.375rem;
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            vertical-align: middle;
+            margin-right: 0.25rem;
+            font-family: 'Space Mono', monospace;
+            line-height: 1;
+        }
+        .copy-btn { background: transparent; color: #a1a1aa; border: none; cursor: pointer; padding: 4px; border-radius: 4px; transition: color 0.2s, background 0.2s; }
+        .copy-btn:hover { color: #4ade80; background: #27272a; }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #0a0a0a; }
+        ::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
+        .scrollbar-hide::-webkit-scrollbar { display: none; }
+        .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+        .scanline {
+            width: 100%;
+            height: 100px;
+            z-index: 9999;
+            position: fixed;
+            left: 0;
+            pointer-events: none;
+            background: linear-gradient(0deg, rgba(0,0,0,0) 0%, rgba(74,222,128,0.1) 50%, rgba(0,0,0,0) 100%);
+            opacity: 0.1;
+            animation: scanline 8s linear infinite;
+        }
+        @keyframes scanline {
+            0% { top: -100px; }
+            100% { top: 100%; }
+        }
+    </style>
+</head>
+<body class="pb-8 relative">
+    <div class="scanline"></div>
+    <div class="max-w-[100rem] mx-auto px-4 md:px-12 xl:px-24 relative">
+        <div class="pt-6 md:pt-10 mb-4">
+            <a href="index.html" class="inline-flex items-center gap-2 text-zinc-400 hover:text-green-400 transition-colors mono text-sm mb-6">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+                RETURN_TO_HUB
+            </a>
+            <h1 id="page-title" class="text-3xl md:text-4xl font-bold mono text-green-400 mb-2">LOADING ARCHIVE...</h1>
+            <p id="page-subtitle" class="text-zinc-500 italic">Establishing connection to databank...</p>
+        </div>
+        
+        <header class="sticky top-2 md:top-4 z-50 p-3 md:p-4 mb-6 border border-zinc-800/60 bg-[#0a0a0a]/85 backdrop-blur-xl rounded-xl md:rounded-2xl shadow-2xl">
+            <div class="flex flex-col gap-3">
+                <div class="flex flex-col md:flex-row gap-3">
+                    <div class="relative w-full flex items-center">
+                        <svg class="absolute left-3 text-zinc-500" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                        <input type="text" id="searchInput" placeholder="Search archives..." 
+                               class="w-full bg-zinc-900/80 border border-zinc-700/50 rounded-lg pl-9 pr-24 py-2.5 focus:outline-none focus:border-green-500/50 mono text-green-400 text-sm transition-colors shadow-inner">
+                        <div class="absolute right-3 text-zinc-500 text-[10px] mono pointer-events-none flex items-center gap-1 pl-2">
+                            <span id="logCount" class="text-green-500 font-bold text-xs">0</span> <span class="hidden sm:inline">ENTRIES</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-between md:justify-start gap-3 shrink-0 bg-zinc-900/80 border border-zinc-700/50 rounded-lg px-3 py-2.5">
+                        <label class="text-[10px] text-zinc-500 mono whitespace-nowrap">GRID COLS</label>
+                        <input type="range" id="colSlider" min="1" max="5" value="2" class="accent-green-500 w-24" oninput="render()">
+                        <span id="colValue" class="text-[10px] text-green-500 mono font-bold w-2 text-right">2</span>
+                    </div>
+                </div>
+
+                <div class="flex items-stretch gap-2 w-full mt-1 relative">
+                    <button class="scroll-arrow left-arrow hidden" onclick="scrollContainer('filterBar', -200)">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                    </button>
+                    <div id="filterBar" class="scroll-container w-full" onscroll="updateArrows('filterBar')">
+                        <!-- Injected via fetch -->
+                        <button class="category-btn active shrink-0" data-cat="all">All Logs</button>
+                    </div>
+                    <button class="scroll-arrow right-arrow hidden" onclick="scrollContainer('filterBar', 200)">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                    </button>
+                </div>
+                
+                <div id="subFilterWrapper" class="hidden items-stretch gap-2 w-full relative">
+                    <button class="scroll-arrow left-arrow hidden" onclick="scrollContainer('subFilterBar', -200)">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                    </button>
+                    <div id="subFilterBar" class="scroll-container w-full" onscroll="updateArrows('subFilterBar')">
+                        <button class="type-btn active text-xs px-3 py-1.5 mono shrink-0" data-type="all">All Types</button>
+                        <button class="type-btn text-xs px-3 py-1.5 mono shrink-0" data-type="text">Text Only</button>
+                        <button class="type-btn text-xs px-3 py-1.5 mono shrink-0" data-type="audio">Audio Only</button>
+                        <button class="type-btn text-xs px-3 py-1.5 mono shrink-0" data-type="image">Image Only</button>
+                        <button class="type-btn text-xs px-3 py-1.5 mono shrink-0" data-type="memo">Memo Only</button>
+                        <button class="type-btn text-xs px-3 py-1.5 mono shrink-0" data-type="order">Order Form</button>
+                    </div>
+                    <button class="scroll-arrow right-arrow hidden" onclick="scrollContainer('subFilterBar', 200)">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <div id="logDisplay" class="space-y-8"></div>
+    </div>
+
+    <!-- Modal -->
+    <div id="imageModal" class="fixed inset-0 z-[9999] bg-black/95 hidden items-center justify-center p-4 md:p-8 opacity-0 transition-opacity duration-300 backdrop-blur-sm" onclick="closeImageModal()">
+        <div class="relative flex items-center justify-center">
+            <div class="absolute -top-14 right-0 flex gap-2">
+                <a id="modalDownloadBtn" href="#" download target="_blank" class="text-zinc-400 hover:text-green-400 transition-colors p-2" onclick="event.stopPropagation()" title="Download Image">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                </a>
+                <button class="text-zinc-400 hover:text-white transition-colors p-2" onclick="closeImageModal(); event.stopPropagation();" title="Close">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                </button>
+            </div>
+            <img id="modalImage" src="" class="max-w-[95vw] max-h-[90vh] object-contain rounded-lg border border-zinc-800 shadow-2xl" onclick="event.stopPropagation()">
+        </div>
+    </div>
+
+    <script id="archive-data" type="application/json">{"header":"PIZZAPLEX_ARCHIVE","subtitle":"Tales from the Pizzaplex","categories":[{"id":"arcade_conspiracy","label":"Arcade Conspiracy"},{"id":"sister_location_lore","label":"Sister Location Lore?"},{"id":"complaint","label":"Customer Complaint"},{"id":"maintenance","label":"Maintenance Log"},{"id":"security","label":"Security Report"},{"id":"errant","label":"Errant Behavior Report"},{"id":"construction","label":"Construction Update"},{"id":"staff","label":"Staff / Employees"},{"id":"misc","label":"Miscellaneous"}],"logs":[{"id":"bag_a68fcf9a","type":"text","isAudio":false,"tags":["text","misc"],"title":"Hello Gregory","content":"Hello, Gregory. It is me, Freddy, I will escort you to the main entrance. However, I am unable to leave this room. You should have no problem. There is a button on the wall that will open the door to the back room. I will make it accessible to you now.","memoTo":"","memoDate":"Automatically received from Glamrock Freddy at the start of the game.","imageUrls":[""]},{"id":"bag_1c40aa7b","type":"text","isAudio":false,"tags":["text","complaint"],"title":"Party Foul","content":"CUSTOMER COMPLAINT - We paid for the Glam Freddy Mega Deluxe Party Package and Freddy broke down as soon as he got on stage. We paid to have him at the table and sing happy birthday. He was supposed to give her the cake! My daughter's birthday has been ruined. I demand a refund.","memoTo":"","memoDate":"On a bench in front of Glamrock Freddy's Green Room.","imageUrls":[""]},{"id":"bag_f0742881","type":"text","isAudio":false,"tags":["text","staff"],"title":"Food Storage","content":"ATTENTION KITCHEN STAFF - All food materials must be securely stored at closing. Chica has been caught eating from the kitchen garbage after hours. The maintenance repairs are costly and will come out of kitchen staff paychecks. - MANAGEMENT","memoTo":"","memoDate":"To the left side of double doors after Glamrock Freddy charges for the first time.","imageUrls":[""]},{"id":"bag_d42ef3e7","type":"text","isAudio":false,"tags":["text","misc"],"title":"Easy Money","content":"My cousin worked here. He said magnets screw with the ticket machines. Just head up to Faz Pad. You can get down to customer service through the back door and grab a stack of tickets. I'll be waiting for you outside. If you hear any robots, just hide until they leave. You'll be fine.","memoTo":"","memoDate":"On the edge of the fountain in the main lobby.","imageUrls":[""]},{"id":"bag_223e3eed","type":"text","isAudio":false,"tags":["text","misc"],"title":"AC Inspection","content":"Thank you for contacting Low Budget Building Contractors. We have done a preliminary inspection and find nothing wrong with your ventilation system. The \"loud clanging\", \"banging\" and \"scraping\" noises which were reported don't appear to be reproducable. Call us if it happens again. Invoice attached. - Keith","memoTo":"","memoDate":"On a table in the back of Faz-Pad","imageUrls":[""]},{"id":"bag_924d3e86","type":"text","isAudio":false,"tags":["text","complaint"],"title":"HI DAVE","content":"CUSTOMER COMPLAINT - You should fire Dave. He sucks.","memoTo":"","memoDate":"On the farthest left bench next to the lockers in Customer Service.","imageUrls":[""]},{"id":"bag_4444be87","type":"text","isAudio":false,"tags":["text","complaint"],"title":"Night Terrors","content":"CUSTOMER COMPLAINT - My son never had sleeping problems. But after spending an evening in the daycare, he refuses to sleep with the lights out anymore! He just cries and cries. And then when I do let him keep the lights on, he wets the bed!","memoTo":"","memoDate":"In the male bathroom of the lobby before Daycare Pick-up.","imageUrls":[""]},{"id":"bag_e946f76c","type":"text","isAudio":false,"tags":["text","misc"],"title":"Drink Fizzy Faz!!!!","content":"COPY FOR APPROVAL: Hey kids! Do you like Fizzy Faz? Think you can drink every flavor of Fizzy Faz in one day? Take the Superstar challenge! Grape, Lemonade, Cherry... Your Fazwatch keeps track of all your purchases. Drink them all. Be first! Be the raddest kid on your block.","memoTo":"","memoDate":"","imageUrls":[""]},{"id":"bag_a1ce4f8f","type":"text","isAudio":false,"tags":["text","security"],"title":"Stolen property","content":"SECURITY REPORT - Well somehow someone broke into a Rockstar Row display case and stole the wind up toy Music Man prototypes. The case was smashed and there's glass on the floor but no sign of a break in. Nothing else seems to be missing. I have absolutely no idea how they got into the building and there's nothing on the security footage. Now what should I do? Should I call the police and report a break in? - Vanessa","memoTo":"","memoDate":"To the left of when exiting the Endo section.","imageUrls":[""]},{"id":"bag_9d8db660","type":"text","isAudio":false,"tags":["text","staff"],"title":"Understudy","content":"MANAGEMENT REPORT - With Bonnie out of commision, we are making Monty the new bass player. Parts and Service has already done the proper adjustments. This could be a good thing. Monty could be even more popular than Bonnie.","memoTo":"","memoDate":"In the rehearsal room under the bleachers.","imageUrls":[""]},{"id":"bag_29d3f4d0","type":"text","isAudio":false,"tags":["text","security"],"title":"False Alarm","content":"SECURITY REPORT - A local police officer came by tonight, He said he was responding to an emergency call from someone inside the Pizzaplex. There is no way that is possible. I was the only one here and I certainly didn't make any outside calls. He wanted to look around, but I sent him away. Just another prank call. - Vanessa","memoTo":"","memoDate":"In the entrance booth to the player's right (looking from the exit into the Lobby)","imageUrls":[""]},{"id":"bag_1705e5ff","type":"text","isAudio":false,"tags":["text","maintenance"],"title":"BEHIND THE MAZE","content":"MAINTENANCE REPORT - I still can't find what is making all the clanging noise in the AC system. This is the fifth visit this week. If I could reach that stupid vent behind the exercise maze room, I could get to the catwalks over Gator Golf and take a look. Maybe someone who works in Mazercise knows how.","memoTo":"","memoDate":"In the security office in Monty's Gator Golf","imageUrls":[""]},{"id":"bag_a0f4d551","type":"text","isAudio":false,"tags":["text","errant"],"title":"CHICA REPORT","content":"ERRANT BEHAVIOR REPORT - Chica's personality chip has always been a bit 'quirky', but the new Pizza Flavored Monty Mystery Mix Slushy Syrup has adverse effects on her programming. She has attacked patrons, employees and S.T.A.F.F. for it. It is recommended that Monty Mystery Mix should be recalled before we're inundated with lawsuits.","memoTo":"","memoDate":"Inside Chica's green room in Rockstar Row.","imageUrls":[""]},{"id":"bag_e7a3c45d","type":"text","isAudio":false,"tags":["text","errant"],"title":"Monty Mischief","content":"ERRANT BEHAVIOR REPORT - Monty didn't show up for the main stage performance again. We found him in the same place we always do, the catwalks over Monty Golf. We can't have a repeat of last month. Someone hit the hole in one and the hurricane bucket knocked him down. Both legs were broken and required emergency parts and service work.","memoTo":"","memoDate":"On the desk inside Montgomery Gator's green room.","imageUrls":[""]},{"id":"bag_6b6f040c","type":"text","isAudio":false,"tags":["text","errant"],"title":"Chasing cars","content":"ERRANT BEHAVIOR REPORT - Roxy never misses a race. She must be frying her circuits waiting for the raceway to reopen. Every time there is a test run on the track she gets in the way. If she keeps getting in the way, the track will never get fixed.","memoTo":"","memoDate":"Roxy Raceway Information","imageUrls":[""]},{"id":"bag_8fd1a87b","type":"text","isAudio":false,"tags":["text","staff"],"title":"Re-theme","content":"MANAGEMENT REPORT - The bowling alley needs a re-theme. While most of the Bonnie art was removed, kids keep asking, \"Where's Bonnie?\" Do we have an officially approved response?","memoTo":"","memoDate":"On a pallet in the middle of Roxy Raceway.","imageUrls":[""]},{"id":"bag_551752b8","type":"text","isAudio":false,"tags":["text","security"],"title":"MISSING","content":"SECURITY REPORT - 12:24AM - Bonnie is seen leaving his green room in Rockstar Row heading East towards the atrium. 2:40AM - Bonnie enters the East Arcade. 4:12AM - Bonnie enters Monty Golf.","memoTo":"","memoDate":"In a room nearby the First-Aid station Gregory must hide in during the start of the game.","imageUrls":[""]},{"id":"bag_2171506e","type":"text","isAudio":false,"tags":["text","misc"],"title":"THE ANSWER","content":"MAZERCISE INSTRUCTIONS - Move dark green to the corner. You should be able to work it out from there.","memoTo":"","memoDate":"Daycare Theatre","imageUrls":[""]},{"id":"bag_d0d8cea6","type":"text","isAudio":false,"tags":["text","misc"],"title":"Job Security","content":"Where is everyone? Leo was the only one who had a copy of the maze control key, but I haven't seen him for months. Maybe that creepy bot knows where the key is. Leo was supposed to train it to work the maze, instead he tricked the bot into doing busy work under the daycare theater. I'll check after the all staff meeting tonight.","memoTo":"","memoDate":"Inside the Mazercise control room.","imageUrls":[""]},{"id":"bag_5c95e558","type":"text","isAudio":false,"tags":["text","misc"],"title":"No Flash Photography","content":"WARNING: No flash photography. Items will be confiscated and kept in the Monty Golf security office.","memoTo":"","memoDate":"Inside Monty's Gator Grub","imageUrls":[""]},{"id":"bag_27a94561","type":"text","isAudio":false,"tags":["text","misc"],"title":"Hide the mix","content":"RECALL NOTICE - Please take all Monty Mystery Mix to the frozen ice cream storage behind the Bowling alley. Additional instructions to follow.","memoTo":"","memoDate":"In the Fazer Blast security office","imageUrls":[""]},{"id":"bag_79612714","type":"text","isAudio":false,"tags":["text","staff"],"title":"SAFETY CHECK","content":"ATTENTION KITCHEN STAFF - Parts and Service is concerned that Chica will suffer heavy damage if she ever gets caught in the trash compactor.  Always double check the compactor before use. Do not use to compactor to dispose of pizza, pizza flavored items, or pizza scented materials (especially Monty's Mystery Mix!). Otherwise, her replacement cost will come out of your paycheck.","memoTo":"","memoDate":"In a corridor behind Bonnie Bowl, next to the Monty Mystery Mix.","imageUrls":[""]},{"id":"bag_dde52a70","type":"text","isAudio":false,"tags":["text","staff"],"title":"COMPACTOR INSTRUCTIONS","content":"SAFETY FIRST - 1) Fill the garbage compactor. 2) Prime the compactor engine by pushing the button in the kitchen storage room (follow the cable). 3) Press the hanging activation button in front of the compactor. IMPORTANT: Make sure all employees and S.T.A.F.F. are clear of the compactor before step 3.","memoTo":"","memoDate":"Next to the trash compactor.","imageUrls":[""]},{"id":"bag_7c790cbc","type":"text","isAudio":false,"tags":["text","maintenance","arcade_conspiracy"],"title":"BBW MAINT LOG","content":"MAINTENANCE LOG - The BB World game has been acting up. Customers have complained that it starts to glitch over time. I headed to the theater to fix it and now it's gone. I never saw a move request so it should still be there somewhere.  I guess I'll check again after the company meeting.","memoTo":"","memoDate":"On a bench in Fazbear Theater.","imageUrls":[""]},{"id":"bag_3aa0848d","type":"text","isAudio":false,"tags":["text","maintenance","arcade_conspiracy"],"title":"CFF MAINT LOG","content":"MAINTENANCE LOG - Chica Feeding Frenzy in the bakery won't turn off. Even when unplugged, the game just kept running. There is no way it has that much residual charge.","memoTo":"","memoDate":"On the counter in Chica's bakery","imageUrls":[""]},{"id":"bag_119a8fec","type":"text","isAudio":false,"tags":["text","maintenance","arcade_conspiracy"],"title":"AR-CADE MAINT LOG","content":"MAINTENANCE LOG - Why is the Monty Golf AR-Cade in the mini golf course? It makes absolutely no sense. It seems to work ok otherwise.","memoTo":"","memoDate":"In the back of Chica's bakery","imageUrls":[""]},{"id":"bag_b96d8ff3","type":"text","isAudio":false,"tags":["text","maintenance","arcade_conspiracy"],"title":"PQ1 MAINT LOG","content":"MAINTENANCE LOG - There's a Princess Quest 1 machine somewhere in the building. An actual standup arcade! I guess the devs pulled it from that old mobile game. Why port to arcade?","memoTo":"","memoDate":"Top right in Bonnie Bowl","imageUrls":[""]},{"id":"bag_270b08f0","type":"text","isAudio":false,"tags":["text","maintenance","arcade_conspiracy"],"title":"PQ2 MAINT LOG","content":"MAINTENANCE LOG - Princess Quest 2 - Won't boot properly. No idea why! Shuts down when I try to play? Like it's personal. Doesn't matter anyway. I still haven't found PQ1.","memoTo":"","memoDate":"In the middle of a storage room, connected to the go-kart storage. (This bag has a duplicate next to PQ2)","imageUrls":[""]},{"id":"bag_183b8108","type":"text","isAudio":false,"tags":["text","arcade_conspiracy"],"title":"OUT OF ORDER","content":"INVENTORY CHECK - There is no record of a PQ3 arcade, yet there is a cabinet tucked away in Fazerblast. Won't work though. Sometimes I hear it in attract mode, but I have never seen a single image displayed. Too creepy. Leave it where it is. At least until I play part 1 and 2.","memoTo":"","memoDate":"Fazcade at the Daycare","imageUrls":[""]},{"id":"bag_530f4401","type":"text","isAudio":false,"tags":["text","maintenance","arcade_conspiracy"],"title":"RED FLAG","content":"MAINTENANCE LOG - I did it!. I did what you wanted! I beat parts 1 and 2. Why won't you turn on? What else is there? Tell me!","memoTo":"","memoDate":"In a storage room accessible via the Glamrock Beauty Salon, near a Princess Quest arcade machine.","imageUrls":[""]},{"id":"bag_88a5eff1","type":"text","isAudio":false,"tags":["text","staff","arcade_conspiracy"],"title":"ARCADE CONSPIRACY","content":"EXIT INTERVIEW: They are working together. The arcades. They are hiding something. The glitches. Glitch them all at the same time... then the Princess will recognize me. She's testing me. I am not yet worthy. The others are protecting it. Let me stay! I am so close! Just one more night, please! I can save the Princess!","memoTo":"","memoDate":"Daycare Attendant's room.","imageUrls":[""]},{"id":"bag_f0149a97","type":"text","isAudio":false,"tags":["text","staff"],"title":"NO QUESTIONS ASKED","content":"NEW HIRE SUMMARY - Head Security Guard. No prior qualifications. Internal reference (name withheld).","memoTo":"","memoDate":"On the way to Vanny's room from the winner's elevator","imageUrls":[""]},{"id":"bag_2f32ab3d","type":"text","isAudio":false,"tags":["text","misc"],"title":"QUESTION","content":"Are you going to the staff party? I don't want to stick around after my 14 hr shift, but I don't want to get laid off if I don't show up.","memoTo":"","memoDate":"At the back of the showers after leaving the kitchen.","imageUrls":[""]},{"id":"bag_c4884ce4","type":"text","isAudio":false,"tags":["text","staff"],"title":"All Staff Meeting","content":"REMINDER TO ALL EMPLOYEES - The all staff meeting is this Thursday night at 11:30PM. All \"service team\" attendance is mandatory. There will be cake!","memoTo":"","memoDate":"In a Basement 1 hall","imageUrls":[""]},{"id":"bag_4168c65d","type":"text","isAudio":false,"tags":["text","staff"],"title":"PINK SLIP","content":"ATTENTION EMPLOYEES - Good news! Due to the success of the S.T.A.F.F. project, we will no longer need nighttime employee coverage. We will be reducing nighttime hours effective immediately. Enjoy the additional time spent with your families.","memoTo":"","memoDate":"In the loading dock cafeteria","imageUrls":[""]},{"id":"bag_f43fab8c","type":"text","isAudio":false,"tags":["text","maintenance"],"title":"CHICA UPGRADE","content":"MAINT LOG: Chica - Don't let her sing! Messes with the navigation of the other bots. Horrible results when she sang during live performance. S.T.A.F.F. bots dropping serving trays, chaos, guest injuries, 12 lawsuits. Experimental voice box test failed. Replacement advised.","memoTo":"","memoDate":"In parts and service next to Glamrock Chica's upgrade picture","imageUrls":[""]},{"id":"bag_c131bdc7","type":"text","isAudio":false,"tags":["text","maintenance"],"title":"ROXY UPGRADE","content":"MAINT LOG: ROXY - Roxy sees things differently than the others. This upgrade was meant to help her win races. However, there are some side effects. Sometimes she will stare and talk to the other bots through walls.","memoTo":"","memoDate":"In parts and service next to Roxy's upgrade picture","imageUrls":[""]},{"id":"bag_4d841944","type":"text","isAudio":false,"tags":["text","maintenance"],"title":"MONTY UPGRADE","content":"MAINT LOG: MONTY - Montgomery's Claw upgrades allow him to play the bass. Following performances, he mostly uses them to cause damage. The fence repairs are getting costly.","memoTo":"","memoDate":"In parts and service next to Monty's upgrade picture","imageUrls":[""]},{"id":"bag_59c9a8cf","type":"text","isAudio":false,"tags":["text","sister_location_lore"],"title":"TORN PAPER","content":"It is there, but you can't see. Alone in the dark. I found the key.","memoTo":"","memoDate":"Before entering the sister location room","imageUrls":[""]},{"id":"bag_e5b738fb","type":"text","isAudio":false,"tags":["text","misc"],"title":"BETTER EMPLOYEES","content":"\"Last week it was Jenkins forgetting to replace the urinal cakes after a single use, yesterday it was Elsa for showing up to work early, today it's me because Lilly H asked for Chicken Alfredo. I said we don't make that here. Her father (guy looked like Sasquatch, btw) demanded to speak to a manager. I get Dennis. Dennis asks me why I don't just get her what she wants. I say we don't have Chicken Alfredo! Dennis fires me on the spot.\nJokes on him though - Turns out our new S.T.A.F.F. bots (the \"better employees\") aren't programmed to make Chicken Alfredo, so HQ fired him for firing me.\nSweet revenge. Thanks, Lilly!\"","memoTo":"","memoDate":"In the kitchen inside the Atrium with the Chef-bot.","imageUrls":[""]},{"id":"bag_d6ea6284","type":"text","isAudio":false,"tags":["text","staff"],"title":"NIGHT SHIFT","content":"EXIT INTERVIEW - Of course, I got stuck in the arcade. Every time I exit the Security Office, I get locked out. If it's not my low clearance level, then I need a stupid Party Pass. I'm on the security team. Shouldn't I have access to everything? I swear, those things are messing with me. This place is not safe. Give me my $100 and I'll go.","memoTo":"","memoDate":"On the center table on the seating area in the Superstar-cade","imageUrls":[""]},{"id":"bag_5291a26f","type":"text","isAudio":false,"tags":["text","complaint"],"title":"RECYCLED PIZZA?","content":"CUSTOMER COMPLAINT - The pizza we ordered was weird. Some pieces were different sizes or didn't fit together. One slice even had different toppings. Did you recycle the old pizza from the trash? I am never coming back here unless I am given some some sort of major discount. - Angry Mom","memoTo":"","memoDate":"In a Party Room outside the Daycare.","imageUrls":[""]},{"id":"bag_b583a56b","type":"text","isAudio":false,"tags":["text","misc"],"title":"SORE WINNER","content":"Roxy did it again. Another braindead S.T.A.F.F. bot decapitated because it got in her way on the racetrack. I'm getting real sick of trudging over to West Arcade to fix these things. Why isn't there a S.T.A.F.F. repair station any closer? At least I have an extra Dance Pass so I won't get locked out again.","memoTo":"","memoDate":"To the right of the old elevator in Roxy Raceway","imageUrls":[""]},{"id":"bag_d060af39","type":"text","isAudio":false,"tags":["text","misc"],"title":"TEST DRIVERS WANTED","content":"EQUIPMENT REQUEST - We are running out of test bots for the raceway. At this point we are down to a single Driver Assist bot. For safe keeping, we are storing it at the back of the raceway near the Northwest stairs.","memoTo":"","memoDate":"To the left of the driver-assist bot","imageUrls":[""]},{"id":"bag_ceba6075","type":"text","isAudio":false,"tags":["text","complaint"],"title":"IT IS HAPPENING AGAIN","content":"CUSTOMER COMPLAINT - Why did you reopen? Everyone remembers what happened to those kids.","memoTo":"","memoDate":"At the back of the currently closed structure next to Roxy Raceway","imageUrls":[""]},{"id":"bag_13479e7f","type":"text","isAudio":false,"tags":["text","construction"],"title":"SINKHOLE","content":"CONSTRUCTION UPDATE - Every day there's a new problem. We pour a new section of track and as soon as it dries, we start to see cracks. I am worried we are building over a sinkhole here. Before construction was approved, there was a site evaluation, right?","memoTo":"","memoDate":"In front of the trophies of Roxy Raceway.","imageUrls":[""]},{"id":"bag_445c407a","type":"text","isAudio":false,"tags":["text","construction"],"title":"POWER DRAIN","content":"CONSTRUCTION UPDATE - We keep getting these brown outs so I got fed up and did a little investigation. It looks like something is drawing a massive amount of power from the worksite. We've traced a high voltage cable that disappears right into the foundation. There is definitely something under us. We're going to bore back into the foundation and find out what it is.","memoTo":"","memoDate":"Roxy Raceway locker room/office","imageUrls":[""]},{"id":"bag_70d0aa7e","type":"text","isAudio":false,"tags":["text","construction"],"title":"OLD ELEVATOR","content":"CONSTRUCTION UPDATE - Today, we broke through the foundation and found what looks like an old elevator shaft. Someone must have known about this, right? There's something down there pulling power. I'm taking a team down in the morning to check it out.","memoTo":"","memoDate":"Inside the old elevator","imageUrls":[""]},{"id":"bag_0a7f77f4","type":"text","isAudio":false,"tags":["text","staff"],"title":"MARKED FOR DELETION","content":"INTERVIEW NOTES - As requested, here are my notes on today's Chief Security Officer interview. While Vanessa seemed eager and bright, she doesn't appear to have any relevant background experience. I realize the recommendation came from the top, but we need someone who has run security for a facility of this scale. I do not recommend her for this position.","memoTo":"","memoDate":"Small office to the left of the pizza-making kitchen","imageUrls":[""]},{"id":"bag_f9cdb58c","type":"text","isAudio":false,"tags":["text","misc"],"title":"ULTIMATE PARTY HOST","content":"Congratulations on your installation of the new and improved DJMM. The DJMM features eons of musical enjoyment using a patented technique called 'improv' (royalty free!). No two songs are ever the same. Save a fortune on cleanup! Using a series of connected tubes, the DJMM can run cleaning routines between set lists. If the need ever arises, activate the new \"bouncer mode\". (Warning: Bouncer mode still under development. Use of the bouncer mode will void your warranty.)","memoTo":"","memoDate":"In the West Arcade next to the Head Deposit.","imageUrls":[""]}],"_lastModified":1790063427823}</script>
+    <script>
+        const jsonSourceUrl = "sb.json";
+        let appData = { header: "", subtitle: "", categories: [], logs: [] };
+        
+        let currentCategory = 'all';
+        let currentType = 'all';
+        let currentSearch = '';
+
+        async function init() {
+            const absoluteUrl = new URL(jsonSourceUrl, window.location.href).href;
+            const cacheKey = 'mcm_archive_cache_' + absoluteUrl.replace(/[^a-zA-Z0-9]/g, '_');
+            const cached = localStorage.getItem(cacheKey);
+            
+            if (cached) {
+                try {
+                    appData = JSON.parse(cached);
+                    populateUI();
+                    render();
+                    setTimeout(() => { updateArrows('filterBar'); }, 100);
+                } catch(e) {}
+            }
+
+            try {
+                const response = await fetch(jsonSourceUrl + '?t=' + Date.now(), { cache: 'no-store' });
+                if(!response.ok) throw new Error("Network response was not ok");
+                const serverData = await response.json();
+                
+                appData = serverData;
+                localStorage.setItem(cacheKey, JSON.stringify(appData));
+                populateUI();
+                render();
+                setTimeout(() => { updateArrows('filterBar'); }, 100);
+            } catch (error) {
+                console.error("Failed to load archive data:", error);
+                if (!cached) {
+                    document.getElementById('page-title').textContent = "CONNECTION ERROR";
+                    document.getElementById('page-subtitle').textContent = "Failed to retrieve databank. Make sure content json is accessible.";
+                }
+            }
+        }
+
+        function populateUI() {
+            document.getElementById('page-title').textContent = appData.header;
+            document.getElementById('page-subtitle').textContent = appData.subtitle;
+            document.title = appData.header;
+            
+            const filterBar = document.getElementById('filterBar');
+            filterBar.innerHTML = '<button class="category-btn active shrink-0" data-cat="all">All Logs</button>' + 
+                appData.categories.map(c => `<button class="category-btn shrink-0" data-cat="${escapeHtml(c.id)}">${escapeHtml(c.label)}</button>`).join('');
+            
+            appData.logs.forEach(l => {
+                l.type = l.type || (l.isAudio ? 'audio' : 'text');
+                l.tags = l.tags || [];
+                if (l.imageUrl && !l.imageUrls) l.imageUrls = [l.imageUrl];
+                if (!l.imageUrls) l.imageUrls = [""];
+            });
+        }
+
+        function escapeRegExp(string) { return string.replace(/[.*+?^\$\{\}()|\[\]\\]/g, '\\$&'); }
+        function escapeHtml(unsafe) {
+            return (unsafe||'').replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+        }
+        function formatText(s) {
+            if (!s) return '';
+            s = s.replace(/~~(.*?)~~/g, '<del class="opacity-70 text-red-400 decoration-red-500">$1</del>');
+            s = s.replace(/\(\((.*?)\)\)/g, '<span class="inline-block align-middle whitespace-nowrap border border-red-500/70 text-red-400 px-2 py-0.5 leading-none mx-0.5 text-center" style="border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;">$1</span>');
+            s = s.replace(/\[\[(.*?)\]\]/g, '<span class="speaker-tag">$1</span>');
+            s = s.replace(/\[(.*?)\]:/g, '<span class="speaker-tag">$1</span>');
+            return s;
+        }
+
+        // --- Image Modal Logic ---
+        function openImageModal(url) {
+            const modal = document.getElementById('imageModal');
+            document.getElementById('modalImage').src = url;
+            document.getElementById('modalDownloadBtn').href = url;
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            setTimeout(() => modal.classList.remove('opacity-0'), 10);
+        }
+        function closeImageModal() {
+            const modal = document.getElementById('imageModal');
+            modal.classList.add('opacity-0');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+                document.getElementById('modalImage').src = '';
+            }, 300);
+        }
+
+        // --- Audio Player Logic ---
+        function toggleAudio(btn, audioId) {
+            var audio = document.getElementById(audioId);
+            if (audio.paused) {
+                document.querySelectorAll('audio').forEach(function(a) { 
+                    if(a !== audio) { 
+                        a.pause(); 
+                        var container = a.closest('.audio-player-container');
+                        if (container) {
+                            var b = container.querySelector('.play-pause-btn');
+                            if(b) b.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>';
+                        }
+                    }
+                });
+                audio.play();
+                btn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>';
+            } else {
+                audio.pause();
+                btn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>';
+            }
+        }
+        function updateProgress(audio) {
+            var container = audio.closest('.audio-player-container');
+            var fill = container.querySelector('.progress-fill');
+            var timeDisplay = container.querySelector('.time-display');
+            var percent = (audio.currentTime / audio.duration) * 100 || 0;
+            fill.style.width = percent + '%';
+            timeDisplay.textContent = formatTime(audio.currentTime) + ' / ' + formatTime(audio.duration || 0);
+        }
+        function setDuration(audio) {
+            var container = audio.closest('.audio-player-container');
+            var timeDisplay = container.querySelector('.time-display');
+            timeDisplay.textContent = '0:00 / ' + formatTime(audio.duration);
+        }
+        function resetPlayer(audio) {
+            var container = audio.closest('.audio-player-container');
+            var btn = container.querySelector('.play-pause-btn');
+            btn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>';
+            var fill = container.querySelector('.progress-fill');
+            fill.style.width = '0%';
+            var timeDisplay = container.querySelector('.time-display');
+            timeDisplay.textContent = '0:00 / ' + formatTime(audio.duration || 0);
+        }
+        
+        let isScrubbing = false;
+        let currentScrubAudio = null;
+        let currentScrubBar = null;
+
+        function startScrub(e, audioId) {
+            isScrubbing = true;
+            currentScrubAudio = document.getElementById(audioId);
+            currentScrubBar = e.currentTarget;
+            doScrub(e);
+        }
+
+        function doScrub(e) {
+            if (!isScrubbing || !currentScrubAudio || !currentScrubBar) return;
+            const rect = currentScrubBar.getBoundingClientRect();
+            let clickX = e.clientX - rect.left;
+            clickX = Math.max(0, Math.min(clickX, rect.width));
+            const percent = clickX / rect.width;
+            currentScrubAudio.currentTime = percent * currentScrubAudio.duration;
+        }
+
+        function stopScrub() {
+            isScrubbing = false;
+            currentScrubAudio = null;
+            currentScrubBar = null;
+        }
+
+        document.addEventListener('mousemove', doScrub);
+        document.addEventListener('mouseup', stopScrub);
+
+        function formatTime(seconds) {
+            if (isNaN(seconds) || !isFinite(seconds)) return "0:00";
+            var m = Math.floor(seconds / 60);
+            var s = Math.floor(seconds % 60);
+            return m + ':' + (s < 10 ? '0' : '') + s;
+        }
+
+        function getGroupedLogs(logs) {
+            const groups = appData.categories.map(cat => ({
+                name: cat.label,
+                match: (l) => (l.tags || []).includes(cat.id)
+            }));
+            
+            groups.push({ name: "Uncategorized Archives", match: (l) => !l.tags || l.tags.length === 0 });
+
+            const result = [];
+            const processedIds = new Set();
+
+            groups.forEach(group => {
+                const groupLogs = logs.filter(l => !processedIds.has(l.id) && group.match(l));
+                if (groupLogs.length > 0) {
+                    result.push({ title: group.name, logs: groupLogs });
+                    groupLogs.forEach(l => processedIds.add(l.id));
+                }
+            });
+            return result;
+        }
+
+        function scrollContainer(id, amount) {
+            document.getElementById(id).scrollBy({ left: amount, behavior: 'smooth' });
+        }
+
+        function updateArrows(id) {
+            const container = document.getElementById(id);
+            if (!container) return;
+            const wrapper = container.parentElement;
+            const leftArrow = wrapper.querySelector('.left-arrow');
+            const rightArrow = wrapper.querySelector('.right-arrow');
+            
+            if (leftArrow && rightArrow) {
+                if (container.scrollLeft > 0) {
+                    leftArrow.classList.remove('hidden');
+                } else {
+                    leftArrow.classList.add('hidden');
+                }
+                
+                if (container.scrollLeft < container.scrollWidth - container.clientWidth - 2) {
+                    rightArrow.classList.remove('hidden');
+                } else {
+                    rightArrow.classList.add('hidden');
+                }
+            }
+        }
+
+        window.addEventListener('resize', () => {
+            updateArrows('filterBar');
+            if (!document.getElementById('subFilterWrapper').classList.contains('hidden')) {
+                updateArrows('subFilterBar');
+            }
+        });
+
+        function render() {
+            const display = document.getElementById('logDisplay');
+            display.innerHTML = '';
+
+            const subFilterWrapper = document.getElementById('subFilterWrapper');
+            if (['text', 'audio', 'image', 'memo', 'order'].includes(currentCategory)) {
+                subFilterWrapper.classList.add('hidden');
+                subFilterWrapper.classList.remove('flex');
+                currentType = 'all';
+                document.querySelectorAll('.type-btn').forEach(b => b.classList.toggle('active', b.dataset.type === 'all'));
+            } else {
+                subFilterWrapper.classList.remove('hidden');
+                subFilterWrapper.classList.add('flex');
+                setTimeout(() => updateArrows('subFilterBar'), 10);
+            }
+
+            let filtered = appData.logs.filter(log => {
+                const searchLower = currentSearch.toLowerCase();
+                const matchesSearch = (log.title || '').toLowerCase().includes(searchLower) || 
+                                      (log.content || '').toLowerCase().includes(searchLower) ||
+                                      (log.location || '').toLowerCase().includes(searchLower);
+                
+                let matchesCat = currentCategory === 'all';
+                if (!matchesCat) {
+                    if (['text', 'audio', 'image', 'memo', 'order'].includes(currentCategory)) {
+                        matchesCat = log.type === currentCategory;
+                    } else {
+                        matchesCat = (log.tags || []).includes(currentCategory);
+                    }
+                }
+                
+                const matchesType = currentType === 'all' ? true : log.type === currentType;
+
+                return matchesSearch && matchesCat && matchesType;
+            });
+
+            document.getElementById('logCount').innerText = filtered.length;
+
+            let cols = parseInt(document.getElementById('colSlider').value);
+            document.getElementById('colValue').textContent = cols;
+            let gridClass = 'grid gap-6';
+            if (cols === 1) gridClass += ' grid-cols-1';
+            else if (cols === 2) gridClass += ' grid-cols-1 md:grid-cols-2';
+            else if (cols === 3) gridClass += ' grid-cols-1 md:grid-cols-2 lg:grid-cols-3';
+            else if (cols === 4) gridClass += ' grid-cols-1 md:grid-cols-2 lg:grid-cols-4';
+            else if (cols === 5) gridClass += ' grid-cols-1 md:grid-cols-3 lg:grid-cols-5';
+
+            if ((currentCategory === 'all' || ['text', 'audio', 'image', 'memo', 'order'].includes(currentCategory)) && !currentSearch) {
+                const grouped = getGroupedLogs(filtered);
+                grouped.forEach(group => {
+                    const groupSection = document.createElement('div');
+                    groupSection.className = 'context-group';
+                    groupSection.innerHTML = `<div class="group-header mono">${escapeHtml(group.title)}</div>`;
+                    
+                    const grid = document.createElement('div');
+                    grid.className = gridClass;
+                    
+                    group.logs.forEach(log => grid.appendChild(createCard(log)));
+                    groupSection.appendChild(grid);
+                    display.appendChild(groupSection);
+                });
+            } else {
+                const grid = document.createElement('div');
+                grid.className = gridClass;
+                filtered.forEach(log => grid.appendChild(createCard(log)));
+                display.appendChild(grid);
+            }
+        }
+
+        function createCard(log) {
+            const div = document.createElement('div');
+            div.className = 'log-card p-5 rounded-xl flex flex-col gap-3';
+            
+            let displayTitle = escapeHtml(log.title);
+            let displayContent = escapeHtml(log.content);
+            if (currentSearch) {
+                const regex = new RegExp(`(${escapeRegExp(currentSearch)})`, 'gi');
+                displayTitle = displayTitle.replace(regex, '<span class="highlight">$1</span>');
+                displayContent = displayContent.replace(regex, '<span class="highlight">$1</span>');
+            }
+            displayTitle = formatText(displayTitle);
+            displayContent = formatText(displayContent);
+
+            const copySvg = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>`;
+
+            const locHtml = log.location ? `<span class="location-badge mono">${formatText(escapeHtml(log.location))}</span>` : '';
+            
+            let typeBadgeClass = "title-badge mono";
+            let typeBadgeLabel = formatText(escapeHtml(log.title));
+            if (log.type === 'audio') { typeBadgeClass = "title-badge audio-badge mono"; typeBadgeLabel = "AUDIO LOG"; }
+            else if (log.type === 'image') { typeBadgeClass = "title-badge mono border border-blue-800 bg-blue-900/30 text-blue-400"; typeBadgeLabel = "IMAGE ATTACHMENT"; }
+            else if (log.type === 'memo') { typeBadgeClass = "title-badge mono border border-yellow-800 bg-yellow-900/30 text-yellow-400"; typeBadgeLabel = "INTEROFFICE MEMO"; }
+            else if (log.type === 'order') { typeBadgeClass = "title-badge mono border border-teal-800 bg-teal-900/30 text-teal-400"; typeBadgeLabel = "MCM ORDER FORM"; }
+            
+            const typeBadge = `<span class="${typeBadgeClass}">${typeBadgeLabel}</span>`;
+            
+            const titleDisplay = (log.type === 'audio' || log.type === 'image' || log.type === 'memo' || log.type === 'order') ? `<h2 class="text-lg font-bold text-white mono leading-tight mb-3">${displayTitle}</h2>` : '';
+
+            let rawCopyText = log.content || '';
+            let cardBodyHtml = '';
+            
+            if (log.type === 'audio') {
+                const audioPlayerHtml = log.audioUrl ? `
+                    <div class="audio-player-container bg-[#121212] border border-zinc-800 p-3 rounded-lg flex items-center gap-3 mt-4">
+                        <button class="play-pause-btn text-purple-400 hover:text-purple-300 transition-colors flex-shrink-0" onclick="toggleAudio(this, 'audio-${log.id}')">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                        </button>
+                        <div class="bg-zinc-800 h-2 flex-grow rounded cursor-pointer relative" onmousedown="startScrub(event, 'audio-${log.id}')">
+                            <div class="progress-fill bg-purple-500 h-full rounded w-0 pointer-events-none transition-all duration-75"></div>
+                        </div>
+                        <span class="time-display text-zinc-500 text-xs mono pointer-events-none w-24 text-right flex-shrink-0">0:00 / 0:00</span>
+                        <a href="${escapeHtml(log.audioUrl)}" download target="_blank" class="text-zinc-500 hover:text-purple-400 transition-colors flex-shrink-0 ml-1" title="Download Audio">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                        </a>
+                        <audio id="audio-${log.id}" src="${escapeHtml(log.audioUrl)}" ontimeupdate="updateProgress(this)" onloadedmetadata="setDuration(this)" onended="resetPlayer(this)"></audio>
+                    </div>
+                ` : '';
+                cardBodyHtml = `<div class="content-area text-zinc-400 text-sm flex-grow">${displayContent}</div>${audioPlayerHtml}`;
+            } else if (log.type === 'image') {
+                const urls = (log.imageUrls || (log.imageUrl ? [log.imageUrl] : [])).filter(u => u.trim() !== '');
+                rawCopyText = urls.join('\n');
+                
+                if (urls.length === 0) {
+                    cardBodyHtml = `<div class="text-zinc-600 text-sm italic">No image URLs provided.</div>`;
+                } else if (urls.length === 1) {
+                    cardBodyHtml = `
+                        <div class="mt-2 relative cursor-pointer group" onclick="openImageModal('${escapeHtml(urls[0])}')">
+                            <a href="${escapeHtml(urls[0])}" download target="_blank" onclick="event.stopPropagation()" class="absolute top-2 right-2 bg-black/70 text-zinc-300 p-1.5 rounded hover:text-green-400 hover:bg-black transition-colors z-10 opacity-0 group-hover:opacity-100" title="Download Image">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                            </a>
+                            <img src="${escapeHtml(urls[0])}" alt="${escapeHtml(log.title)}" class="w-full h-auto max-h-64 object-contain rounded-lg border border-zinc-800 group-hover:border-blue-500 transition-colors">
+                            <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center rounded-lg pointer-events-none">
+                                <span class="text-white text-sm mono flex items-center gap-2">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path></svg> Expand
+                                </span>
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    const slidesHtml = urls.map((url, i) => `
+                        <div class="w-full shrink-0 relative cursor-pointer group snap-center" onclick="openImageModal('${escapeHtml(url)}')">
+                            <a href="${escapeHtml(url)}" download target="_blank" onclick="event.stopPropagation()" class="absolute top-2 right-2 bg-black/70 text-zinc-300 p-1.5 rounded hover:text-green-400 hover:bg-black transition-colors z-10 opacity-0 group-hover:opacity-100" title="Download Image">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                            </a>
+                            <img src="${escapeHtml(url)}" alt="${escapeHtml(log.title)} - ${i+1}" class="w-full h-auto max-h-64 object-contain rounded-lg border border-zinc-800 group-hover:border-blue-500 transition-colors">
+                            <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center rounded-lg pointer-events-none">
+                                <span class="text-white text-sm mono flex items-center gap-2">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path></svg> Expand
+                                </span>
+                            </div>
+                            <div class="absolute bottom-2 right-2 bg-black/70 text-zinc-300 text-[10px] px-2 py-1 rounded mono shadow backdrop-blur-sm">${i+1} / ${urls.length}</div>
+                        </div>
+                    `).join('');
+
+                    cardBodyHtml = `
+                        <div class="mt-2 relative group">
+                            <div class="flex overflow-x-auto snap-x snap-mandatory scrollbar-hide pb-2 gap-4" id="carousel-${log.id}">
+                                ${slidesHtml}
+                            </div>
+                            <button onclick="event.stopPropagation(); document.getElementById('carousel-${log.id}').scrollBy({left: -document.getElementById('carousel-${log.id}').clientWidth, behavior: 'smooth'})" class="absolute left-2 top-1/2 -translate-y-1/2 w-8 h-8 flex items-center justify-center rounded-full bg-black/60 text-white border border-zinc-700 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-black hover:border-blue-500 z-10 shadow-lg">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                            </button>
+                            <button onclick="event.stopPropagation(); document.getElementById('carousel-${log.id}').scrollBy({left: document.getElementById('carousel-${log.id}').clientWidth, behavior: 'smooth'})" class="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 flex items-center justify-center rounded-full bg-black/60 text-white border border-zinc-700 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-black hover:border-blue-500 z-10 shadow-lg">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                            </button>
+                        </div>
+                    `;
+                }
+            } else if (log.type === 'memo') {
+                const memoLines = [];
+                if(log.memoDate) memoLines.push('Date: ' + log.memoDate);
+                if(log.memoTo) memoLines.push('To: ' + log.memoTo);
+                if(log.memoFrom) memoLines.push('From: ' + log.memoFrom);
+                if(log.memoCC) memoLines.push('CC: ' + log.memoCC);
+                if(log.memoSubject) memoLines.push('Subject: ' + log.memoSubject);
+                memoLines.push('');
+                if(log.content) memoLines.push(log.content);
+                if(log.memoSignature) { memoLines.push(''); memoLines.push(log.memoSignature); }
+                rawCopyText = memoLines.join('\n').trim();
+
+                cardBodyHtml = `
+                    <div class="bg-zinc-900/50 p-4 rounded-lg border border-zinc-800 mb-4 text-sm mono text-zinc-300 flex flex-col gap-2 shadow-inner">
+                        ${log.memoDate ? `<div class="flex flex-col sm:flex-row sm:items-start gap-1 sm:gap-2"><span class="text-zinc-500 font-bold sm:w-20 shrink-0 mt-0.5">DATE:</span> <span class="leading-relaxed">${formatText(escapeHtml(log.memoDate))}</span></div>` : ''}
+                        ${log.memoTo ? `<div class="flex flex-col sm:flex-row sm:items-start gap-1 sm:gap-2"><span class="text-zinc-500 font-bold sm:w-20 shrink-0 mt-0.5">TO:</span> <span class="leading-relaxed">${formatText(escapeHtml(log.memoTo))}</span></div>` : ''}
+                        ${log.memoFrom ? `<div class="flex flex-col sm:flex-row sm:items-start gap-1 sm:gap-2"><span class="text-zinc-500 font-bold sm:w-20 shrink-0 mt-0.5">FROM:</span> <span class="leading-relaxed">${formatText(escapeHtml(log.memoFrom))}</span></div>` : ''}
+                        ${log.memoCC ? `<div class="flex flex-col sm:flex-row sm:items-start gap-1 sm:gap-2"><span class="text-zinc-500 font-bold sm:w-20 shrink-0 mt-0.5">CC:</span> <span class="leading-relaxed">${formatText(escapeHtml(log.memoCC))}</span></div>` : ''}
+                        ${log.memoSubject ? `<div class="mt-1 pt-3 border-t border-zinc-800 flex flex-col sm:flex-row sm:items-start gap-1 sm:gap-2"><span class="text-zinc-500 font-bold sm:w-20 shrink-0 mt-0.5">SUBJECT:</span> <span class="leading-relaxed">${formatText(escapeHtml(log.memoSubject))}</span></div>` : ''}
+                    </div>
+                    <div class="content-area text-zinc-300 text-sm flex-grow">${displayContent}</div>
+                    ${log.memoSignature ? `<div class="mt-6 pt-4 border-t border-zinc-800/50 text-zinc-400 font-serif italic text-lg">${formatText(escapeHtml(log.memoSignature))}</div>` : ''}
+                `;
+            } else if (log.type === 'order') {
+                const orderLines = [];
+                if(log.orderDate) orderLines.push('ORDER DATE: ' + log.orderDate);
+                if(log.orderPickup) orderLines.push('PICKUP DATE: ' + log.orderPickup);
+                if(log.orderName) orderLines.push("PURCHASER'S NAME: " + log.orderName);
+                if(log.orderDate || log.orderPickup || log.orderName) orderLines.push('');
+                if(log.orderBody) orderLines.push('BODY TYPE: ' + log.orderBody);
+                if(log.orderQty) orderLines.push('QUANTITY: ' + log.orderQty);
+                if(log.orderMaterials) orderLines.push('REQUESTED MATERIALS: ' + log.orderMaterials);
+                if(log.orderDetails) orderLines.push('REQUESTED DETAILS: ' + log.orderDetails);
+                if(log.orderBody || log.orderQty || log.orderMaterials || log.orderDetails) orderLines.push('');
+                if(log.orderSpecial) orderLines.push('SPECIAL FUNCTIONS(2X ORIGINAL FEE): ' + log.orderSpecial);
+                rawCopyText = orderLines.join('\n').trim();
+
+                cardBodyHtml = `
+                    <div class="bg-zinc-900/50 p-4 rounded-lg border border-zinc-800 text-sm mono text-zinc-300 flex flex-col gap-2 shadow-inner">
+                        ${log.orderDate ? `<div class="flex flex-col sm:flex-row sm:items-start gap-1 sm:gap-2"><span class="text-zinc-500 font-bold sm:w-48 shrink-0 mt-0.5">ORDER DATE:</span> <span class="leading-relaxed break-words">${formatText(escapeHtml(log.orderDate))}</span></div>` : ''}
+                        ${log.orderPickup ? `<div class="flex flex-col sm:flex-row sm:items-start gap-1 sm:gap-2"><span class="text-zinc-500 font-bold sm:w-48 shrink-0 mt-0.5">PICKUP DATE:</span> <span class="leading-relaxed break-words">${formatText(escapeHtml(log.orderPickup))}</span></div>` : ''}
+                        ${log.orderName ? `<div class="flex flex-col sm:flex-row sm:items-start gap-1 sm:gap-2"><span class="text-zinc-500 font-bold sm:w-48 shrink-0 mt-0.5">PURCHASER'S NAME:</span> <span class="leading-relaxed break-words">${formatText(escapeHtml(log.orderName))}</span></div>` : ''}
+                        ${(log.orderDate || log.orderPickup || log.orderName) && (log.orderBody || log.orderQty || log.orderMaterials || log.orderDetails) ? `<div class="my-1 border-t border-zinc-800/50"></div>` : ''}
+                        ${log.orderBody ? `<div class="flex flex-col sm:flex-row sm:items-start gap-1 sm:gap-2"><span class="text-zinc-500 font-bold sm:w-48 shrink-0 mt-0.5">BODY TYPE:</span> <span class="leading-relaxed break-words">${formatText(escapeHtml(log.orderBody))}</span></div>` : ''}
+                        ${log.orderQty ? `<div class="flex flex-col sm:flex-row sm:items-start gap-1 sm:gap-2"><span class="text-zinc-500 font-bold sm:w-48 shrink-0 mt-0.5">QUANTITY:</span> <span class="leading-relaxed break-words">${formatText(escapeHtml(log.orderQty))}</span></div>` : ''}
+                        ${log.orderMaterials ? `<div class="flex flex-col sm:flex-row sm:items-start gap-1 sm:gap-2"><span class="text-zinc-500 font-bold sm:w-48 shrink-0 mt-0.5">REQUESTED MATERIALS:</span> <span class="leading-relaxed break-words">${formatText(escapeHtml(log.orderMaterials))}</span></div>` : ''}
+                        ${log.orderDetails ? `<div class="flex flex-col sm:flex-row sm:items-start gap-1 sm:gap-2"><span class="text-zinc-500 font-bold sm:w-48 shrink-0 mt-0.5">REQUESTED DETAILS:</span> <span class="leading-relaxed break-words">${formatText(escapeHtml(log.orderDetails))}</span></div>` : ''}
+                        ${log.orderSpecial ? `<div class="mt-1 pt-3 border-t border-zinc-800"><span class="text-zinc-500 font-bold block mb-1">SPECIAL FUNCTIONS(2X ORIGINAL FEE):</span> <span class="leading-relaxed break-words">${formatText(escapeHtml(log.orderSpecial))}</span></div>` : ''}
+                    </div>
+                `;
+            } else {
+                cardBodyHtml = `<div class="content-area text-zinc-400 text-sm flex-grow">${displayContent}</div>`;
+            }
+
+            const encodedCopyText = encodeURIComponent(rawCopyText).replace(/'/g, "%27");
+
+            div.innerHTML = `
+                <div class="flex justify-between items-start mb-3">
+                    <div class="flex gap-2 items-center flex-wrap">
+                        ${typeBadge}
+                        ${locHtml}
+                    </div>
+                    <button class="copy-btn" title="Copy Content" onclick="copyContent(this, '${encodedCopyText}')">${copySvg}</button>
+                </div>
+                ${titleDisplay}
+                <div class="content-wrapper flex flex-col">
+                    ${cardBodyHtml}
+                </div>
+            `;
+            return div;
+        }
+
+        function copyContent(btn, encodedText) {
+            const textarea = document.createElement('textarea');
+            textarea.value = decodeURIComponent(encodedText);
+            textarea.style.position = 'fixed';
+            textarea.style.opacity = '0';
+            document.body.appendChild(textarea);
+            textarea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textarea);
+
+            const originalHTML = btn.innerHTML;
+            btn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#4ade80" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
+            setTimeout(() => { btn.innerHTML = originalHTML; }, 1500);
+        }
+
+        document.getElementById('searchInput').addEventListener('input', (e) => { currentSearch = e.target.value; render(); });
+        document.getElementById('filterBar').addEventListener('click', (e) => {
+            if (e.target.classList.contains('category-btn')) {
+                document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
+                e.target.classList.add('active');
+                currentCategory = e.target.dataset.cat;
+                render();
+            }
+        });
+        document.getElementById('subFilterBar').addEventListener('click', (e) => {
+            if (e.target.classList.contains('type-btn')) {
+                document.querySelectorAll('.type-btn').forEach(b => b.classList.remove('active'));
+                e.target.classList.add('active');
+                currentType = e.target.dataset.type;
+                render();
+            }
+        });
+        
+        // Start execution
+        init();
+    </script>
+</body>
+</html>
