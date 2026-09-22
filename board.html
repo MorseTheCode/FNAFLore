@@ -18,7 +18,6 @@
             height: 100vh;
             width: 100vw;
             user-select: none;
-            touch-action: none;
         }
         .mono { font-family: 'Space Mono', monospace; }
         
@@ -34,7 +33,6 @@
             backdrop-filter: blur(4px);
             cursor: grab;
             user-select: none;
-            touch-action: none;
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.5);
         }
         .theory-node:active { cursor: grabbing; }
@@ -423,10 +421,9 @@
         function init() {
             loadState();
             
-            container.addEventListener('pointerdown', handleMouseDown);
-            window.addEventListener('pointermove', handleMouseMove);
-            window.addEventListener('pointerup', handleMouseUp);
-            window.addEventListener('pointercancel', handleMouseUp);
+            container.addEventListener('mousedown', handleMouseDown);
+            window.addEventListener('mousemove', handleMouseMove);
+            window.addEventListener('mouseup', handleMouseUp);
             container.addEventListener('wheel', handleWheel, { passive: false });
             container.addEventListener('contextmenu', handleContextMenu);
             
@@ -436,7 +433,7 @@
             document.addEventListener('paste', handlePaste);
 
             document.querySelectorAll('.context-menu').forEach(menu => {
-                menu.addEventListener('pointerdown', e => e.stopPropagation());
+                menu.addEventListener('mousedown', e => e.stopPropagation());
             });
 
             document.getElementById('btn-zoom-in').addEventListener('click', () => zoom(0.2));
@@ -1194,7 +1191,6 @@
         }
 
         function handleMouseDown(e) {
-            if (e.pointerId !== undefined && !e.isPrimary) return;
             if (state.isConnectingFromMenu) {
                 e.preventDefault(); e.stopPropagation();
                 const node = e.target.closest('.theory-node');
@@ -1284,7 +1280,6 @@
         }
 
         function handleMouseMove(e) {
-            if (e.pointerId !== undefined && !e.isPrimary) return;
             if (state.cursorMode === 'draw' || state.cursorMode === 'erase') {
                 const cursor = state.cursorMode === 'draw' ? pencilCursor : eraserCursor;
                 if (state.cursorMode === 'draw') {
@@ -1415,7 +1410,6 @@
         }
 
         function handleMouseUp(e) {
-            if (e.pointerId !== undefined && !e.isPrimary) return;
             if (state.isDragging || state.isResizing || state.isMovingTimelineEvent || state.isResizingTimelineEvent) {
                 saveState();
             }
