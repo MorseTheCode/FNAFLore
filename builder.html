@@ -710,10 +710,13 @@
                       let audiosHtml = '<div class="mt-2 border-t border-zinc-800/50 pt-3 space-y-2">';
                       log.audios.forEach((a, i) => {
                           audiosHtml += `
-                              <div class="flex gap-2 items-center">
-                                  <input type="text" class="input-field border-purple-900/30 focus:border-purple-500 w-1/3" value="${escapeHtmlVal(a.name)}" ${log.type === 'kiosk' ? 'readonly' : ''} placeholder="Label" oninput="updateAudio('${log.id}', ${i}, 'name', this.value)">
-                                  <input type="text" class="input-field border-purple-900/30 focus:border-purple-500 w-2/3" value="${escapeHtmlVal(a.url)}" placeholder="Audio URL" oninput="updateAudio('${log.id}', ${i}, 'url', this.value)">
-                                  ${log.type === 'audio' ? `<button class="text-red-400 hover:text-red-300 px-2 flex-shrink-0" onclick="removeAudio('${log.id}', ${i})">X</button>` : ''}
+                              <div class="flex flex-col gap-2 ${log.type === 'kiosk' ? 'pb-2 border-b border-zinc-800/50' : ''}">
+                                  <div class="flex gap-2 items-center">
+                                      <input type="text" class="input-field border-purple-900/30 focus:border-purple-500 w-1/3" value="${escapeHtmlVal(a.name)}" ${log.type === 'kiosk' ? 'readonly' : ''} placeholder="Label" oninput="updateAudio('${log.id}', ${i}, 'name', this.value)">
+                                      <input type="text" class="input-field border-purple-900/30 focus:border-purple-500 w-2/3" value="${escapeHtmlVal(a.url)}" placeholder="Audio URL" oninput="updateAudio('${log.id}', ${i}, 'url', this.value)">
+                                      ${log.type === 'audio' ? `<button class="text-red-400 hover:text-red-300 px-2 flex-shrink-0" onclick="removeAudio('${log.id}', ${i})">X</button>` : ''}
+                                  </div>
+                                  ${log.type === 'kiosk' ? `<textarea class="input-field min-h-[60px] resize-y text-xs border-purple-900/30 focus:border-purple-500" placeholder="Transcript for ${escapeHtmlVal(a.name)}..." oninput="updateAudio('${log.id}', ${i}, 'content', this.value)">${escapeHtmlVal(a.content || '')}</textarea>` : ''}
                               </div>
                           `;
                       });
@@ -785,7 +788,7 @@
                 }
 
                 let contentInputHtml = '';
-                if (log.type !== 'image' && log.type !== 'order') {
+                if (log.type !== 'image' && log.type !== 'order' && log.type !== 'kiosk') {
                     contentInputHtml = `
                         <div>
                             <label class="block text-zinc-500 text-[10px] uppercase mb-1">Content</label>
@@ -1334,13 +1337,37 @@
             timeDisplay.textContent = '0:00 / ' + formatTime(audio.duration);
         }
         
-          function switchKioskAudio(id, url) {
+          function switchKioskAudio(id, url, index) {
               const audio = document.getElementById('audio-' + id);
-              if (audio) {
-                  const isPlaying = !audio.paused;
+              
+              // Handle transcript swapping
+              if (index !== undefined) {
+                  for (let i=0; i<6; i++) {
+                      const t = document.getElementById('kiosk-transcript-' + id + '-' + i);
+                      if (t) {
+                          if (i === index) {
+                              t.classList.remove('opacity-0', 'z-0', 'pointer-events-none');
+                              t.classList.add('opacity-100', 'z-10');
+                          } else {
+                              t.classList.remove('opacity-100', 'z-10');
+                              t.classList.add('opacity-0', 'z-0', 'pointer-events-none');
+                          }
+                      }
+                  }
+              }
+
+              if(!audio) return;
+              const container = audio.closest('.audio-player-container');
+              const btn = container.querySelector('.play-pause-btn');
+              if (url) {
+                  const wasPlaying = !audio.paused;
                   audio.src = url;
                   audio.load();
-                  if (isPlaying) audio.play();
+                  
+                  if (wasPlaying) {
+                      audio.play();
+                      if (btn) btn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>';
+                  }
               }
           }
 

@@ -281,18 +281,35 @@
             timeDisplay.textContent = '0:00 / ' + formatTime(audio.duration);
         }
         
-          function switchKioskAudio(id, url) {
+          function switchKioskAudio(id, url, index) {
               const audio = document.getElementById('audio-' + id);
+              
+              if (index !== undefined) {
+                  for (let i=0; i<6; i++) {
+                      const t = document.getElementById('kiosk-transcript-' + id + '-' + i);
+                      if (t) {
+                          if (i === index) {
+                              t.classList.remove('opacity-0', 'z-0', 'pointer-events-none');
+                              t.classList.add('opacity-100', 'z-10');
+                          } else {
+                              t.classList.remove('opacity-100', 'z-10');
+                              t.classList.add('opacity-0', 'z-0', 'pointer-events-none');
+                          }
+                      }
+                  }
+              }
+
+              if(!audio) return;
               const container = audio.closest('.audio-player-container');
-              const btn = container.querySelector('.play-pause-btn');
-              if (audio && url) {
+              const btn = container ? container.querySelector('.play-pause-btn') : null;
+              if (url) {
                   const wasPlaying = !audio.paused;
                   audio.src = url;
                   audio.load();
                   
                   if (wasPlaying) {
                       audio.play();
-                      btn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>';
+                      if (btn) btn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>';
                   }
               }
           }
@@ -526,20 +543,31 @@
                   cardBodyHtml = `<div class="content-area text-zinc-400 text-sm flex-grow">${displayContent}</div>${audioPlayerHtml}`;
               } else if (log.type === 'kiosk') {
                   let audioPlayerHtml = '';
+                  let transcriptHtml = '';
                   if (log.audios && log.audios.length === 6) {
                       const kNames = ['Basic', 'Security', 'Repair', 'Creator', 'Admin', 'Executive'];
                       let buttonsHtml = '<div class="flex gap-2 justify-center mt-4 mb-4 flex-wrap">';
+                      
+                      transcriptHtml = '<div class="kiosk-transcripts-container text-zinc-400 text-sm flex-grow relative min-h-[100px]">';
+                      
                       log.audios.forEach((a, i) => {
                           const iconLocked = `audios/sotm/Permissions/T_Terminal_Map_Permission_${kNames[i]}Locked.png`;
                           const iconUnlocked = `audios/sotm/Permissions/T_Terminal_Map_Permission_${kNames[i]}Unlocked.png`;
                           buttonsHtml += `
-                              <button class="kiosk-btn relative w-12 h-12 md:w-16 md:h-16 group flex-shrink-0" onclick="switchKioskAudio('${log.id}', '${escapeHtml(a.url)}')">
+                              <button class="kiosk-btn relative w-12 h-12 md:w-16 md:h-16 group flex-shrink-0" onclick="switchKioskAudio('${log.id}', '${escapeHtml(a.url)}', ${i})">
                                   <img src="${iconLocked}" class="absolute inset-0 w-full h-full object-contain group-hover:opacity-0 transition-opacity" title="${kNames[i]}">
                                   <img src="${iconUnlocked}" class="absolute inset-0 w-full h-full object-contain opacity-0 group-hover:opacity-100 transition-opacity" title="${kNames[i]}">
                               </button>
                           `;
+                          
+                          const tContent = formatText(escapeHtml(a.content || ''));
+                          transcriptHtml += `<div id="kiosk-transcript-${log.id}-${i}" class="kiosk-transcript transition-opacity duration-300 absolute inset-0 ${i === 0 ? 'opacity-100 z-10' : 'opacity-0 z-0 pointer-events-none'}">
+                              <span class="text-purple-400 font-bold block mb-1 text-xs mono uppercase">${kNames[i]} ACCESS LOG:</span>
+                              ${tContent}
+                          </div>`;
                       });
                       buttonsHtml += '</div>';
+                      transcriptHtml += '</div>';
                       
                       audioPlayerHtml += buttonsHtml;
                       audioPlayerHtml += `
@@ -555,7 +583,7 @@
                           </div>
                       `;
                   }
-                  cardBodyHtml = `<div class="content-area text-zinc-400 text-sm flex-grow">${displayContent}</div>${audioPlayerHtml}`;
+                  cardBodyHtml = `<div class="content-area flex flex-col flex-grow">${transcriptHtml}${audioPlayerHtml}</div>`;
             } else if (log.type === 'image') {
                 const urls = (log.imageUrls || (log.imageUrl ? [log.imageUrl] : [])).filter(u => u.trim() !== '');
                 rawCopyText = urls.join('\n');
