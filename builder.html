@@ -230,6 +230,7 @@
             typeFilters: [
                 { id: "text", label: "Text Only" },
                 { id: "audio", label: "Audio Only" },
+                  { id: "kiosk", label: "Kiosk" },
                 { id: "image", label: "Image Only" },
                 { id: "memo", label: "Memo Only" },
                 { id: "order", label: "Order Form" }
@@ -294,6 +295,7 @@
             appData.typeFilters = appData.typeFilters || [
                 { id: "text", label: "Text Only" },
                 { id: "audio", label: "Audio Only" },
+                  { id: "kiosk", label: "Kiosk" },
                 { id: "image", label: "Image Only" },
                 { id: "memo", label: "Memo Only" },
                 { id: "order", label: "Order Form" }
@@ -854,6 +856,16 @@
                 if (file.name.endsWith('.json')) {
                     try {
                         appData = JSON.parse(content);
+                        if (!appData.typeFilters || appData.typeFilters.length === 0) {
+                            appData.typeFilters = [
+                                { id: "text", label: "Text Only" },
+                                { id: "audio", label: "Audio Only" },
+                                { id: "kiosk", label: "Kiosk" },
+                                { id: "image", label: "Image Only" },
+                                { id: "memo", label: "Memo Only" },
+                                { id: "order", label: "Order Form" }
+                            ];
+                        }
                         appData.logs.forEach(l => {
                             l.type = l.type || (l.isAudio ? 'audio' : 'text'); // Normalization
                             l.tags = l.tags || [];
@@ -1203,6 +1215,16 @@
             if (cached) {
                 try {
                     appData = JSON.parse(cached);
+                        if (!appData.typeFilters || appData.typeFilters.length === 0) {
+                            appData.typeFilters = [
+                                { id: "text", label: "Text Only" },
+                                { id: "audio", label: "Audio Only" },
+                                { id: "kiosk", label: "Kiosk" },
+                                { id: "image", label: "Image Only" },
+                                { id: "memo", label: "Memo Only" },
+                                { id: "order", label: "Order Form" }
+                            ];
+                        }
                     populateUI();
                     render();
                     setTimeout(() => { updateArrows('filterBar'); }, 100);

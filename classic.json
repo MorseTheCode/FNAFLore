@@ -357,5 +357,31 @@
             ]
         }
     ],
-    "_lastModified": 1779050034919
+    "_lastModified": 1779050034919,
+    "typeFilters": [
+        {
+            "id": "text",
+            "label": "Text"
+        },
+        {
+            "id": "audio",
+            "label": "Audio"
+        },
+        {
+            "id": "kiosk",
+            "label": "Kiosk"
+        },
+        {
+            "id": "image",
+            "label": "Image"
+        },
+        {
+            "id": "memo",
+            "label": "Memo"
+        },
+        {
+            "id": "order",
+            "label": "Order Form"
+        }
+    ]
 }
