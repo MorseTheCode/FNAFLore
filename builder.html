@@ -546,6 +546,32 @@
             renderLogs();
         }
 
+        
+        function updateAudio(id, index, field, value) {
+            const log = appData.logs.find(l => l.id === id);
+            if (log && log.audios && log.audios[index]) {
+                log.audios[index][field] = value;
+                updateData();
+            }
+        }
+        function addAudio(id) {
+            const log = appData.logs.find(l => l.id === id);
+            if(log) {
+                if(!log.audios) log.audios = [];
+                log.audios.push({name: 'New Audio', url: ''});
+                renderLogs();
+                updateData();
+            }
+        }
+        function removeAudio(id, index) {
+            const log = appData.logs.find(l => l.id === id);
+            if(log && log.audios) {
+                log.audios.splice(index, 1);
+                renderLogs();
+                updateData();
+            }
+        }
+
         function updateLog(id, field, value, isCheckbox = false) {
             const log = appData.logs.find(l => l.id === id);
             if (!log) return;
