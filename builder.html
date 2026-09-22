@@ -536,6 +536,42 @@
             renderLogs();
         }
 
+        
+        function moveLogUp(id) {
+            const visibleLogs = currentBuilderFilter === 'all' 
+                ? appData.logs 
+                : appData.logs.filter(l => l.tags.includes(currentBuilderFilter));
+                
+            const visibleIndex = visibleLogs.findIndex(l => l.id === id);
+            if (visibleIndex > 0) {
+                const globalIndexCurrent = appData.logs.findIndex(l => l.id === id);
+                const globalIndexSwap = appData.logs.findIndex(l => l.id === visibleLogs[visibleIndex - 1].id);
+                
+                const temp = appData.logs[globalIndexCurrent];
+                appData.logs[globalIndexCurrent] = appData.logs[globalIndexSwap];
+                appData.logs[globalIndexSwap] = temp;
+                
+                renderLogs();
+            }
+        }
+        function moveLogDown(id) {
+            const visibleLogs = currentBuilderFilter === 'all' 
+                ? appData.logs 
+                : appData.logs.filter(l => l.tags.includes(currentBuilderFilter));
+                
+            const visibleIndex = visibleLogs.findIndex(l => l.id === id);
+            if (visibleIndex !== -1 && visibleIndex < visibleLogs.length - 1) {
+                const globalIndexCurrent = appData.logs.findIndex(l => l.id === id);
+                const globalIndexSwap = appData.logs.findIndex(l => l.id === visibleLogs[visibleIndex + 1].id);
+                
+                const temp = appData.logs[globalIndexCurrent];
+                appData.logs[globalIndexCurrent] = appData.logs[globalIndexSwap];
+                appData.logs[globalIndexSwap] = temp;
+                
+                renderLogs();
+            }
+        }
+    
         function renderLogs() {
             const container = document.getElementById('logsContainer');
             container.innerHTML = '';
@@ -660,8 +696,16 @@
                             <div class="cursor-grab active:cursor-grabbing text-zinc-500 hover:text-green-400 p-1 mb-1 self-end" title="Drag to reorder" 
                                  onmousedown="this.closest('.log-item').setAttribute('draggable', 'true')" 
                                  onmouseup="this.closest('.log-item').setAttribute('draggable', 'false')" 
-                                 onmouseleave="this.closest('.log-item').setAttribute('draggable', 'false')">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="12" r="1"></circle><circle cx="9" cy="5" r="1"></circle><circle cx="9" cy="19" r="1"></circle><circle cx="15" cy="12" r="1"></circle><circle cx="15" cy="5" r="1"></circle><circle cx="15" cy="19" r="1"></circle></svg>
+                                 >
+                                
+        <div class="flex flex-col gap-1">
+            <button onclick="moveLogUp('${log.id}')" class="text-zinc-500 hover:text-green-500 bg-zinc-800 rounded p-1" title="Move Up"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"></polyline></svg></button>
+            <button onclick="moveLogDown('${log.id}')" class="text-zinc-500 hover:text-green-500 bg-zinc-800 rounded p-1" title="Move Down"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></button>
+        </div>
+        <div class="hidden md:block">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="12" r="1"></circle><circle cx="9" cy="5" r="1"></circle><circle cx="9" cy="19" r="1"></circle><circle cx="15" cy="12" r="1"></circle><circle cx="15" cy="5" r="1"></circle><circle cx="15" cy="19" r="1"></circle></svg>
+        </div>
+    
                             </div>
                             <div class="flex gap-2 w-full">
                                 <select class="input-field text-xs py-1 px-1 flex-grow" onchange="updateLog('${log.id}', 'type', this.value)">
