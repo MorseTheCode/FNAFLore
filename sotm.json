@@ -2580,7 +2580,7 @@
             "audios": []
         },
         {
-            "id": "kiosk_admin_wing_second_floor_1790142101639",
+            "id": "kiosk_admin_wing_second_floor_1790143836487",
             "title": "Admin Wing Second Floor Kiosk",
             "type": "kiosk",
             "audios": [
@@ -2617,24 +2617,24 @@
             ]
         },
         {
-            "id": "kiosk_doll_hospital_1790142101641",
+            "id": "kiosk_doll_hospital_1790143836489",
             "title": "Doll Hospital Kiosk",
             "type": "kiosk",
             "audios": [
                 {
                     "name": "Basic",
                     "url": "",
-                    "content": ""
+                    "content": "[MR HELPFUL]:\nHello there. If you are one of our prospective clients, then you have wandered into an off limits area.\n\n[MR HELPFUL]:\nFor your safety, cover your head and crawl slowly but steadily towards the nearest exit."
                 },
                 {
                     "name": "Security",
                     "url": "",
-                    "content": ""
+                    "content": "[MR HELPFUL]:\nAttention security personnel. We need to keep the furnace running every night.\n\n[MR HELPFUL]:\nThe recycling center staff is not to leave the building until the furnace checklist is completed every night.\n\n[MR HELPFUL]:\nNo exceptions."
                 },
                 {
                     "name": "Repair",
                     "url": "",
-                    "content": ""
+                    "content": "[MR HELPFUL]:\nFor your safety, but mostly for the safety of our upstairs employees, elevator access is closed until all furnace tasks are complete.\n\n[MR HELPFUL]:\nThe fumes down here can be strong, so I can help.\n\n[MR HELPFUL]:\nThis helpful checklist will remind you how to do your job.\n\n[MR HELPFUL]:\nThe following furnace tasks remain:\n\n[MR HELPFUL]:\nDispose of an appropriate amount of salvage material into designated trash chutes.\n\n[MR HELPFUL]:\nMore salvage required.\n\n[MR HELPFUL]:\nUse the conveyor control to empty trash into the incinerator.\n\n[MR HELPFUL]:\nDon't forget to turn the furnace power on before you leave every night.\n\n[MR HELPFUL]:\nAll furnace tasks complete. Elevator privileges are available.\n\n[MR HELPFUL]:\nOh no. The trash chutes are clogged. Head down to the conveyor level to continue."
                 },
                 {
                     "name": "Creator",
@@ -2654,19 +2654,19 @@
             ]
         },
         {
-            "id": "kiosk_showrooms_entry_1790142101642",
+            "id": "kiosk_showrooms_entry_1790143836490",
             "title": "Showrooms Entry Kiosk",
             "type": "kiosk",
             "audios": [
                 {
                     "name": "Basic",
                     "url": "",
-                    "content": ""
+                    "content": "[MR HELPFUL]:\nWelcome to the Murray showrooms. Everything is for sale or lease.\\\\\\\\Please inquire within for availability and delivery options.\n\n[MR HELPFUL]:\nWe are sad to announce that the Story Time showroom is currently closed pending mitigation of insurance claims."
                 },
                 {
                     "name": "Security",
                     "url": "",
-                    "content": ""
+                    "content": "[MR HELPFUL]:\nAttention Security personnel, the roof top access permissions have \\\\\\\\been changed to accommodate our creative team. So they can re-tar the roof.\n\n[MR HELPFUL]:\nIf you require rooftop access, upgrade your permissions at the \\\\\\\\Security Office located on the second floor of the Big Top Showroom.\n\n[MR HELPFUL]:\nPlease be aware of potential power spikes. In case of an outage,\\\\\\\\use the conduit in the Big Top Showroom entrance to reset the system."
                 },
                 {
                     "name": "Repair",
@@ -2691,24 +2691,24 @@
             ]
         },
         {
-            "id": "kiosk_welcome_lobby_1790142101642",
+            "id": "kiosk_welcome_lobby_1790143836491",
             "title": "Welcome Lobby Kiosk",
             "type": "kiosk",
             "audios": [
                 {
                     "name": "Basic",
                     "url": "",
-                    "content": ""
+                    "content": "[MRS HELPFUL]:\nERROR. This elevator is out of service. Thank you for your patience.\n\n[MRS HELPFUL]:\nWelcome! Enjoy a short ride on this reliably safe elevator to access the MCM showrooms."
                 },
                 {
                     "name": "Security",
                     "url": "",
-                    "content": ""
+                    "content": "[MRS HELPFUL]:\nSecurity personnel. Please help with client relations until the elevator repair is complete.\n\n[MRS HELPFUL]:\nSecurity Personnel. Ensure the elevator weight limit does not exceed a combined total of 175lbs or deceed 102 lbs.\n\n[MRS HELPFUL]:\nThat can\u2019t be right. What\u2019s the opposite of exceed?"
                 },
                 {
                     "name": "Repair",
                     "url": "",
-                    "content": ""
+                    "content": "[MRS HELPFUL]:\nAttention. Elevator maintenance is required. Refer to the \u201cRepair cassette\" for instructions.\n\n[MRS HELPFUL]:\nAttention. Elevator maintenance is NOT required.\n\n[MRS HELPFUL]:\nThe repair cassette is conveniently located on the second floor balcony.\n\n[MRS HELPFUL]:\nPlease enter the following code to retrieve the repair cassette\u2026\n\n[MRS HELPFUL]:\n\u20260158\u2026"
                 },
                 {
                     "name": "Creator",
@@ -2728,24 +2728,24 @@
             ]
         },
         {
-            "id": "kiosk_workshops_main_1790142101643",
+            "id": "kiosk_workshops_main_1790143836493",
             "title": "Workshops Main Kiosk",
             "type": "kiosk",
             "audios": [
                 {
                     "name": "Basic",
                     "url": "",
-                    "content": ""
+                    "content": "[MRS HELPFUL]:\nWelcome to our world famous Costume Workshop.\n\n[MRS HELPFUL]:\nIf you are not an MCM employee, please proceed to the client viewing area.\n\n[MRS HELPFUL]:\nBackstage theater access is restricted to potential clients and demonstration operators."
                 },
                 {
                     "name": "Security",
                     "url": "",
-                    "content": ""
+                    "content": "[MRS HELPFUL]:\nIf you are assigned to run the demonstration, please follow the demo instructions.\n\n[MRS HELPFUL]:\nA completed \"Director\" suit is required.\n\n[MRS HELPFUL]:\nUse the costume lift to access the theater booth.\n\n[MRS HELPFUL]:\nIt will not operate unless you are wearing the suit.\n\n[MRS HELPFUL]:\nOnce you are in place, the stage manager program will guide you through the demonstration.\n\n[MRS HELPFUL]:\nGood luck! Oh! I mean, break a leg. Sorry..."
                 },
                 {
                     "name": "Repair",
                     "url": "",
-                    "content": ""
+                    "content": "[MRS HELPFUL]:\nFor your safety, a springlock suit is required.\n\n[MRS HELPFUL]:\nSpringlock assembly may be required.\n\n[MRS HELPFUL]:\nPlease ensure there are no... hazards that could cause issues.\n\n[MRS HELPFUL]:\nMr Helpful is worried about the effects of moisture on the suit's functionality and safety."
                 },
                 {
                     "name": "Creator",
