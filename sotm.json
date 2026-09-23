@@ -7,6 +7,10 @@
       "label": "Admin"
     },
     {
+      "id": "kiosk",
+      "label": "Kiosk"
+    },
+    {
       "id": "kiosks",
       "label": "Kiosks"
     },
@@ -60,6 +64,68 @@
     }
   ],
   "logs": [
+    {
+      "id": "LOG_1790123246730",
+      "title": "%%$()@@)",
+      "location": "",
+      "content": "",
+      "type": "kiosk",
+      "isAudio": false,
+      "audioUrl": "",
+      "imageUrl": "",
+      "imageUrls": [
+        ""
+      ],
+      "memoDate": "",
+      "memoTo": "",
+      "memoFrom": "",
+      "memoCC": "",
+      "memoSubject": "",
+      "memoSignature": "",
+      "orderDate": "",
+      "orderPickup": "",
+      "orderName": "",
+      "orderBody": "",
+      "orderQty": "",
+      "orderMaterials": "",
+      "orderDetails": "",
+      "orderSpecial": "",
+      "tags": [
+        "kiosk"
+      ],
+      "audios": [
+        {
+          "name": "Basic",
+          "url": "./audios/sotm/Helpful Kiosks/Admin Wing Second Floor/1 - Basic.wav",
+          "content": "TEST"
+        },
+        {
+          "name": "Security",
+          "url": "./audios/sotm/Helpful Kiosks/Admin Wing Second Floor/2 - Security.wav",
+          "content": "TEST"
+        },
+        {
+          "name": "Repair",
+          "url": "./audios/sotm/Helpful Kiosks/Admin Wing Second Floor/3 - Repair.wav",
+          "content": "TEST"
+        },
+        {
+          "name": "Creator",
+          "url": "./audios/sotm/Helpful Kiosks/Admin Wing Second Floor/4 - Creator.wav",
+          "content": "TEST"
+        },
+        {
+          "name": "Admin",
+          "url": "./audios/sotm/Helpful Kiosks/Admin Wing Second Floor/5 - Admin.wav",
+          "content": "TEST"
+        },
+        {
+          "name": "Executive",
+          "url": "./audios/sotm/Helpful Kiosks/Admin Wing Second Floor/6 - Executive.wav",
+          "content": "TEST"
+        }
+      ]
+    },
     {
       "id": "LOG_1790119890838",
       "title": "Admin Wing Kiosk",
@@ -2520,7 +2586,7 @@
       "audios": []
     }
   ],
-  "_lastModified": 1790120329161,
+  "_lastModified": 1790123311119,
   "typeFilters": [
     {
       "id": "text",
