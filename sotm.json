@@ -92,32 +92,32 @@
       "audios": [
         {
           "name": "Basic",
-          "url": "./audios/sotm/Helpful Kiosks/Admin Wing Second Floor/1 - Basic.wav",
+          "url": "./audios/sotm/Helpful Kiosks/Admin Wing Second Floor/Basic.wav",
           "content": "TEST"
         },
         {
           "name": "Security",
-          "url": "./audios/sotm/Helpful Kiosks/Admin Wing Second Floor/2 - Security.wav",
+          "url": "./audios/sotm/Helpful Kiosks/Admin Wing Second Floor/Security.wav",
           "content": "TEST"
         },
         {
           "name": "Repair",
-          "url": "./audios/sotm/Helpful Kiosks/Admin Wing Second Floor/3 - Repair.wav",
+          "url": "./audios/sotm/Helpful Kiosks/Admin Wing Second Floor/Repair.wav",
           "content": "TEST"
         },
         {
           "name": "Creator",
-          "url": "./audios/sotm/Helpful Kiosks/Admin Wing Second Floor/4 - Creator.wav",
+          "url": "./audios/sotm/Helpful Kiosks/Admin Wing Second Floor/Creator.wav",
           "content": "TEST"
         },
         {
           "name": "Admin",
-          "url": "./audios/sotm/Helpful Kiosks/Admin Wing Second Floor/5 - Admin.wav",
+          "url": "./audios/sotm/Helpful Kiosks/Admin Wing Second Floor/Admin.wav",
           "content": "TEST"
         },
         {
           "name": "Executive",
-          "url": "./audios/sotm/Helpful Kiosks/Admin Wing Second Floor/6 - Executive.wav",
+          "url": "./audios/sotm/Helpful Kiosks/Admin Wing Second Floor/Executive.wav",
           "content": "TEST"
         }
       ]
@@ -2580,7 +2580,7 @@
       "audios": []
     }
   ],
-  "_lastModified": 1790124241439,
+  "_lastModified": 1790134227341,
   "typeFilters": [
     {
       "id": "text",
