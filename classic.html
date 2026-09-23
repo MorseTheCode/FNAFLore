@@ -289,11 +289,11 @@
                       const t = document.getElementById('kiosk-transcript-' + id + '-' + i);
                       if (t) {
                           if (i === index) {
-                              t.classList.remove('opacity-0', 'z-0', 'pointer-events-none');
-                              t.classList.add('opacity-100', 'z-10');
+                              t.classList.remove('hidden');
+                              t.classList.add('block');
                           } else {
-                              t.classList.remove('opacity-100', 'z-10');
-                              t.classList.add('opacity-0', 'z-0', 'pointer-events-none');
+                              t.classList.remove('block');
+                              t.classList.add('hidden');
                           }
                       }
                   }
@@ -302,6 +302,12 @@
               if(!audio) return;
               const container = audio.closest('.audio-player-container');
               const btn = container ? container.querySelector('.play-pause-btn') : null;
+              
+              const downloadBtn = document.getElementById('audio-download-' + id);
+              if (downloadBtn && url) {
+                  downloadBtn.href = url;
+              }
+              
               if (url) {
                   const wasPlaying = !audio.paused;
                   audio.src = url;
@@ -310,6 +316,8 @@
                   if (wasPlaying) {
                       audio.play();
                       if (btn) btn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>';
+                  } else {
+                      if (btn) btn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>';
                   }
               }
           }
@@ -549,20 +557,20 @@
                       const kNames = ['Basic', 'Security', 'Repair', 'Creator', 'Admin', 'Executive'];
                       let buttonsHtml = '<div class="flex gap-2 justify-center mt-4 mb-4 flex-wrap">';
                       
-                      transcriptHtml = '<div class="kiosk-transcripts-container text-zinc-400 text-sm flex-grow relative min-h-[100px]">';
+                      transcriptHtml = '<div class="kiosk-transcripts-container text-zinc-400 text-sm flex-grow min-h-[60px]">';
                       
                       log.audios.forEach((a, i) => {
                           const iconLocked = `audios/sotm/Permissions/T_Terminal_Map_Permission_${kNames[i]}Locked.png`;
                           const iconUnlocked = `audios/sotm/Permissions/T_Terminal_Map_Permission_${kNames[i]}Unlocked.png`;
                           buttonsHtml += `
-                              <button class="kiosk-btn relative w-12 h-12 md:w-16 md:h-16 group flex-shrink-0" onclick="switchKioskAudio('${log.id}', '${escapeHtml(a.url)}', ${i})">
+                              <button class="kiosk-btn relative w-6 h-6 group flex-shrink-0 cursor-pointer" onclick="switchKioskAudio('${log.id}', '${escapeHtml(a.url)}', ${i})">
                                   <img src="${iconLocked}" class="absolute inset-0 w-full h-full object-contain group-hover:opacity-0 transition-opacity" title="${kNames[i]}">
                                   <img src="${iconUnlocked}" class="absolute inset-0 w-full h-full object-contain opacity-0 group-hover:opacity-100 transition-opacity" title="${kNames[i]}">
                               </button>
                           `;
                           
                           const tContent = formatText(escapeHtml(a.content || ''));
-                          transcriptHtml += `<div id="kiosk-transcript-${log.id}-${i}" class="kiosk-transcript transition-opacity duration-300 absolute inset-0 ${i === 0 ? 'opacity-100 z-10' : 'opacity-0 z-0 pointer-events-none'}">
+                          transcriptHtml += `<div id="kiosk-transcript-${log.id}-${i}" class="kiosk-transcript ${i === 0 ? 'block' : 'hidden'}">
                               <span class="text-purple-400 font-bold block mb-1 text-xs mono uppercase">${kNames[i]} ACCESS LOG:</span>
                               ${tContent}
                           </div>`;
@@ -572,7 +580,7 @@
                       
                       audioPlayerHtml += buttonsHtml;
                       audioPlayerHtml += `
-                          <div class="audio-player-container bg-[#121212] border border-zinc-800 p-3 rounded-lg flex items-center gap-3">
+                          <div class="audio-player-container bg-[#121212] border border-zinc-800 p-3 rounded-lg flex items-center gap-3 mt-auto">
                               <button class="play-pause-btn text-purple-400 hover:text-purple-300 transition-colors flex-shrink-0" onclick="toggleAudio(this, 'audio-${log.id}')">
                                   <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
                               </button>
@@ -580,6 +588,9 @@
                                   <div class="progress-fill bg-purple-500 h-full rounded w-0 pointer-events-none transition-all duration-75"></div>
                               </div>
                               <span class="time-display text-zinc-500 text-xs mono pointer-events-none w-24 text-right flex-shrink-0">0:00 / 0:00</span>
+                              <a id="audio-download-${log.id}" href="${escapeHtml(log.audios[0]?.url || '')}" download target="_blank" class="text-zinc-500 hover:text-purple-400 transition-colors flex-shrink-0 ml-1" title="Download Audio">
+                                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                              </a>
                               <audio id="audio-${log.id}" src="${escapeHtml(log.audios[0]?.url || '')}" ontimeupdate="updateProgress(this)" onloadedmetadata="setDuration(this)" onended="resetPlayer(this)"></audio>
                           </div>
                       `;

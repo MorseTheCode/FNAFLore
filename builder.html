@@ -1366,17 +1366,16 @@
           function switchKioskAudio(id, url, index) {
               const audio = document.getElementById('audio-' + id);
               
-              // Handle transcript swapping
               if (index !== undefined) {
                   for (let i=0; i<6; i++) {
                       const t = document.getElementById('kiosk-transcript-' + id + '-' + i);
                       if (t) {
                           if (i === index) {
-                              t.classList.remove('opacity-0', 'z-0', 'pointer-events-none');
-                              t.classList.add('opacity-100', 'z-10');
+                              t.classList.remove('hidden');
+                              t.classList.add('block');
                           } else {
-                              t.classList.remove('opacity-100', 'z-10');
-                              t.classList.add('opacity-0', 'z-0', 'pointer-events-none');
+                              t.classList.remove('block');
+                              t.classList.add('hidden');
                           }
                       }
                   }
@@ -1384,7 +1383,13 @@
 
               if(!audio) return;
               const container = audio.closest('.audio-player-container');
-              const btn = container.querySelector('.play-pause-btn');
+              const btn = container ? container.querySelector('.play-pause-btn') : null;
+              
+              const downloadBtn = document.getElementById('audio-download-' + id);
+              if (downloadBtn && url) {
+                  downloadBtn.href = url;
+              }
+              
               if (url) {
                   const wasPlaying = !audio.paused;
                   audio.src = url;
@@ -1393,6 +1398,8 @@
                   if (wasPlaying) {
                       audio.play();
                       if (btn) btn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>';
+                  } else {
+                      if (btn) btn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>';
                   }
               }
           }
