@@ -11,10 +11,6 @@
       "label": "Kiosk"
     },
     {
-      "id": "kiosks",
-      "label": "Kiosks"
-    },
-    {
       "id": "edwin",
       "label": "Edwin"
     },
@@ -66,7 +62,7 @@
   "logs": [
     {
       "id": "LOG_1790123246730",
-      "title": "%%$()@@)",
+      "title": "&&(#)(@^",
       "location": "",
       "content": "",
       "type": "kiosk",
@@ -152,9 +148,7 @@
       "orderMaterials": "",
       "orderDetails": "",
       "orderSpecial": "",
-      "tags": [
-        "kiosks"
-      ],
+      "tags": [],
       "audios": [
         {
           "name": "Basic",
@@ -2586,7 +2580,7 @@
       "audios": []
     }
   ],
-  "_lastModified": 1790123311119,
+  "_lastModified": 1790124095769,
   "typeFilters": [
     {
       "id": "text",
