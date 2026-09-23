@@ -1443,7 +1443,7 @@
                       const kNames = ['Basic', 'Security', 'Repair', 'Creator', 'Admin', 'Executive'];
                       let buttonsHtml = '<div class="flex gap-2 justify-center mt-4 mb-4 flex-wrap">';
                       
-                      transcriptHtml = '<div class="kiosk-transcripts-container text-zinc-400 text-sm flex-grow min-h-[60px]">';
+                      transcriptHtml = '<div class="kiosk-transcripts-container text-zinc-400 text-sm relative min-h-[60px]">';
                       
                       log.audios.forEach((a, i) => {
                           const iconLocked = \`audios/sotm/Permissions/T_Terminal_Map_Permission_\${kNames[i]}Locked.png\`;
@@ -1453,7 +1453,7 @@
                           const uClass = i === 0 ? 'opacity-100' : 'opacity-0 group-hover:opacity-100';
                           
                           buttonsHtml += \`
-                              <button class="kiosk-btn relative w-8 h-8 md:w-10 md:h-10 group flex-shrink-0 cursor-pointer" onclick="switchKioskAudio('\${log.id}', '\${escapeHtml(a.url)}', \${i})">
+                              <button class="kiosk-btn relative w-6 h-6 md:w-8 md:h-8 group flex-shrink-0 cursor-pointer" onclick="switchKioskAudio('\${log.id}', '\${escapeHtml(a.url)}', \${i})">
                                   <img id="kiosk-locked-\${log.id}-\${i}" src="\${iconLocked}" class="absolute inset-0 w-full h-full object-contain transition-opacity \${lClass}" title="\${kNames[i]}">
                                   <img id="kiosk-unlocked-\${log.id}-\${i}" src="\${iconUnlocked}" class="absolute inset-0 w-full h-full object-contain transition-opacity \${uClass}" title="\${kNames[i]}">
                               </button>
@@ -1470,7 +1470,7 @@
                       
                       audioPlayerHtml += buttonsHtml;
                       audioPlayerHtml += \`
-                          <div class="audio-player-container bg-[#121212] border border-zinc-800 p-3 rounded-lg flex items-center gap-3 mt-auto">
+                          <div class="audio-player-container bg-[#121212] border border-zinc-800 p-3 rounded-lg flex items-center gap-3">
                               <button class="play-pause-btn text-purple-400 hover:text-purple-300 transition-colors flex-shrink-0" onclick="toggleAudio(this, 'audio-\${log.id}')">
                                   <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
                               </button>
@@ -1485,7 +1485,7 @@
                           </div>
                       \`;
                   }
-                  cardBodyHtml = \`<div class="content-area flex flex-col flex-grow">\${transcriptHtml}\${audioPlayerHtml}</div>\`;
+                  cardBodyHtml = \`<div class="content-area text-zinc-400 text-sm flex-grow">\${transcriptHtml}</div>\${audioPlayerHtml}\`;
               } else if (log.type === 'image') {
                 const urls = (log.imageUrls || (log.imageUrl ? [log.imageUrl] : [])).filter(u => u.trim() !== '');
                 rawCopyText = urls.join('\\n');
