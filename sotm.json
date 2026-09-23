@@ -2470,32 +2470,32 @@
       "audios": [
         {
           "name": "Basic",
-          "url": "./audios/sotm/Helpful Kiosks/Admin Wing Second Floor/Basic.WAV",
+          "url": "./audios/sotm/Helpful Kiosks/Admin Wing Second Floor/Basic.wav",
           "content": "[[MRS HELPFUL]] Welcome to the Administration Wing.\n[[MRS HELPFUL]] Take a seat and someone will be with your shortly."
         },
         {
           "name": "Security",
-          "url": "./audios/sotm/Helpful Kiosks/Admin Wing Second Floor/Security.WAV",
+          "url": "./audios/sotm/Helpful Kiosks/Admin Wing Second Floor/Security.wav",
           "content": "[[MRS HELPFUL]] Welcome security team, please continue to treat all of our employees and our prospective clients with love and respect.\n[[MRS_HELPFUL]] We may not say it enough, but you are the best security team we could have hoped for."
         },
         {
           "name": "Repair",
-          "url": "./audios/sotm/Helpful Kiosks/Admin Wing Second Floor/Repair.WAV",
+          "url": "./audios/sotm/Helpful Kiosks/Admin Wing Second Floor/Repair.wav",
           "content": "[[MRS HELPFUL]] Welcome repair crew. We are delighted to share our exciting expansion plan with you.\n[[MRS HELPFUL]] It's called the \"Employee Appreciation Project\".\n[[MRS HELPFUL]] Every employee, regardless of position, will have their own office space to decorate and enjoy on their breaks.\n[[MRS HELPFUL]] All of you work so hard and we want you to be happy!\n[[MRS HELPFUL]] Keep it to yourselves for now until we're able to make a full company announcement.\n[[MRS HELPFUL]] The employee appreciation program will begin as soon as Ed-uh... Mr. Helpful signs the purchase orders!"
         },
         {
           "name": "Creator",
-          "url": "./audios/sotm/Helpful Kiosks/Admin Wing Second Floor/Creator.WAV",
+          "url": "./audios/sotm/Helpful Kiosks/Admin Wing Second Floor/Creator.wav",
           "content": "[[MRS HELPFUL]] Welcome creators.\n[[MRS HELPFUL]] We’re now taking suggestions for original ideas and characters. Let us help make your dreams come true.\n[[MRS HELPFUL]] Place your submissions in the “Idea Box”.\n[[MRS HELPFUL]] There’s no bad ideas. Express yourself!\n[[MRS HELPFUL]] Please ignore our previous request.\n[[MRS HELPFUL]] There are bad ideas. Very bad ideas.\n[[MRS HELPFUL]] Not all ideas are worth sharing or even thinking.\n[[MRS HELPFUL]] So, we are no longer taking creative submissions.\n[[MRS HELPFUL]] Thank you and have a wonder-iffic day!"
         },
         {
           "name": "Admin",
-          "url": "./audios/sotm/Helpful Kiosks/Admin Wing Second Floor/Admin.WAV",
+          "url": "./audios/sotm/Helpful Kiosks/Admin Wing Second Floor/Admin.wav",
           "content": "[[MRS HELPFUL]] Hello, Admins!\n[[MRS HELPFUL]] Let us know if there’s anything we can do to make your work day more pleasant… aside from windows.\n[[MRS HELPFUL]] We’ve heard your numerous requests and Ed promises to add windows very soon.\n[[MRS HELPFUL]] He’ll have time as soon as the contract for the new Fazbear project is locked down.\n[[MRS HELPFUL]] He’s been up in his office working on it all week.\n[[MRS HELPFUL]] So, anything other than windows, let us know. And we’ll get on that right away.\n[[MRS HELPFUL]] Have a wonder-iffic day!"
         },
         {
           "name": "Executive",
-          "url": "./audios/sotm/Helpful Kiosks/Admin Wing Second Floor/Executive.WAV",
+          "url": "./audios/sotm/Helpful Kiosks/Admin Wing Second Floor/Executive.wav",
           "content": "[[EDWIN]] I feel stupid recording this, but I just hope, somehow, that you can still hear me.\n[[EDWIN]] I can’t do this alone… The change orders are killing me. Our employees, my friends, they keep leaving.\n[[EDWIN]] The money is gone. I just need to finish the new Fazbear project, and then everyone will come back. We can get back to normal.\n[[EDWIN]] I miss my friends. Our friends. I miss you.\n[[EDWIN]] I miss you more than you’ll ever know."
         }
       ],
@@ -2679,7 +2679,7 @@
       ]
     }
   ],
-  "_lastModified": 1790147603750,
+  "_lastModified": 1790147982035,
   "typeFilters": [
     {
       "id": "text",
