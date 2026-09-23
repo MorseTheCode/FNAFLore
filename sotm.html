@@ -302,6 +302,18 @@
                               t.classList.add('hidden');
                           }
                       }
+                      
+                      const imgLocked = document.getElementById('kiosk-locked-' + id + '-' + i);
+                      const imgUnlocked = document.getElementById('kiosk-unlocked-' + id + '-' + i);
+                      if (imgLocked && imgUnlocked) {
+                          if (i === index) {
+                              imgLocked.className = 'absolute inset-0 w-full h-full object-contain transition-opacity opacity-0';
+                              imgUnlocked.className = 'absolute inset-0 w-full h-full object-contain transition-opacity opacity-100';
+                          } else {
+                              imgLocked.className = 'absolute inset-0 w-full h-full object-contain transition-opacity opacity-100 group-hover:opacity-0';
+                              imgUnlocked.className = 'absolute inset-0 w-full h-full object-contain transition-opacity opacity-0 group-hover:opacity-100';
+                          }
+                      }
                   }
               }
 
@@ -568,10 +580,14 @@
                       log.audios.forEach((a, i) => {
                           const iconLocked = `audios/sotm/Permissions/T_Terminal_Map_Permission_${kNames[i]}Locked.png`;
                           const iconUnlocked = `audios/sotm/Permissions/T_Terminal_Map_Permission_${kNames[i]}Unlocked.png`;
+                          
+                          const lClass = i === 0 ? 'opacity-0' : 'opacity-100 group-hover:opacity-0';
+                          const uClass = i === 0 ? 'opacity-100' : 'opacity-0 group-hover:opacity-100';
+                          
                           buttonsHtml += `
-                              <button class="kiosk-btn relative w-6 h-6 group flex-shrink-0 cursor-pointer" onclick="switchKioskAudio('${log.id}', '${escapeHtml(a.url)}', ${i})">
-                                  <img src="${iconLocked}" class="absolute inset-0 w-full h-full object-contain group-hover:opacity-0 transition-opacity" title="${kNames[i]}">
-                                  <img src="${iconUnlocked}" class="absolute inset-0 w-full h-full object-contain opacity-0 group-hover:opacity-100 transition-opacity" title="${kNames[i]}">
+                              <button class="kiosk-btn relative w-8 h-8 md:w-10 md:h-10 group flex-shrink-0 cursor-pointer" onclick="switchKioskAudio('${log.id}', '${escapeHtml(a.url)}', ${i})">
+                                  <img id="kiosk-locked-${log.id}-${i}" src="${iconLocked}" class="absolute inset-0 w-full h-full object-contain transition-opacity ${lClass}" title="${kNames[i]}">
+                                  <img id="kiosk-unlocked-${log.id}-${i}" src="${iconUnlocked}" class="absolute inset-0 w-full h-full object-contain transition-opacity ${uClass}" title="${kNames[i]}">
                               </button>
                           `;
                           
