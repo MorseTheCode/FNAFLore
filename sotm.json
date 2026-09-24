@@ -2464,8 +2464,184 @@
       "audios": []
     },
     {
+      "id": "kiosk_welcome_lobby_1790143836491",
+      "title": "Welcome Lobby Kiosk",
+      "type": "kiosk",
+      "audios": [
+        {
+          "name": "Basic",
+          "url": "./audios/sotm/Helpful Kiosks/Welcome Lobby/Basic.wav",
+          "content": "[[MRS HELPFUL]] ERROR. This elevator is out of service. Thank you for your patience.\n[[MRS HELPFUL]] Welcome! Enjoy a short ride on this reliably safe elevator to access the MCM showrooms."
+        },
+        {
+          "name": "Security",
+          "url": "./audios/sotm/Helpful Kiosks/Welcome Lobby/Security.wav",
+          "content": "[[MRS HELPFUL]] Security personnel. Please help with client relations until the elevator repair is complete.\n[[MRS HELPFUL]] Security Personnel. Ensure the elevator weight limit does not exceed a combined total of 175lbs or deceed 102 lbs.\n[[MRS HELPFUL]] That can’t be right. What’s the opposite of exceed?"
+        },
+        {
+          "name": "Repair",
+          "url": "./audios/sotm/Helpful Kiosks/Welcome Lobby/Repair.wav",
+          "content": "[[MRS HELPFUL]] Attention. Elevator maintenance is required. Refer to the “Repair cassette\" for instructions.\n\n[[MRS HELPFUL]] The repair cassette is conveniently located on the second floor balcony.\n[[MRS HELPFUL]] Please enter the following code to retrieve the repair cassette…\n[[MRS HELPFUL]] …0158…"
+        },
+        {
+          "name": "Creator",
+          "url": "./audios/sotm/Helpful Kiosks/Welcome Lobby/Creator.wav",
+          "content": "[[MRS HELPFUL]] Tut-tut, creator. You know better than to be out here in the Lobby. Get back to your work station."
+        },
+        {
+          "name": "Admin",
+          "url": "./audios/sotm/Helpful Kiosks/Welcome Lobby/Admin.wav",
+          "content": "[[MRS HELPFUL]] Admins, please ensure that our creator staff aren’t wandering around the Lobby.\n[[MRS HELPFUL]] With all the elevator issues, we really can’t afford another ‘incident’."
+        },
+        {
+          "name": "Executive",
+          "url": "./audios/sotm/Helpful Kiosks/Welcome Lobby/Executive.wav",
+          "content": "[[EDWIN]] Honey, that stupid elevator keeps acting up.\n[[EDWIN]] Every time it breaks, I get pulled away to reset the thing. These disruptions totally throw off my vibe.\n[[EDWIN]] But I had the best idea. Could you make a quick instructional tape telling staff how to fix it?\n[[EDWIN]] Love you!"
+        }
+      ],
+      "tags": [
+        "kiosk"
+      ],
+      "imageUrls": [
+        ""
+      ],
+      "location": "Welcome Lobby"
+    },
+    {
+      "id": "kiosk_workshops_main_1790143836493",
+      "title": "Workshops Main Kiosk",
+      "type": "kiosk",
+      "audios": [
+        {
+          "name": "Basic",
+          "url": "./audios/sotm/Helpful Kiosks/Workshops Main/Basic.wav",
+          "content": "[[MRS HELPFUL]] Welcome to our world famous Costume Workshop.\n[[MRS HELPFUL]] If you are not an MCM employee, please proceed to the client viewing area."
+        },
+        {
+          "name": "Security",
+          "url": "./audios/sotm/Helpful Kiosks/Workshops Main/Security.wav",
+          "content": "[[MRS HELPFUL]] Backstage theater access is restricted to potential clients and demonstration operators.\n[[MRS HELPFUL]] For your safety, a springlock suit is required."
+        },
+        {
+          "name": "Repair",
+          "url": "./audios/sotm/Helpful Kiosks/Workshops Main/Repair.wav",
+          "content": "[[MRS HELPFUL]] Springlock assembly may be required.\n[[MRS HELPFUL]] Please ensure there are no... hazards that could cause issues.\n[[MRS HELPFUL]] Mr Helpful is worried about the effects of moisture on the suit's functionality and safety."
+        },
+        {
+          "name": "Creator",
+          "url": "./audios/sotm/Helpful Kiosks/Workshops Main/Creator.wav",
+          "content": "[[MRS HELPFUL]] If you are assigned to run the demonstration, please follow the demo instructions.\n[[MRS HELPFUL]] A completed \"Director\" suit is required.\n[[MRS HELPFUL]] Use the costume lift to access the theater booth.\n[[MRS HELPFUL]] It will not operate unless you are wearing the suit.\n[[MRS HELPFUL]] Once you are in place, the stage manager program will guide you through the demonstration.\n[[MRS HELPFUL]] Good luck! Oh! I mean, break a leg. Sorry..."
+        },
+        {
+          "name": "Admin",
+          "url": "./audios/sotm/Helpful Kiosks/Workshops Main/Admin.wav",
+          "content": "[[MRS HELPFUL]] Every costume that leaves this building must now have shipping insurance.\n[[MRS HELPFUL]] We can't keep doing these trivial repairs. It's pulling staff away from their other priorities."
+        },
+        {
+          "name": "Executive",
+          "url": "./audios/sotm/Helpful Kiosks/Workshops Main/Executive.wav",
+          "content": "[[Fiona]] Ed, I hate talking to you through this stupid bear, but it’s hard to reach you otherwise…\n[[Fiona]] I’m worried about the new suit design.\n[[Fiona]] One of my costumers, Vic, nearly lost his hand today. All he did was spill a can of pop and the thing snapped shut like a bear trap.\n[[Fiona]] You’re busy, but you can’t rush these things.\n[[Fiona]] Please look into it."
+        }
+      ],
+      "tags": [
+        "kiosk"
+      ],
+      "imageUrls": [
+        ""
+      ],
+      "location": "Workshops"
+    },
+    {
+      "id": "kiosk_showrooms_entry_1790143836490",
+      "title": "Showrooms Entry Kiosk",
+      "type": "kiosk",
+      "audios": [
+        {
+          "name": "Basic",
+          "url": "./audios/sotm/Helpful Kiosks/Showrooms Entry/Basic.wav",
+          "content": "[[MR HELPFUL]] Welcome to the Murray showrooms. Everything is for sale or lease.Please inquire within for availability and delivery options.\n[[MR HELPFUL]] We are sad to announce that the Story Time showroom is currently closed pending mitigation of insurance claims."
+        },
+        {
+          "name": "Security",
+          "url": "./audios/sotm/Helpful Kiosks/Showrooms Entry/Security.wav",
+          "content": "[[MR HELPFUL]] Attention Security personnel, the roof top access permissions have been changed to accommodate our creative team. So they can re-tar the roof.\n[[MR HELPFUL]] If you require rooftop access, upgrade your permissions at the Security Office located on the second floor of the Big Top Showroom."
+        },
+        {
+          "name": "Repair",
+          "url": "./audios/sotm/Helpful Kiosks/Showrooms Entry/Repair.wav",
+          "content": "[[MR HELPFUL]] Please be aware of potential power spikes. In case of an outage, use the conduit in the Big Top Showroom entrance to reset the system."
+        },
+        {
+          "name": "Creator",
+          "url": "./audios/sotm/Helpful Kiosks/Showrooms Entry/Creator.wav",
+          "content": "[[MR HELPFUL]] Creators, we really need to make a good impression on our prospective clients. Strike that. Not just good, but great.\n[[MR HELPFUL]] Every night, we need you to look for any imperfections on our displays.\n[[MR HELPFUL]] Repaint and repair any scratches, scuffs, stains, dings and dents you find.\n[[MR HELPFUL]] We’ll let you figure out a good schedule. I got a lot going on.\n[[MR HELPFUL]] Just make sure it gets done and take pride in your work."
+        },
+        {
+          "name": "Admin",
+          "url": "./audios/sotm/Helpful Kiosks/Showrooms Entry/Admin.wav",
+          "content": "[[MR HELPFUL]] Attention, my admin friends, despite everything that’s been going on, you have been doing such a great job holding everything together.\n[[MR HELPFUL]] And I was just thinking, we should do another one of our fun dinner parties. How long has it been?\n[[MR HELPFUL]] So, I invite you all up to the house for fondue and board games. Like we used to.\n[[MR HELPFUL]] Fiona loved it when we could put work aside, even for a bit, and just… get to know each other…\n[[MR HELPFUL]] So, I want to do that. Tonight. Yeah. Tonight at eight.\n[[MR HELPFUL]] See you at eight!"
+        },
+        {
+          "name": "Executive",
+          "url": "./audios/sotm/Helpful Kiosks/Showrooms Entry/Executive.wav",
+          "content": "[[EDWIN]] Fiona, surprise! It's me, Edwin.\n[[EDWIN]] This might be a little awkward, but I have something very important to ask you.Okay? Here goes.\n[[EDWIN]] We've known each other for how long now? I don't remember your start date off the top of my head, but it's been a few.\n[[EDWIN]] Oh... Dummy, start over. Aw, come on... Rewind not working... Well, uh, keep going. Just, uh Fiona, ignore that part.\n[[EDWIN]] Anyway, you are the most amazing artist and creator I have ever been lucky enough to employ.\n[[EDWIN]] You know, the MCM wouldn't be this successful without you.\n[[EDWIN]] You've become the heart of the company and I want to share it with you.\n[[EDWIN]] ...And you're also really pretty. Like 'asymmetrical' pretty. Uh, I should have led with that.\n[[EDWIN]] ...And you're fun and funny. Not a lot of things really make me happy, but... but you do.\n[[EDWIN]] ...And you make the best puppets.\n[[EDWIN]] ...And I guess what I'm trying to say is, I can't think of a future without you.\n[[EDWIN]] I want to keep making magic and sharing our creations with the world forever.\n[[EDWIN]] So, will you marry me? Please.\n[[EDWIN]] Uh... If yes, I have a ring to give you later. It's somewhere around here. And leave a response at the sound of the beep...\n[[EDWIN]] I love you."
+        }
+      ],
+      "tags": [
+        "kiosk"
+      ],
+      "imageUrls": [
+        ""
+      ],
+      "location": "Showrooms Entry"
+    },
+    {
+      "id": "kiosk_doll_hospital_1790143836489",
+      "title": "Doll Hospital Kiosk",
+      "type": "kiosk",
+      "audios": [
+        {
+          "name": "Basic",
+          "url": "./audios/sotm/Helpful Kiosks/Doll Hospital/Basic.wav",
+          "content": "[[MR HELPFUL]] Hello there. If you are one of our prospective clients, then you have wandered into an off limits area.\n[[MR HELPFUL]] For your safety, cover your head and crawl slowly but steadily towards the nearest exit."
+        },
+        {
+          "name": "Security",
+          "url": "./audios/sotm/Helpful Kiosks/Doll Hospital/Security.wav",
+          "content": "[[MR HELPFUL]] Attention security personnel. We need to keep the furnace running every night.\n[[MR HELPFUL]] The recycling center staff is not to leave the building until the furnace checklist is completed every night.\n[[MR HELPFUL]] No exceptions."
+        },
+        {
+          "name": "Repair",
+          "url": "./audios/sotm/Helpful Kiosks/Doll Hospital/Repair.wav",
+          "content": "[[MR HELPFUL]] For your safety, but mostly for the safety of our upstairs employees, elevator access is closed until all furnace tasks are complete.\n[[MR HELPFUL]] The fumes down here can be strong, so I can help.\n[[MR HELPFUL]] This helpful checklist will remind you how to do your job.\n[[MR HELPFUL]] The following furnace tasks remain:\n[[MR HELPFUL]] Dispose of an appropriate amount of salvage material into designated trash chutes.\n[[MR HELPFUL]] Use the conveyor control to empty trash into the incinerator.\n[[MR HELPFUL]] Don't forget to turn the furnace power on before you leave every night."
+        },
+        {
+          "name": "Creator",
+          "url": "./audios/sotm/Helpful Kiosks/Doll Hospital/Creator.wav",
+          "content": "[[MR HELPFUL]] Hello creator! Did you lose your way?\n[[MR HELPFUL]] This is no place for creative thought. It's so loud and clanky.\n[[MR HELPFUL]] Head back upstairs and make the magic happen."
+        },
+        {
+          "name": "Admin",
+          "url": "./audios/sotm/Helpful Kiosks/Doll Hospital/Admin.wav",
+          "content": "[[MR HELPFUL]] I have great news, admins. Say hello to Dollie!\n[[MR HELPFUL]] Now that the Dollie system is up and running, you can stop collecting time cards.\n[[MR HELPFUL]] She can work an unlimited amount of hours without breaks or meal time with a smile on her face.\n[[MR HELPFUL]] Dollie also can't be injured and will never need a sick day.\n[[MR HELPFUL]] Just imagine the money we will save.\n[[MR HELPFUL]] You can begin laying off the sorting staff as more Dollie tracks are installed throughout the lower levels."
+        },
+        {
+          "name": "Executive",
+          "url": "",
+          "content": ""
+        }
+      ],
+      "tags": [
+        "kiosk"
+      ],
+      "imageUrls": [
+        ""
+      ],
+      "location": "Doll Hospital"
+    },
+    {
       "id": "kiosk_admin_wing_second_floor_1790143836487",
-      "title": "Admin Wing Second Floor Kiosk",
+      "title": "Admin Wing Kiosk",
       "type": "kiosk",
       "audios": [
         {
@@ -2504,182 +2680,11 @@
       ],
       "imageUrls": [
         ""
-      ]
-    },
-    {
-      "id": "kiosk_doll_hospital_1790143836489",
-      "title": "Doll Hospital Kiosk",
-      "type": "kiosk",
-      "audios": [
-        {
-          "name": "Basic",
-          "url": "",
-          "content": "[[MR HELPFUL]] Hello there. If you are one of our prospective clients, then you have wandered into an off limits area.\n[[MR HELPFUL]] For your safety, cover your head and crawl slowly but steadily towards the nearest exit."
-        },
-        {
-          "name": "Security",
-          "url": "",
-          "content": "[[MR HELPFUL]] Attention security personnel. We need to keep the furnace running every night.\n[[MR HELPFUL]] The recycling center staff is not to leave the building until the furnace checklist is completed every night.\n[[MR HELPFUL]] No exceptions."
-        },
-        {
-          "name": "Repair",
-          "url": "",
-          "content": "[[MR HELPFUL]] For your safety, but mostly for the safety of our upstairs employees, elevator access is closed until all furnace tasks are complete.\n[[MR HELPFUL]] The fumes down here can be strong, so I can help.\n[[MR HELPFUL]] This helpful checklist will remind you how to do your job.\n[[MR HELPFUL]] The following furnace tasks remain:\n[[MR HELPFUL]] Dispose of an appropriate amount of salvage material into designated trash chutes.\n[[MR HELPFUL]] Use the conveyor control to empty trash into the incinerator.\n[[MR HELPFUL]] Don't forget to turn the furnace power on before you leave every night."
-        },
-        {
-          "name": "Creator",
-          "url": "",
-          "content": "[[MR HELPFUL]] Hello creator! Did you lose your way?\n[[MR HELPFUL]] This is no place for creative thought. It's so loud and clanky.\n[[MR HELPFUL]] Head back upstairs and make the magic happen."
-        },
-        {
-          "name": "Admin",
-          "url": "",
-          "content": "[[MR HELPFUL]] I have great news, admins. Say hello to Dollie!\n[[MR HELPFUL]] Now that the Dollie system is up and running, you can stop collecting time cards.\n[[MR HELPFUL]] She can work an unlimited amount of hours without breaks or meal time with a smile on her face.\n[[MR HELPFUL]] Dollie also can't be injured and will never need a sick day.\n[[MR HELPFUL]] Just imagine the money we will save.\n[[MR HELPFUL]] You can begin laying off the sorting staff as more Dollie tracks are installed throughout the lower levels."
-        },
-        {
-          "name": "Executive",
-          "url": "",
-          "content": ""
-        }
       ],
-      "tags": [
-        "kiosk"
-      ],
-      "imageUrls": [
-        ""
-      ]
-    },
-    {
-      "id": "kiosk_showrooms_entry_1790143836490",
-      "title": "Showrooms Entry Kiosk",
-      "type": "kiosk",
-      "audios": [
-        {
-          "name": "Basic",
-          "url": "",
-          "content": "[[MR HELPFUL]] Welcome to the Murray showrooms. Everything is for sale or lease.Please inquire within for availability and delivery options.\n[[MR HELPFUL]] We are sad to announce that the Story Time showroom is currently closed pending mitigation of insurance claims."
-        },
-        {
-          "name": "Security",
-          "url": "",
-          "content": "[[MR HELPFUL]] Attention Security personnel, the roof top access permissions have been changed to accommodate our creative team. So they can re-tar the roof.\n[[MR HELPFUL]] If you require rooftop access, upgrade your permissions at the Security Office located on the second floor of the Big Top Showroom."
-        },
-        {
-          "name": "Repair",
-          "url": "",
-          "content": "[[MR HELPFUL]] Please be aware of potential power spikes. In case of an outage, use the conduit in the Big Top Showroom entrance to reset the system."
-        },
-        {
-          "name": "Creator",
-          "url": "",
-          "content": "[[MR HELPFUL]] Creators, we really need to make a good impression on our prospective clients. Strike that. Not just good, but great.\n[[MR HELPFUL]] Every night, we need you to look for any imperfections on our displays.\n[[MR HELPFUL]] Repaint and repair any scratches, scuffs, stains, dings and dents you find.\n[[MR HELPFUL]] We’ll let you figure out a good schedule. I got a lot going on.\n[[MR HELPFUL]] Just make sure it gets done and take pride in your work."
-        },
-        {
-          "name": "Admin",
-          "url": "",
-          "content": "[[MR HELPFUL]] Attention, my admin friends, despite everything that’s been going on, you have been doing such a great job holding everything together.\n[[MR HELPFUL]] And I was just thinking, we should do another one of our fun dinner parties. How long has it been?\n[[MR HELPFUL]] So, I invite you all up to the house for fondue and board games. Like we used to.\n[[MR HELPFUL]] Fiona loved it when we could put work aside, even for a bit, and just… get to know each other…\n[[MR HELPFUL]] So, I want to do that. Tonight. Yeah. Tonight at eight.\n[[MR HELPFUL]] See you at eight!"
-        },
-        {
-          "name": "Executive",
-          "url": "",
-          "content": "[[EDWIN]] Fiona, surprise! It's me, Edwin.\n[[EDWIN]] This might be a little awkward, but I have something very important to ask you.Okay? Here goes.\n[[EDWIN]] We've known each other for how long now? I don't remember your start date off the top of my head, but it's been a few.\n[[EDWIN]] Oh... Dummy, start over. Aw, come on... Rewind not working... Well, uh, keep going. Just, uh Fiona, ignore that part.\n[[EDWIN]] Anyway, you are the most amazing artist and creator I have ever been lucky enough to employ.\n[[EDWIN]] You know, the MCM wouldn't be this successful without you.\n[[EDWIN]] You've become the heart of the company and I want to share it with you.\n[[EDWIN]] ...And you're also really pretty. Like 'asymmetrical' pretty. Uh, I should have led with that.\n[[EDWIN]] ...And you're fun and funny. Not a lot of things really make me happy, but... but you do.\n[[EDWIN]] ...And you make the best puppets.\n[[EDWIN]] ...And I guess what I'm trying to say is, I can't think of a future without you.\n[[EDWIN]] I want to keep making magic and sharing our creations with the world forever.\n[[EDWIN]] So, will you marry me? Please.\n[[EDWIN]] Uh... If yes, I have a ring to give you later. It's somewhere around here. And leave a response at the sound of the beep...\n[[EDWIN]] I love you."
-        }
-      ],
-      "tags": [
-        "kiosk"
-      ],
-      "imageUrls": [
-        ""
-      ]
-    },
-    {
-      "id": "kiosk_welcome_lobby_1790143836491",
-      "title": "Welcome Lobby Kiosk",
-      "type": "kiosk",
-      "audios": [
-        {
-          "name": "Basic",
-          "url": "",
-          "content": "[[MRS HELPFUL]] ERROR. This elevator is out of service. Thank you for your patience.\n[[MRS HELPFUL]] Welcome! Enjoy a short ride on this reliably safe elevator to access the MCM showrooms."
-        },
-        {
-          "name": "Security",
-          "url": "",
-          "content": "[[MRS HELPFUL]] Security personnel. Please help with client relations until the elevator repair is complete.\n[[MRS HELPFUL]] Security Personnel. Ensure the elevator weight limit does not exceed a combined total of 175lbs or deceed 102 lbs.\n[[MRS HELPFUL]] That can’t be right. What’s the opposite of exceed?"
-        },
-        {
-          "name": "Repair",
-          "url": "",
-          "content": "[[MRS HELPFUL]] Attention. Elevator maintenance is required. Refer to the “Repair cassette\" for instructions.\n\n[[MRS HELPFUL]] The repair cassette is conveniently located on the second floor balcony.\n[[MRS HELPFUL]] Please enter the following code to retrieve the repair cassette…\n[[MRS HELPFUL]] …0158…"
-        },
-        {
-          "name": "Creator",
-          "url": "",
-          "content": "[[MRS HELPFUL]] Tut-tut, creator. You know better than to be out here in the Lobby. Get back to your work station."
-        },
-        {
-          "name": "Admin",
-          "url": "",
-          "content": "[[MRS HELPFUL]] Admins, please ensure that our creator staff aren’t wandering around the Lobby.\n[[MRS HELPFUL]] With all the elevator issues, we really can’t afford another ‘incident’."
-        },
-        {
-          "name": "Executive",
-          "url": "",
-          "content": "[[EDWIN]] Honey, that stupid elevator keeps acting up.\n[[EDWIN]] Every time it breaks, I get pulled away to reset the thing. These disruptions totally throw off my vibe.\n[[EDWIN]] But I had the best idea. Could you make a quick instructional tape telling staff how to fix it?\n[[EDWIN]] Love you!"
-        }
-      ],
-      "tags": [
-        "kiosk"
-      ],
-      "imageUrls": [
-        ""
-      ]
-    },
-    {
-      "id": "kiosk_workshops_main_1790143836493",
-      "title": "Workshops Main Kiosk",
-      "type": "kiosk",
-      "audios": [
-        {
-          "name": "Basic",
-          "url": "",
-          "content": "[[MRS HELPFUL]] Welcome to our world famous Costume Workshop.\n[[MRS HELPFUL]] If you are not an MCM employee, please proceed to the client viewing area."
-        },
-        {
-          "name": "Security",
-          "url": "",
-          "content": "[[MRS HELPFUL]] Backstage theater access is restricted to potential clients and demonstration operators.\n[[MRS HELPFUL]] For your safety, a springlock suit is required."
-        },
-        {
-          "name": "Repair",
-          "url": "",
-          "content": "[[MRS HELPFUL]] Springlock assembly may be required.\n[[MRS HELPFUL]] Please ensure there are no... hazards that could cause issues.\n[[MRS HELPFUL]] Mr Helpful is worried about the effects of moisture on the suit's functionality and safety."
-        },
-        {
-          "name": "Creator",
-          "url": "",
-          "content": "[[MRS HELPFUL]] If you are assigned to run the demonstration, please follow the demo instructions.\n[[MRS HELPFUL]] A completed \"Director\" suit is required.\n[[MRS HELPFUL]] Use the costume lift to access the theater booth.\n[[MRS HELPFUL]] It will not operate unless you are wearing the suit.\n[[MRS HELPFUL]] Once you are in place, the stage manager program will guide you through the demonstration.\n[[MRS HELPFUL]] Good luck! Oh! I mean, break a leg. Sorry..."
-        },
-        {
-          "name": "Admin",
-          "url": "",
-          "content": "[[MRS HELPFUL]] Every costume that leaves this building must now have shipping insurance.\n[[MRS HELPFUL]] We can't keep doing these trivial repairs. It's pulling staff away from their other priorities."
-        },
-        {
-          "name": "Executive",
-          "url": "",
-          "content": "[[Fiona]] Ed, I hate talking to you through this stupid bear, but it’s hard to reach you otherwise…\n[[Fiona]] I’m worried about the new suit design.\n[[Fiona]] One of my costumers, Vic, nearly lost his hand today. All he did was spill a can of pop and the thing snapped shut like a bear trap.\n[[Fiona]] You’re busy, but you can’t rush these things.\n[[Fiona]] Please look into it."
-        }
-      ],
-      "tags": [
-        "kiosk"
-      ],
-      "imageUrls": [
-        ""
-      ]
+      "location": "Admin Wing - Second Floor"
     }
   ],
-  "_lastModified": 1790147982035,
+  "_lastModified": 1790231150921,
   "typeFilters": [
     {
       "id": "text",
