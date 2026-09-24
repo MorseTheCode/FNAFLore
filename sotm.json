@@ -2485,7 +2485,7 @@
         },
         {
           "name": "Creator",
-          "url": "./audios/sotm/Helpful Kiosks/Welcome Lobby/Creator.WAV",
+          "url": "./audios/sotm/Helpful Kiosks/Welcome Lobby/Creator.wav",
           "content": "[[MRS HELPFUL]] Tut-tut, creator. You know better than to be out here in the Lobby. Get back to your work station."
         },
         {
@@ -2684,7 +2684,7 @@
       "location": "Admin Wing - Second Floor"
     }
   ],
-  "_lastModified": 1790285339733,
+  "_lastModified": 1790286201736,
   "typeFilters": [
     {
       "id": "text",
