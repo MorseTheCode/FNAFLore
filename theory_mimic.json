@@ -1,0 +1,314 @@
+{
+    "items": [
+        {
+            "id": "id_8d49bd5d5923",
+            "type": "note",
+            "x": 0,
+            "y": -300,
+            "width": 400,
+            "height": 150,
+            "title": "Core Theory",
+            "content": "Our character in FNAF World is a mimic receiving CC's personality, and it's also the one controlling UCN.",
+            "fontSize": 14,
+            "zIndex": 10,
+            "locked": false,
+            "color": "#a855f7"
+        },
+        {
+            "id": "id_e6dd3487ce1c",
+            "type": "frame",
+            "x": -600,
+            "y": -50,
+            "width": 450,
+            "height": 600,
+            "title": "FNAF World Evidence",
+            "zIndex": 0,
+            "locked": false,
+            "color": "rgba(56, 189, 248, 0.05)"
+        },
+        {
+            "id": "id_a6c837ffd5cb",
+            "type": "note",
+            "x": -550,
+            "y": 0,
+            "width": 350,
+            "height": 150,
+            "title": "Deskman Ending",
+            "content": "Baby says 'The show will begin momentarily...' Her eyes disappear, leaving only the 8-Bit Freddy on screen.",
+            "fontSize": 14,
+            "zIndex": 10,
+            "locked": false,
+            "color": "#38bdf8"
+        },
+        {
+            "id": "id_ef7b75bbd1b2",
+            "type": "note",
+            "x": -550,
+            "y": 200,
+            "width": 350,
+            "height": 150,
+            "title": "The Garbled Voice",
+            "content": "A garbled voice repeats Baby's exact line. The voice is MIMICKING her.",
+            "fontSize": 14,
+            "zIndex": 10,
+            "locked": false,
+            "color": "#38bdf8"
+        },
+        {
+            "id": "id_05fa020905ce",
+            "type": "note",
+            "x": -550,
+            "y": 400,
+            "width": 350,
+            "height": 150,
+            "title": "Game Files Proof",
+            "content": "Baby's line is 'show.wav'. The garbled voice is 'show2.wav', confirming it really is mimicking.",
+            "fontSize": 14,
+            "zIndex": 10,
+            "locked": false,
+            "color": "#38bdf8"
+        },
+        {
+            "id": "id_e0a295839f85",
+            "type": "frame",
+            "x": 150,
+            "y": -50,
+            "width": 450,
+            "height": 600,
+            "title": "UCN Evidence",
+            "zIndex": 0,
+            "locked": false,
+            "color": "rgba(248, 113, 113, 0.05)"
+        },
+        {
+            "id": "id_3d03ccbc483a",
+            "type": "note",
+            "x": 200,
+            "y": 0,
+            "width": 350,
+            "height": 150,
+            "title": "Fredbear Jumpscare",
+            "content": "Set all to 0, GF to 1, use Death Coin on GF -> Fredbear jumpscare.",
+            "fontSize": 14,
+            "zIndex": 10,
+            "locked": false,
+            "color": "#f87171"
+        },
+        {
+            "id": "id_1a3dfae193f8",
+            "type": "note",
+            "x": 200,
+            "y": 200,
+            "width": 350,
+            "height": 150,
+            "title": "Fredbear's Voice",
+            "content": "Fredbear's voice in UCN IS THE EXACT SAME garbled voice that mimics Baby in FNAF World.",
+            "fontSize": 14,
+            "zIndex": 10,
+            "locked": false,
+            "color": "#f87171"
+        },
+        {
+            "id": "id_50a508b896ce",
+            "type": "note",
+            "x": 200,
+            "y": 400,
+            "width": 350,
+            "height": 150,
+            "title": "GF is the Mimic",
+            "content": "Golden Freddy in UCN IS A MIMIC TORTURING WILLIAM.",
+            "fontSize": 14,
+            "zIndex": 10,
+            "locked": false,
+            "color": "#f87171"
+        },
+        {
+            "id": "id_c0e5c037467e",
+            "type": "frame",
+            "x": -225,
+            "y": 600,
+            "width": 450,
+            "height": 600,
+            "title": "Bridging UCN & FNAF World",
+            "zIndex": 0,
+            "locked": false,
+            "color": "rgba(250, 204, 21, 0.05)"
+        },
+        {
+            "id": "id_9bc459a07ab7",
+            "type": "note",
+            "x": -175,
+            "y": 650,
+            "width": 350,
+            "height": 150,
+            "title": "The Digital Landscape",
+            "content": "UCN takes place in a digital world. Both games share the same system registry save data path. William's screams sound digital.",
+            "fontSize": 14,
+            "zIndex": 10,
+            "locked": false,
+            "color": "#facc15"
+        },
+        {
+            "id": "id_668ddb852ce8",
+            "type": "note",
+            "x": -175,
+            "y": 850,
+            "width": 350,
+            "height": 150,
+            "title": "OMC Connection",
+            "content": "Getting OMC Drowning Ending gives the 8-BIT FREDDY trophy in UCN, then the same trophy appears in FNAF World.",
+            "fontSize": 14,
+            "zIndex": 10,
+            "locked": false,
+            "color": "#facc15"
+        },
+        {
+            "id": "id_db6be242bb32",
+            "type": "note",
+            "x": -175,
+            "y": 1050,
+            "width": 350,
+            "height": 150,
+            "title": "Shared Mechanic",
+            "content": "Fredbear jumpscare and OMC ending both require setting all animatronics to 0 and the target to 1.",
+            "fontSize": 14,
+            "zIndex": 10,
+            "locked": false,
+            "color": "#facc15"
+        },
+        {
+            "id": "id_5daf8ebc64c3",
+            "type": "frame",
+            "x": -225,
+            "y": 1300,
+            "width": 450,
+            "height": 400,
+            "title": "Conclusion",
+            "zIndex": 0,
+            "locked": false,
+            "color": "rgba(168, 85, 247, 0.05)"
+        },
+        {
+            "id": "id_034d793e7e80",
+            "type": "note",
+            "x": -175,
+            "y": 1350,
+            "width": 350,
+            "height": 150,
+            "title": "Same Character",
+            "content": "8-Bit Freddy (FNAF World) = Fredbear (UCN) = TOYSNHK. Both share the same voice and same trophy.",
+            "fontSize": 14,
+            "zIndex": 10,
+            "locked": false,
+            "color": "#a855f7"
+        },
+        {
+            "id": "id_741c87149d0b",
+            "type": "note",
+            "x": -175,
+            "y": 1550,
+            "width": 350,
+            "height": 150,
+            "title": "William's Fate",
+            "content": "After FFPS, William's consciousness gets trapped in the digital landscape. This AI uses it to torture him.",
+            "fontSize": 14,
+            "zIndex": 10,
+            "locked": false,
+            "color": "#a855f7"
+        }
+    ],
+    "connections": [
+        {
+            "id": "conn_d7e7704d5bd7",
+            "color": "#4ade80",
+            "label": "",
+            "source": "id_a6c837ffd5cb",
+            "target": "id_ef7b75bbd1b2"
+        },
+        {
+            "id": "conn_6855f7b2e9e1",
+            "color": "#4ade80",
+            "label": "",
+            "source": "id_ef7b75bbd1b2",
+            "target": "id_05fa020905ce"
+        },
+        {
+            "id": "conn_98f8e642428e",
+            "color": "#4ade80",
+            "label": "",
+            "source": "id_3d03ccbc483a",
+            "target": "id_1a3dfae193f8"
+        },
+        {
+            "id": "conn_776b050c9f84",
+            "color": "#4ade80",
+            "label": "",
+            "source": "id_1a3dfae193f8",
+            "target": "id_50a508b896ce"
+        },
+        {
+            "id": "conn_b1d3fcfbe997",
+            "color": "#4ade80",
+            "label": "Same Audio",
+            "source": "id_05fa020905ce",
+            "target": "id_1a3dfae193f8"
+        },
+        {
+            "id": "conn_5ef064cb7096",
+            "color": "#4ade80",
+            "label": "",
+            "source": "id_9bc459a07ab7",
+            "target": "id_668ddb852ce8"
+        },
+        {
+            "id": "conn_c52326a50846",
+            "color": "#4ade80",
+            "label": "",
+            "source": "id_668ddb852ce8",
+            "target": "id_db6be242bb32"
+        },
+        {
+            "id": "conn_eb1b25416f4c",
+            "color": "#4ade80",
+            "label": "",
+            "source": "id_05fa020905ce",
+            "target": "id_9bc459a07ab7"
+        },
+        {
+            "id": "conn_fd563be27d31",
+            "color": "#4ade80",
+            "label": "",
+            "source": "id_50a508b896ce",
+            "target": "id_9bc459a07ab7"
+        },
+        {
+            "id": "conn_7bb6b713115c",
+            "color": "#4ade80",
+            "label": "",
+            "source": "id_db6be242bb32",
+            "target": "id_034d793e7e80"
+        },
+        {
+            "id": "conn_3f733edc61fa",
+            "color": "#4ade80",
+            "label": "",
+            "source": "id_034d793e7e80",
+            "target": "id_741c87149d0b"
+        },
+        {
+            "id": "conn_e9cd85a87283",
+            "color": "#4ade80",
+            "label": "",
+            "source": "id_8d49bd5d5923",
+            "target": "id_a6c837ffd5cb"
+        },
+        {
+            "id": "conn_6b9cdb3ac06c",
+            "color": "#4ade80",
+            "label": "",
+            "source": "id_8d49bd5d5923",
+            "target": "id_3d03ccbc483a"
+        }
+    ],
+    "drawings": []
+}

@@ -1,2 +1,7 @@
 *.py
 *.txt
+/TerminalMapAssets
+*.pyc
+map_floor1.json
+terminal_map.html
+map_floor2.json
