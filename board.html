@@ -212,6 +212,7 @@
         <button class="control-btn w-auto px-4 text-red-500 hover:text-red-400 font-bold ml-1 !h-[60px]" id="btn-clear-all" title="Clear All">Clear All</button>
         <input type="file" id="import-input" accept=".json" class="hidden">
         <input type="file" id="image-upload-input" accept="image/*" class="hidden">
+        <input type="file" id="audio-upload-input" accept="audio/*" class="hidden">
     </div>
 
     <!-- Board Context Menu -->
@@ -219,7 +220,7 @@
         <button id="menu-add-note">+ Add Theory Note</button>
         <label for="image-upload-input" class="mb-0">+ Add Image</label>
         <button id="menu-add-youtube">+ Add YouTube Video</button>
-        <button id="menu-add-audio">+ Add Audio Log</button>
+        <label for="audio-upload-input" class="mb-0">+ Add Audio Log</label>
         <button id="menu-add-timeline">+ Add SVG Timeline</button>
         <button id="menu-add-frame">+ Add Grouping Frame</button>
         <button id="menu-add-node">+ Add Small Node</button>
@@ -469,6 +470,7 @@
             document.getElementById('btn-import-trigger').addEventListener('click', () => document.getElementById('import-input').click());
             document.getElementById('import-input').addEventListener('change', importBoard);
             document.getElementById('image-upload-input').addEventListener('change', handleImageUpload);
+            document.getElementById('audio-upload-input').addEventListener('change', handleAudioUpload);
             
             document.getElementById('menu-add-note').addEventListener('click', () => createItem('note'));
             document.getElementById('menu-add-node').addEventListener('click', () => createItem('node'));
@@ -482,18 +484,6 @@
                 document.getElementById('media-url-input').classList.replace('focus:border-purple-400', 'focus:border-red-400');
                 document.getElementById('btn-confirm-media').classList.replace('bg-purple-600', 'bg-red-600');
                 document.getElementById('btn-confirm-media').classList.replace('hover:bg-purple-500', 'hover:bg-red-500');
-                document.getElementById('media-modal-overlay').style.display = 'flex';
-                setTimeout(() => document.getElementById('media-url-input').focus(), 50);
-            });
-
-            document.getElementById('menu-add-audio').addEventListener('click', () => {
-                hideMenus(); state.mediaActionType = 'audio';
-                document.getElementById('media-modal-title').innerText = "ADD_AUDIO_LOG";
-                document.getElementById('media-modal-title').classList.replace('text-red-400', 'text-purple-400');
-                document.getElementById('media-url-input').placeholder = "https://example.com/audio.mp3";
-                document.getElementById('media-url-input').classList.replace('focus:border-red-400', 'focus:border-purple-400');
-                document.getElementById('btn-confirm-media').classList.replace('bg-red-600', 'bg-purple-600');
-                document.getElementById('btn-confirm-media').classList.replace('hover:bg-red-500', 'hover:bg-purple-500');
                 document.getElementById('media-modal-overlay').style.display = 'flex';
                 setTimeout(() => document.getElementById('media-url-input').focus(), 50);
             });
@@ -609,7 +599,11 @@
         }
 
         function saveState() { 
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(boardData)); 
+            try {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(boardData)); 
+            } catch (e) {
+                console.warn('Failed to auto-save board to localStorage (quota may be exceeded):', e);
+            }
         }
 
         function loadState() {
@@ -1717,13 +1711,18 @@
         }
 
         function handleImageUpload(e) { const file = e.target.files[0]; if (file) readImageFile(file); e.target.value = ''; }
+        function handleAudioUpload(e) { const file = e.target.files[0]; if (file) readAudioFile(file); e.target.value = ''; }
 
         function handleDrop(e) {
             e.preventDefault();
             const file = e.dataTransfer.files[0];
-            if (file && file.type.startsWith('image/')) {
+            if (!file) return;
+            if (file.type.startsWith('image/')) {
                 state.startX = e.clientX; state.startY = e.clientY;
                 readImageFile(file);
+            } else if (file.type.startsWith('audio/')) {
+                state.startX = e.clientX; state.startY = e.clientY;
+                readAudioFile(file);
             }
         }
 
@@ -1757,6 +1756,12 @@
         function readImageFile(file) {
             const reader = new FileReader();
             reader.onload = (event) => createItem('image', event.target.result);
+            reader.readAsDataURL(file);
+        }
+
+        function readAudioFile(file) {
+            const reader = new FileReader();
+            reader.onload = (event) => createItem('audio', event.target.result);
             reader.readAsDataURL(file);
         }
 
