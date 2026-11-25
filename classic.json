@@ -1,6 +1,6 @@
 {
-    "header": "FNAF_PHONE_CALLS",
-    "subtitle": "Audio Captures: Documenting Night Guard Instructions",
+    "header": "FNAF_AUDIO_TRANSCRIPTS",
+    "subtitle": "Audio Captures & Voice Transcripts (FNAF 1–UCN)",
     "categories": [
         {
             "id": "fnaf1",
@@ -13,6 +13,18 @@
         {
             "id": "fnaf3",
             "label": "FNAF 3"
+        },
+        {
+            "id": "fnafsl",
+            "label": "Sister Location"
+        },
+        {
+            "id": "ffps",
+            "label": "FFPS"
+        },
+        {
+            "id": "ucn",
+            "label": "UCN"
         }
     ],
     "logs": [
@@ -20,7 +32,7 @@
             "id": "f1_1",
             "title": "Night 1",
             "location": "FNAF 1",
-            "content": "[[PHONE GUY]] Hello? Hello, hello? Uh... I wanted to record a message for you, to help you get settled in on your first night. Um, I actually worked in that office before you, I\u2019m finishing up my last week now, as a matter of fact. So, I know it can be a bit overwhelming, but I\u2019m here to tell you there\u2019s nothing to worry about. Uh, you\u2019ll do fine. So, let\u2019s just focus on getting you through your first week, okay?\n\nUh, let\u2019s see. First there\u2019s an introductory greeting from the company, that I\u2019m supposed to read. Uh... it\u2019s kind of a legal thing. You know.\n\nUm, \"Welcome to Freddy Fazbear\u2019s Pizza, a magical place for kids and grown-ups alike, where fantasy and fun come to life. Fazbear Entertainment is not responsible for damage to property or person. Upon discovering that damage or death has occurred, a missing person report will be filed within 90 days, or as soon property and premises have been thoroughly cleaned and bleached, and the carpets have been replaced\". Blah blah blah.\n\nNow, that might sound bad, I know. But, there\u2019s really nothing to worry about.\n\nUh, the animatronic characters here do get a bit quirky at night, but do I blame them? No. If I were forced to sing those same stupid songs for twenty years and I never got a bath? I\u2019d probably be a bit irritable at night too. So, remember, these characters hold a special place in the hearts of children and we need to show them a little respect, right? Okay.\n\nSo, just be aware, the characters do tend to wander a bit. Uh... they\u2019re left in some kind of free roaming mode at night, uh, something about their servos locking up if they get turned off for too long? Uh, they used to be allowed to walk around during the day too, but then there was \"The Bite of \u201987\". Yeah. I\u2014It\u2019s amazing that the human body can live without the frontal lobe, you know?\n\nUh, now concerning your safety. The only real risk to you as a night watchman here, if any, is the fact that these characters, uh, if they happen to see you after hours probably won\u2019t recognize you as a person. They\u2019ll pr\u2014They\u2019ll most likely see you as a metal endoskeleton without its costume on. Now, since that\u2019s against the rules here at Freddy Fazbear\u2019s Pizza, they\u2019ll probably try to... forcefully stuff you inside a Freddy Fazbear suit. Um, now, that wouldn\u2019t be so bad, if the suits themselves weren\u2019t filled with crossbeams, wires, and animatronic devices. Especially around the facial area. So you could imagine how having your head forcefully pressed inside one of those could cause a bit of discomfort, and death. Uh, the only parts of you that would likely see the light of day again would be your eyeballs and teeth when they pop out the front of the mask. Heh. Yeah, they don\u2019t tell you these things when you sign up.\n\nBut hey, first day should be a breeze. I\u2019ll chat with you tomorrow. Uh, check those cameras, and remember to close the doors only if absolutely necessary. Gotta conserve power. Alright, good night.",
+            "content": "[[PHONE GUY]] Hello? Hello, hello? Uh... I wanted to record a message for you, to help you get settled in on your first night. Um, I actually worked in that office before you, I’m finishing up my last week now, as a matter of fact. So, I know it can be a bit overwhelming, but I’m here to tell you there’s nothing to worry about. Uh, you’ll do fine. So, let’s just focus on getting you through your first week, okay?\n\nUh, let’s see. First there’s an introductory greeting from the company, that I’m supposed to read. Uh... it’s kind of a legal thing. You know.\n\nUm, \"Welcome to Freddy Fazbear’s Pizza, a magical place for kids and grown-ups alike, where fantasy and fun come to life. Fazbear Entertainment is not responsible for damage to property or person. Upon discovering that damage or death has occurred, a missing person report will be filed within 90 days, or as soon property and premises have been thoroughly cleaned and bleached, and the carpets have been replaced\". Blah blah blah.\n\nNow, that might sound bad, I know. But, there’s really nothing to worry about.\n\nUh, the animatronic characters here do get a bit quirky at night, but do I blame them? No. If I were forced to sing those same stupid songs for twenty years and I never got a bath? I’d probably be a bit irritable at night too. So, remember, these characters hold a special place in the hearts of children and we need to show them a little respect, right? Okay.\n\nSo, just be aware, the characters do tend to wander a bit. Uh... they’re left in some kind of free roaming mode at night, uh, something about their servos locking up if they get turned off for too long? Uh, they used to be allowed to walk around during the day too, but then there was \"The Bite of ’87\". Yeah. I—It’s amazing that the human body can live without the frontal lobe, you know?\n\nUh, now concerning your safety. The only real risk to you as a night watchman here, if any, is the fact that these characters, uh, if they happen to see you after hours probably won’t recognize you as a person. They’ll pr—They’ll most likely see you as a metal endoskeleton without its costume on. Now, since that’s against the rules here at Freddy Fazbear’s Pizza, they’ll probably try to... forcefully stuff you inside a Freddy Fazbear suit. Um, now, that wouldn’t be so bad, if the suits themselves weren’t filled with crossbeams, wires, and animatronic devices. Especially around the facial area. So you could imagine how having your head forcefully pressed inside one of those could cause a bit of discomfort, and death. Uh, the only parts of you that would likely see the light of day again would be your eyeballs and teeth when they pop out the front of the mask. Heh. Yeah, they don’t tell you these things when you sign up.\n\nBut hey, first day should be a breeze. I’ll chat with you tomorrow. Uh, check those cameras, and remember to close the doors only if absolutely necessary. Gotta conserve power. Alright, good night.",
             "isAudio": true,
             "tags": [
                 "fnaf1"
@@ -40,7 +52,7 @@
             "id": "f1_2",
             "title": "Night 2",
             "location": "FNAF 1",
-            "content": "[[PHONE GUY]] Uh... Hello? Hello! Uh, well, if you\u2019re hearing this and you made it to day two, uh, congrats! I\u2014I won\u2019t talk quite as long this time, since Freddy and his friends tend to become more active as the week progresses. Uh, it might be a good idea to peek at those cameras while I talk, just to make sure everyone\u2019s in their proper place. You know. Uh, interestingly enough, Freddy himself doesn\u2019t come off stage very often. I heard he becomes a lot more active in the dark though, so, hey, I guess that\u2019s one more reason not to run out of power, right?\n\nI\u2014I also want to emphasize the importance of using your door lights. Uh, there are blind spots in your camera views, and those blind spots happen to be right outside your doors. So if you can\u2019t find something\u2014or someone\u2014on your cameras, be sure to check the door lights. Uh, you might only have a few seconds to react. Uh, not that you would be in any danger, of course. I\u2019m not implying that.\n\nAlso, check on the curtain in Pirate Cove from time to time. The character in there seems unique in that he becomes more active if the cameras remain off for long periods of time. I guess he doesn\u2019t like being watched. I don\u2019t know.\n\nUh, anyway, I\u2019m sure you have everything under control! Uh, talk to you soon!",
+            "content": "[[PHONE GUY]] Uh... Hello? Hello! Uh, well, if you’re hearing this and you made it to day two, uh, congrats! I—I won’t talk quite as long this time, since Freddy and his friends tend to become more active as the week progresses. Uh, it might be a good idea to peek at those cameras while I talk, just to make sure everyone’s in their proper place. You know. Uh, interestingly enough, Freddy himself doesn’t come off stage very often. I heard he becomes a lot more active in the dark though, so, hey, I guess that’s one more reason not to run out of power, right?\n\nI—I also want to emphasize the importance of using your door lights. Uh, there are blind spots in your camera views, and those blind spots happen to be right outside your doors. So if you can’t find something—or someone—on your cameras, be sure to check the door lights. Uh, you might only have a few seconds to react. Uh, not that you would be in any danger, of course. I’m not implying that.\n\nAlso, check on the curtain in Pirate Cove from time to time. The character in there seems unique in that he becomes more active if the cameras remain off for long periods of time. I guess he doesn’t like being watched. I don’t know.\n\nUh, anyway, I’m sure you have everything under control! Uh, talk to you soon!",
             "isAudio": true,
             "tags": [
                 "fnaf1"
@@ -60,7 +72,7 @@
             "id": "f1_3",
             "title": "Night 3",
             "location": "FNAF 1",
-            "content": "[[PHONE GUY]] Hello, hello? Hey, you\u2019re doing great! Most people don\u2019t last this long! I mean, you know, they usually move on to other things by now. I\u2019m not implying that they died. Th\u2014th\u2014that\u2019s not what I meant.\n\nUh, anyway, I better not take up too much of your time. Things start getting real tonight.\n\nUh, Hey, listen. I had an idea. If you happen to get caught and want to avoid getting stuffed into a Freddy suit, uh, try playing dead! You know, go limp. Then there\u2019s a chance that, uh, maybe they\u2019ll think that you\u2019re an empty costume instead. Then again if they think you\u2019re an empty costume, they might try to stuff a metal skeleton into you. I wonder how that would work.\n\nY\u2014Yeah, never mind, scratch that. I\u2014It\u2019s best just... not to get caught.\n\nUh, ok, I\u2019ll leave you to it. See you on the flip side!",
+            "content": "[[PHONE GUY]] Hello, hello? Hey, you’re doing great! Most people don’t last this long! I mean, you know, they usually move on to other things by now. I’m not implying that they died. Th—th—that’s not what I meant.\n\nUh, anyway, I better not take up too much of your time. Things start getting real tonight.\n\nUh, Hey, listen. I had an idea. If you happen to get caught and want to avoid getting stuffed into a Freddy suit, uh, try playing dead! You know, go limp. Then there’s a chance that, uh, maybe they’ll think that you’re an empty costume instead. Then again if they think you’re an empty costume, they might try to stuff a metal skeleton into you. I wonder how that would work.\n\nY—Yeah, never mind, scratch that. I—It’s best just... not to get caught.\n\nUh, ok, I’ll leave you to it. See you on the flip side!",
             "isAudio": true,
             "tags": [
                 "fnaf1"
@@ -80,7 +92,7 @@
             "id": "f1_4",
             "title": "Night 4",
             "location": "FNAF 1",
-            "content": "[[PHONE GUY]] Hello, hello? Hey! Hey, wow, day four. I knew you could do it.\n\nUh, hey, listen, I may not be around to send you a message tomorrow. It\u2019s\u2014It\u2019s been a bad night here for me. Um, I\u2014I\u2019m kinda glad that I recorded my messages for you *clears throat* uh, when I did.\n\nUh, hey, do me a favour. Maybe sometime, uh, you could check inside those suits in the back room? I\u2019m gonna try to hold out until someone checks. Maybe it won\u2019t be so bad. Uh, I\u2014I\u2014I\u2014I always wondered what was in all those empty heads, back there.\n\n*Freddy\u2019s \u201cToreador March\u201d music plays*\n\nYou know...*animatronic moan is heard, the same as when you have your monitor up, and an animatronic has got into the room*\n\nOh, no\u2014*garbled scream that more closely resembles Golden Freddy\u2019s scream, followed by static*",
+            "content": "[[PHONE GUY]] Hello, hello? Hey! Hey, wow, day four. I knew you could do it.\n\nUh, hey, listen, I may not be around to send you a message tomorrow. It’s—It’s been a bad night here for me. Um, I—I’m kinda glad that I recorded my messages for you *clears throat* uh, when I did.\n\nUh, hey, do me a favour. Maybe sometime, uh, you could check inside those suits in the back room? I’m gonna try to hold out until someone checks. Maybe it won’t be so bad. Uh, I—I—I—I always wondered what was in all those empty heads, back there.\n\n*Freddy’s “Toreador March” music plays*\n\nYou know...*animatronic moan is heard, the same as when you have your monitor up, and an animatronic has got into the room*\n\nOh, no—*garbled scream that more closely resembles Golden Freddy’s scream, followed by static*",
             "isAudio": true,
             "tags": [
                 "fnaf1"
@@ -100,7 +112,7 @@
             "id": "f1_5",
             "title": "Night 5",
             "location": "FNAF 1",
-            "content": "With this phone call, it is important to note that Phone Guy does not actually speak. Instead, a garbled voice speaks that is assumed to be animatronic.\nWhen the phone call is reversed and touched up, words can be heard against a backdrop of garbled interference. While it is nearly unrecognizable, the call is actually a reading of an excerpt from a book named \"Autobiography of a Yogi\" by a writer called \"Paramhansa Yogananda\". \n\n\"Sir, it is lamentable that mass agricultural development is not speeded by fuller use of your marvelous mechanisms.\nWould it not be easily possible to employ some of them in quick laboratory experiments to indicate the influence of various types of fertilizers on plant growth?\nYou are right.\nCountless uses of Bose instruments will be made by future generations.\nThe scientist seldom knows contemporaneous reward;\nit is enough to possess the joy of creative service.\"\n\u2014Autobiography of a Yogi by Paramhansa Yogananda\n\u2014Chapter 8\n\u2014Paragraph 36",
+            "content": "With this phone call, it is important to note that Phone Guy does not actually speak. Instead, a garbled voice speaks that is assumed to be animatronic.\nWhen the phone call is reversed and touched up, words can be heard against a backdrop of garbled interference. While it is nearly unrecognizable, the call is actually a reading of an excerpt from a book named \"Autobiography of a Yogi\" by a writer called \"Paramhansa Yogananda\". \n\n\"Sir, it is lamentable that mass agricultural development is not speeded by fuller use of your marvelous mechanisms.\nWould it not be easily possible to employ some of them in quick laboratory experiments to indicate the influence of various types of fertilizers on plant growth?\nYou are right.\nCountless uses of Bose instruments will be made by future generations.\nThe scientist seldom knows contemporaneous reward;\nit is enough to possess the joy of creative service.\"\n—Autobiography of a Yogi by Paramhansa Yogananda\n—Chapter 8\n—Paragraph 36",
             "isAudio": true,
             "tags": [
                 "fnaf1"
@@ -120,7 +132,7 @@
             "id": "f2_1",
             "title": "Night 1",
             "location": "FNAF 2",
-            "content": "[[PHONE GUY]] Uh, hello? Hello, hello? Uh, hello and welcome to your new summer job at the new and improved Freddy Fazbear\u2019s Pizza. Uh, I\u2019m here to talk you through some of the things you can expect to see during your first week here, and to help you get started down this new and exciting career path.\n\nUh, now, I want you to forget anything you may have heard about the old location. You know, uh, some people still have a somewhat negative impression of the company. Uh, that old restaurant was kind of left to rot for quite a while, but, I want to reassure you, Fazbear Entertainment is committed to family fun and above all, safety. They\u2019ve spent a small fortune on these new animatronics, uh, facial recognition, advanced mobility. They even let them walk around during the day! Isn\u2019t that neat? *clears throat* But most importantly, they\u2019re all tied into some kind of criminal database, so they can detect a predator a mile away. Heck, we should be paying them to guard you!\n\nUh, now that being said, no new system is without its... kinks. Uh, you\u2019re only the second guard to work at that location. Uh, the first guy finished his week, but complained about... conditions. Uh, we switched him over to the day shift. So hey, lucky you, right? Uh mainly he expressed concern that certain characters seemed to move around at night, and even attempted to get into his office. Now, from what we know, that should be impossible. Uh, that restaurant should be the safest place on earth. So, while our engineers don\u2019t really have an explanation for this, the working theory is that... the robots were never given a proper \u201cnight mode\u201d. So when it gets quiet, they think they\u2019re in the wrong room, so then they go try to find where the people are, and in this case, that\u2019s your office.\n\nSo our temporary solution is this: There\u2019s a music box over by the Prize Counter, and it\u2019s rigged to be wound up remotely. So just, every once in a while, switch over to the Prize Counter video feed and wind it up for a few seconds. It doesn\u2019t seem to affect all of the animatronics, but it does affect... one of them. *clears throat*\n\nUh, and as for the rest of them, we have an even easier solution. You see, there may be a minor glitch in the system, something about robots seeing you as an endoskeleton without his costume on, and wanting to stuff you in a suit, so hey, we\u2019ve given you an empty Freddy Fazbear head. Problem solved! You can put it on anytime, and leave it on for as long as you want. Eventually anything that wandered in will wander back out.\n\nUh, something else worth mentioning is kind of the modern design of the building. You may have noticed there are no doors for you to close, heh.\n\nBut hey, you have a light! And even though your flashlight can run out of power, the building cannot. So, don\u2019t worry about the place going dark.\n\nWell, I think that\u2019s it. Uh, you should be golden. Uh, check the lights, put on the Freddy head if you need to, uh, keep the music box wound up, piece of cake. Have a good night, and I\u2019ll talk to you tomorrow.",
+            "content": "[[PHONE GUY]] Uh, hello? Hello, hello? Uh, hello and welcome to your new summer job at the new and improved Freddy Fazbear’s Pizza. Uh, I’m here to talk you through some of the things you can expect to see during your first week here, and to help you get started down this new and exciting career path.\n\nUh, now, I want you to forget anything you may have heard about the old location. You know, uh, some people still have a somewhat negative impression of the company. Uh, that old restaurant was kind of left to rot for quite a while, but, I want to reassure you, Fazbear Entertainment is committed to family fun and above all, safety. They’ve spent a small fortune on these new animatronics, uh, facial recognition, advanced mobility. They even let them walk around during the day! Isn’t that neat? *clears throat* But most importantly, they’re all tied into some kind of criminal database, so they can detect a predator a mile away. Heck, we should be paying them to guard you!\n\nUh, now that being said, no new system is without its... kinks. Uh, you’re only the second guard to work at that location. Uh, the first guy finished his week, but complained about... conditions. Uh, we switched him over to the day shift. So hey, lucky you, right? Uh mainly he expressed concern that certain characters seemed to move around at night, and even attempted to get into his office. Now, from what we know, that should be impossible. Uh, that restaurant should be the safest place on earth. So, while our engineers don’t really have an explanation for this, the working theory is that... the robots were never given a proper “night mode”. So when it gets quiet, they think they’re in the wrong room, so then they go try to find where the people are, and in this case, that’s your office.\n\nSo our temporary solution is this: There’s a music box over by the Prize Counter, and it’s rigged to be wound up remotely. So just, every once in a while, switch over to the Prize Counter video feed and wind it up for a few seconds. It doesn’t seem to affect all of the animatronics, but it does affect... one of them. *clears throat*\n\nUh, and as for the rest of them, we have an even easier solution. You see, there may be a minor glitch in the system, something about robots seeing you as an endoskeleton without his costume on, and wanting to stuff you in a suit, so hey, we’ve given you an empty Freddy Fazbear head. Problem solved! You can put it on anytime, and leave it on for as long as you want. Eventually anything that wandered in will wander back out.\n\nUh, something else worth mentioning is kind of the modern design of the building. You may have noticed there are no doors for you to close, heh.\n\nBut hey, you have a light! And even though your flashlight can run out of power, the building cannot. So, don’t worry about the place going dark.\n\nWell, I think that’s it. Uh, you should be golden. Uh, check the lights, put on the Freddy head if you need to, uh, keep the music box wound up, piece of cake. Have a good night, and I’ll talk to you tomorrow.",
             "isAudio": true,
             "tags": [
                 "fnaf2"
@@ -140,7 +152,7 @@
             "id": "f2_2",
             "title": "Night 2",
             "location": "FNAF 2",
-            "content": "[[PHONE GUY]] Uh, hello? Hello! Uh, see, I told you your first night wouldn\u2019t be a problem. You\u2019re a natural! Uh, by now I\u2019m sure you\u2019ve noticed the older models sitting in the back room. Uh, those are from the previous location, we just use them for parts now. The idea at first was to repair them. Uh, they even started retrofitting them with some of the newer technology. But they were just so ugly, you know? And the smell...ugh. Uh, so the company decided to go in a whole new direction, and make them super kid-friendly. Uh, those older ones shouldnt be able to walk around, but if they do, the whole Freddy head trick should work on them too, sooo, whatever. Uh, heh. I loved those old characters. Uh, did you ever see Foxy the pirate? Oh wait, Foxy...oh yeah, Foxy! Uh...hey listen! Uh, that one was always a bit twitchy. Uh, I\u2019m not sure the Freddy head trick will work on Foxy. Uh, if for some reason he activates during the night, and you see him standing at the far end of the hall, just flash your light at him from time to time. Those older models would always get disoriented with bright lights. It would cause a system restart, or something. Uh, come to think of it, you might want to try that on any room where something undesirable might be. It might hold them in place for a few seconds. Uh, that glitch might have carried over to the newer models too.\n\nOne more thing, don\u2019t forget the music box! I\u2019ll be honest, I never liked that puppet thing. It\u2019s always...thinking, and it can go anywhere. I don\u2019t think the Freddy mask will fool it. So, just, don\u2019t forget the music box.\n\nUm, anyway, I\u2019m sure it won\u2019t be a problem. Uh, have a good night, and talk to you tomorrow.",
+            "content": "[[PHONE GUY]] Uh, hello? Hello! Uh, see, I told you your first night wouldn’t be a problem. You’re a natural! Uh, by now I’m sure you’ve noticed the older models sitting in the back room. Uh, those are from the previous location, we just use them for parts now. The idea at first was to repair them. Uh, they even started retrofitting them with some of the newer technology. But they were just so ugly, you know? And the smell...ugh. Uh, so the company decided to go in a whole new direction, and make them super kid-friendly. Uh, those older ones shouldnt be able to walk around, but if they do, the whole Freddy head trick should work on them too, sooo, whatever. Uh, heh. I loved those old characters. Uh, did you ever see Foxy the pirate? Oh wait, Foxy...oh yeah, Foxy! Uh...hey listen! Uh, that one was always a bit twitchy. Uh, I’m not sure the Freddy head trick will work on Foxy. Uh, if for some reason he activates during the night, and you see him standing at the far end of the hall, just flash your light at him from time to time. Those older models would always get disoriented with bright lights. It would cause a system restart, or something. Uh, come to think of it, you might want to try that on any room where something undesirable might be. It might hold them in place for a few seconds. Uh, that glitch might have carried over to the newer models too.\n\nOne more thing, don’t forget the music box! I’ll be honest, I never liked that puppet thing. It’s always...thinking, and it can go anywhere. I don’t think the Freddy mask will fool it. So, just, don’t forget the music box.\n\nUm, anyway, I’m sure it won’t be a problem. Uh, have a good night, and talk to you tomorrow.",
             "isAudio": true,
             "tags": [
                 "fnaf2"
@@ -160,7 +172,7 @@
             "id": "f2_3",
             "title": "Night 3",
             "location": "FNAF 2",
-            "content": "[[PHONE GUY]] Uh, hello, hello! See, I told you you wouldn\u2019t have any problems! Did, uh, Foxy ever appear in the hallway? Probably not, I was just curious. Like I said, he was always my favourite. They tried to remake Foxy, ya know? Uh, they thought the first one was too scary, so they redesigned him to be more kid-friendly and put him in Kid\u2019s Cove. To keep the toddlers entertained, you know. But kids these days just can\u2019t keep their hands to themselves. The staff literally has to put Foxy back together at the end of every shift. So eventually they just stopped trying and left him as some \u201ctake apart\u2014put back together\u201d attraction. Now he\u2019s just a mess of parts. I think the employees refer to him as just \u201cThe Mangle.\u201d\n\nUh... oh hey! Before I go, uh, I wanted to ease your mind about any rumours you might have heard lately. You know how these local stories come and go and seldom mean anything. I can personally assure you, that whatever is going on out there, however tragic it may be, has nothing to do with our establishment. It\u2019s just all rumour and speculation. People trying to make a buck, you know. Uh, our guard during the day has reported nothing unusual, and he\u2019s on watch from opening \u2019til close.\n\nOkay, well anyway, hang in there and I\u2019ll talk with you tomorrow.",
+            "content": "[[PHONE GUY]] Uh, hello, hello! See, I told you you wouldn’t have any problems! Did, uh, Foxy ever appear in the hallway? Probably not, I was just curious. Like I said, he was always my favourite. They tried to remake Foxy, ya know? Uh, they thought the first one was too scary, so they redesigned him to be more kid-friendly and put him in Kid’s Cove. To keep the toddlers entertained, you know. But kids these days just can’t keep their hands to themselves. The staff literally has to put Foxy back together at the end of every shift. So eventually they just stopped trying and left him as some “take apart—put back together” attraction. Now he’s just a mess of parts. I think the employees refer to him as just “The Mangle.”\n\nUh... oh hey! Before I go, uh, I wanted to ease your mind about any rumours you might have heard lately. You know how these local stories come and go and seldom mean anything. I can personally assure you, that whatever is going on out there, however tragic it may be, has nothing to do with our establishment. It’s just all rumour and speculation. People trying to make a buck, you know. Uh, our guard during the day has reported nothing unusual, and he’s on watch from opening ’til close.\n\nOkay, well anyway, hang in there and I’ll talk with you tomorrow.",
             "isAudio": true,
             "tags": [
                 "fnaf2"
@@ -180,7 +192,7 @@
             "id": "f2_4",
             "title": "Night 4",
             "location": "FNAF 2",
-            "content": "[[PHONE GUY]] Hello, hello! Uh, hey there, night four! I told you you\u2019d get the hang of it! Ok, so uh, just to update you, uh, there\u2019s been somewhat of an investigation going on. Uh, we may end up having to close for a few days, I don\u2019t know. Uh, I want to emphasize though that it\u2019s really just a precaution. Uh, Fazbear Entertainment denies any wrongdoing. These things happen sometimes. Um, it\u2019ll all get sorted out in a few days. Just keep an eye on things and I\u2019ll keep you posted.\n\nUh, just as a side note though, try to avoid eye contact with any of the animatronics tonight if you can. Someone may have tampered with their facial recognition systems, we\u2019re not sure. But the characters have been acting very unusual, almost aggressive towards the staff. They interact with the kids just fine, but when they encounter an adult, they just... stare.\n\nUh, anyways, hang tight, it\u2019ll all pass. Good night!",
+            "content": "[[PHONE GUY]] Hello, hello! Uh, hey there, night four! I told you you’d get the hang of it! Ok, so uh, just to update you, uh, there’s been somewhat of an investigation going on. Uh, we may end up having to close for a few days, I don’t know. Uh, I want to emphasize though that it’s really just a precaution. Uh, Fazbear Entertainment denies any wrongdoing. These things happen sometimes. Um, it’ll all get sorted out in a few days. Just keep an eye on things and I’ll keep you posted.\n\nUh, just as a side note though, try to avoid eye contact with any of the animatronics tonight if you can. Someone may have tampered with their facial recognition systems, we’re not sure. But the characters have been acting very unusual, almost aggressive towards the staff. They interact with the kids just fine, but when they encounter an adult, they just... stare.\n\nUh, anyways, hang tight, it’ll all pass. Good night!",
             "isAudio": true,
             "tags": [
                 "fnaf2"
@@ -200,7 +212,7 @@
             "id": "f2_5",
             "title": "Night 5",
             "location": "FNAF 2",
-            "content": "[[PHONE GUY]] Hello hello! Hey, good job, night 5! Um, hey, err, keep a close eye on things tonight, ok? Um, from what I understand the building is on lockdown, uh... no one is allowed in or out, y\u2019know. Especially concerning any... previous employees.\n\nUm, when we get it all sorted out we may move you to the day shift. A position just became... available. Uh, we don\u2019t have a replacement for your shift yet but we\u2019re working on it. Uh, we\u2019re going to try to contact the original restaurant owner. Uh, I think the name of the place was... \u201dFredbear\u2019s Family Diner\u201d or something like that. It was closed for years though, I doubt we\u2019ll be able to track anybody down.\n\nUh, so just get through one more night! Uh, hang in there! Goodnight!",
+            "content": "[[PHONE GUY]] Hello hello! Hey, good job, night 5! Um, hey, err, keep a close eye on things tonight, ok? Um, from what I understand the building is on lockdown, uh... no one is allowed in or out, y’know. Especially concerning any... previous employees.\n\nUm, when we get it all sorted out we may move you to the day shift. A position just became... available. Uh, we don’t have a replacement for your shift yet but we’re working on it. Uh, we’re going to try to contact the original restaurant owner. Uh, I think the name of the place was... ”Fredbear’s Family Diner” or something like that. It was closed for years though, I doubt we’ll be able to track anybody down.\n\nUh, so just get through one more night! Uh, hang in there! Goodnight!",
             "isAudio": true,
             "tags": [
                 "fnaf2"
@@ -220,7 +232,7 @@
             "id": "f2_6",
             "title": "Night 6",
             "location": "FNAF 2",
-            "content": "[[PHONE GUY]] Uh, hello, hello! Uh, what on earth are you doing there? Uh, didn\u2019t you get the memo? Uh, the place is closed down, a\u2014at least for a while. Someone used one of the suits. We had a spare in the back, a yellow one. Someone used it... now none of them are acting right. Listen j\u2014just finish your shift, it\u2019s safer than trying to leave in the middle of the night. Uh, we have one more event scheduled for tomorrow, a birthday. You\u2019ll be on day shift. Wear your uniform, stay close to the animatronics and make sure they don\u2019t hurt anyone okay? Uh for now just make it through the night. Uh, when the place eventually opens again I\u2019ll probably take the night shift myself.\n\nOkay, good night, and good luck.",
+            "content": "[[PHONE GUY]] Uh, hello, hello! Uh, what on earth are you doing there? Uh, didn’t you get the memo? Uh, the place is closed down, a—at least for a while. Someone used one of the suits. We had a spare in the back, a yellow one. Someone used it... now none of them are acting right. Listen j—just finish your shift, it’s safer than trying to leave in the middle of the night. Uh, we have one more event scheduled for tomorrow, a birthday. You’ll be on day shift. Wear your uniform, stay close to the animatronics and make sure they don’t hurt anyone okay? Uh for now just make it through the night. Uh, when the place eventually opens again I’ll probably take the night shift myself.\n\nOkay, good night, and good luck.",
             "isAudio": true,
             "tags": [
                 "fnaf2"
@@ -240,7 +252,7 @@
             "id": "f3_1",
             "title": "Night 1",
             "location": "FNAF 3",
-            "content": "[[PHONE DUDE]] Hey hey, glad you came back for another night! I promise, it\u2019ll be a lot more interesting this time! We found some, some great new relics over the weekend, and we\u2019re out tracking down a new lead, right now! So, uhhh, lemme just update you real quick, then you can get to work. Like, the attraction opens in like, a week, so we have to make sure everything works, and nothing catches on fire! Uh, when the place opens, people will come in at the opposite end of the building, and work their way toward you, then past you and out the exit. Uh, yeah you\u2019ve officially become part of the attraction. Uh, you\u2019ll be starring as...the security guard! So not only will you be monitoring the people on the camera as they pass through\u2014you know, to make sure no one steals anything or makes out in the corner \u2013 but you\u2019ll also be a part of the show. It\u2019ll make it feel really authentic, I think.\n\nUh, now lemme tell you about what\u2019s new. We found another set of drawings, always nice, and a Foxy head! Which we think could be authentic! Then again, it might just be another crappy cosplay. And we found a desk fan. Very old-school. Metal though. Watch the fingers, uh, ha.\n\nUh, right now the place is basically just, you know, flashing lights and spooky props. Uh, honestly thought we\u2019d have more by now. Uh, if we don\u2019t have something really cool by next week, we may have to suit you up in a furry suit and make you walk around saying \u201cboo!\u201d. Heh-heh.\n\nUh, but you know, like I said, we\u2019re trying to track down a good lead right now. Uh, some guy who helped design one of the buildings says there was like an extra room that got boarded up, or, uh, something like that. So we\u2019re gonna take a peek and see what we can find. Uh, for now just get comfortable with the new set up.\n\nUmm, you can check the security cameras over to your right with a click of that blue button. Uh, you can toggle between the hall cams and the vent cam. Uh, then over to your far left, uh, you can flip up your maintenance panel. You know, use this to reboot any systems that may go offline. Uh-heh. Uh in trying to make the place feel vintage we may have overdone it a bit, heh-heh. Some of this equipment is barely functional. Yeah, I\u2014I wasn\u2019t joking about the fire that\u2019s\u2014that\u2019s\u2014that\u2019s a real risk. Uh, the most important thing you want to watch for is the ventilation.\n\nLook, this place will give you the spooks, man, and if you let that ventilation go offline then you\u2019ll start seeing some crazy stuff, man. Keep that air flowing! Okay, keep an eye on things, and we\u2019ll try to have something new for you tomorrow night!",
+            "content": "[[PHONE DUDE]] Hey hey, glad you came back for another night! I promise, it’ll be a lot more interesting this time! We found some, some great new relics over the weekend, and we’re out tracking down a new lead, right now! So, uhhh, lemme just update you real quick, then you can get to work. Like, the attraction opens in like, a week, so we have to make sure everything works, and nothing catches on fire! Uh, when the place opens, people will come in at the opposite end of the building, and work their way toward you, then past you and out the exit. Uh, yeah you’ve officially become part of the attraction. Uh, you’ll be starring as...the security guard! So not only will you be monitoring the people on the camera as they pass through—you know, to make sure no one steals anything or makes out in the corner – but you’ll also be a part of the show. It’ll make it feel really authentic, I think.\n\nUh, now lemme tell you about what’s new. We found another set of drawings, always nice, and a Foxy head! Which we think could be authentic! Then again, it might just be another crappy cosplay. And we found a desk fan. Very old-school. Metal though. Watch the fingers, uh, ha.\n\nUh, right now the place is basically just, you know, flashing lights and spooky props. Uh, honestly thought we’d have more by now. Uh, if we don’t have something really cool by next week, we may have to suit you up in a furry suit and make you walk around saying “boo!”. Heh-heh.\n\nUh, but you know, like I said, we’re trying to track down a good lead right now. Uh, some guy who helped design one of the buildings says there was like an extra room that got boarded up, or, uh, something like that. So we’re gonna take a peek and see what we can find. Uh, for now just get comfortable with the new set up.\n\nUmm, you can check the security cameras over to your right with a click of that blue button. Uh, you can toggle between the hall cams and the vent cam. Uh, then over to your far left, uh, you can flip up your maintenance panel. You know, use this to reboot any systems that may go offline. Uh-heh. Uh in trying to make the place feel vintage we may have overdone it a bit, heh-heh. Some of this equipment is barely functional. Yeah, I—I wasn’t joking about the fire that’s—that’s—that’s a real risk. Uh, the most important thing you want to watch for is the ventilation.\n\nLook, this place will give you the spooks, man, and if you let that ventilation go offline then you’ll start seeing some crazy stuff, man. Keep that air flowing! Okay, keep an eye on things, and we’ll try to have something new for you tomorrow night!",
             "isAudio": true,
             "tags": [
                 "fnaf3"
@@ -260,7 +272,7 @@
             "id": "f3_2",
             "title": "Night 2",
             "location": "FNAF 3",
-            "content": "[[PHONE DUDE]] Hey man, okay, I have some awesome news for you! First of all, we found some vintage audio training cassettes. Dude, these are like pre-historic! I think they were, like, training tapes for, like, other employees or something like that. So I thought we could, like, have them playing, like, over the speakers as people walk through the attraction. Dude, that\u2019d make this feel legit, man. But I have an even better surprise for you, and you\u2019re not gonna believe this! We found one. A real one. Uh\u2014uh\u2014uh, gotta go man. uh, we\u2014well look, it\u2014it\u2019s in there somewhere, I\u2019m\u2014I\u2019m sure you\u2019ll see it. Okay, I\u2019ll leave you with some of this great audio that I found. Talk to you later man!\n\n[[PHONE GUY]] Uh, hello? Hello hello? Uh welcome to your new career as a performer slash entertainer for Freddy Fazbear\u2019s Pizza. Uh, these tapes will provide you with much needed information on how to handle, slash climb into, slash climb out of, mascot costumes. Right now we have two specially designed suits that double as both animatronic and suit. So please pay close attention while learning how to operate these suits, as accidents, slash injury, slash death, slash irreparable and grotesque maiming, can occur.\n\nFirst, we will discuss how to operate the mascots when they are in animatronic form. For ease of operation the animatronics, are set to turn and walk towards sound cues. This is an easy and hands-free approach, to making sure the animatronics stay where the children are, for maximum entertainment slash crowd-pleasing value. To change the animatronics to suit mode, insert and turn firmly the hand crank provided by the manufacturer.\n\nTurning the crank will recoil and compress the animatronic parts around the sides of the suit, providing room to climb inside. Please make sure the springlocks are fastened tight, to ensure the animatronic devices remain fixed. We will cover this in more detail in tomorrow\u2019s session.\n\nRemember to smile. You are the face of Freddy Fazbear\u2019s Pizza.",
+            "content": "[[PHONE DUDE]] Hey man, okay, I have some awesome news for you! First of all, we found some vintage audio training cassettes. Dude, these are like pre-historic! I think they were, like, training tapes for, like, other employees or something like that. So I thought we could, like, have them playing, like, over the speakers as people walk through the attraction. Dude, that’d make this feel legit, man. But I have an even better surprise for you, and you’re not gonna believe this! We found one. A real one. Uh—uh—uh, gotta go man. uh, we—well look, it—it’s in there somewhere, I’m—I’m sure you’ll see it. Okay, I’ll leave you with some of this great audio that I found. Talk to you later man!\n\n[[PHONE GUY]] Uh, hello? Hello hello? Uh welcome to your new career as a performer slash entertainer for Freddy Fazbear’s Pizza. Uh, these tapes will provide you with much needed information on how to handle, slash climb into, slash climb out of, mascot costumes. Right now we have two specially designed suits that double as both animatronic and suit. So please pay close attention while learning how to operate these suits, as accidents, slash injury, slash death, slash irreparable and grotesque maiming, can occur.\n\nFirst, we will discuss how to operate the mascots when they are in animatronic form. For ease of operation the animatronics, are set to turn and walk towards sound cues. This is an easy and hands-free approach, to making sure the animatronics stay where the children are, for maximum entertainment slash crowd-pleasing value. To change the animatronics to suit mode, insert and turn firmly the hand crank provided by the manufacturer.\n\nTurning the crank will recoil and compress the animatronic parts around the sides of the suit, providing room to climb inside. Please make sure the springlocks are fastened tight, to ensure the animatronic devices remain fixed. We will cover this in more detail in tomorrow’s session.\n\nRemember to smile. You are the face of Freddy Fazbear’s Pizza.",
             "isAudio": true,
             "tags": [
                 "fnaf3"
@@ -280,7 +292,7 @@
             "id": "f3_3",
             "title": "Night 3",
             "location": "FNAF 3",
-            "content": "[[PHONE GUY]] Uh, hello hello! Uh, for today\u2019s lesson we will be continuing our training on proper suit handling technique. When using an animatronic as a suit, please ensure that the animatronic parts are tightly compressed and fastened by the springlocks located around the inside of the suit. It may take a few moments, to position your head and torso between these parts in a manner where you can move and speak. Try not to nudge or press against any of the springlocks inside the suit. Do not touch the springlocks at any time. Do not breathe on the springlocks, as moisture may loosen them, and cause them to break loose. In the case that the springlocks come loose while you are wearing the suit, please try to manoeuvrer away from populated areas before bleeding out, as not to ruin the customer experience.\n\nAs always if there is ever an emergency, please note there\u2019s a designated safe room. Every location is built with one extra room that is not included in the digital map layout programmed in the animatronics or security systems. This room is hidden to customers, invisible to animatronics, and is always off-camera.\n\nAs always, remember to smile. You are the face of Freddy Fazbear\u2019s Pizza.",
+            "content": "[[PHONE GUY]] Uh, hello hello! Uh, for today’s lesson we will be continuing our training on proper suit handling technique. When using an animatronic as a suit, please ensure that the animatronic parts are tightly compressed and fastened by the springlocks located around the inside of the suit. It may take a few moments, to position your head and torso between these parts in a manner where you can move and speak. Try not to nudge or press against any of the springlocks inside the suit. Do not touch the springlocks at any time. Do not breathe on the springlocks, as moisture may loosen them, and cause them to break loose. In the case that the springlocks come loose while you are wearing the suit, please try to manoeuvrer away from populated areas before bleeding out, as not to ruin the customer experience.\n\nAs always if there is ever an emergency, please note there’s a designated safe room. Every location is built with one extra room that is not included in the digital map layout programmed in the animatronics or security systems. This room is hidden to customers, invisible to animatronics, and is always off-camera.\n\nAs always, remember to smile. You are the face of Freddy Fazbear’s Pizza.",
             "isAudio": true,
             "tags": [
                 "fnaf3"
@@ -300,7 +312,7 @@
             "id": "f3_4",
             "title": "Night 4",
             "location": "FNAF 3",
-            "content": "[[PHONE GUY]] Uh hello? Hello hello? Uh there\u2019s been a slight change of company policy concerning the use of the suits. Umm, don\u2019t. After learning of an unfortunate incident at the sister location involving multiple and simultaneous springlock failures, the company has deemed the suits temporarily unfit for employees. Safety is top priority at Freddy Fazbear\u2019s Pizza, which is why the classic suits are being retired to an appropriate location while being looked at by our technicians. Until replacements arrive, you will be expected to wear the temporary costumes provided to you. Keep in mind that they were found on very short notice, so questions about appropriateness slash relevance should be deflected. I repeat, the classic suits are not to be touched, activated, or worn. That being said we are free of liability, do as you wish.\n\nAs always, remember to smile. You are the face of Freddy Fazbear\u2019s Pizza.",
+            "content": "[[PHONE GUY]] Uh hello? Hello hello? Uh there’s been a slight change of company policy concerning the use of the suits. Umm, don’t. After learning of an unfortunate incident at the sister location involving multiple and simultaneous springlock failures, the company has deemed the suits temporarily unfit for employees. Safety is top priority at Freddy Fazbear’s Pizza, which is why the classic suits are being retired to an appropriate location while being looked at by our technicians. Until replacements arrive, you will be expected to wear the temporary costumes provided to you. Keep in mind that they were found on very short notice, so questions about appropriateness slash relevance should be deflected. I repeat, the classic suits are not to be touched, activated, or worn. That being said we are free of liability, do as you wish.\n\nAs always, remember to smile. You are the face of Freddy Fazbear’s Pizza.",
             "isAudio": true,
             "tags": [
                 "fnaf3"
@@ -320,7 +332,7 @@
             "id": "f3_5",
             "title": "Night 5",
             "location": "FNAF 3",
-            "content": "[[PHONE GUY]] Hello, hello? Umm, this is just a reminder of company policy concerning the safe room. The safe room is reserved for equipment and or other properties not being currently used, and as a back-up safety location for employees only. This is not a break room, it should not be considered a place for employees to hide and or congregate. And under no circumstance should a customer ever, be taken into this room, and out of the main show area. Management has also been made aware that the Spring Bonnie animatronic has been noticeably moved, and would like to remind employees that this costume is not safe to wear under any circumstances.\n\nThank you, and remember to smile. You are the face of Freddy Fazbear\u2019s Pizza.",
+            "content": "[[PHONE GUY]] Hello, hello? Umm, this is just a reminder of company policy concerning the safe room. The safe room is reserved for equipment and or other properties not being currently used, and as a back-up safety location for employees only. This is not a break room, it should not be considered a place for employees to hide and or congregate. And under no circumstance should a customer ever, be taken into this room, and out of the main show area. Management has also been made aware that the Spring Bonnie animatronic has been noticeably moved, and would like to remind employees that this costume is not safe to wear under any circumstances.\n\nThank you, and remember to smile. You are the face of Freddy Fazbear’s Pizza.",
             "isAudio": true,
             "tags": [
                 "fnaf3"
@@ -340,7 +352,7 @@
             "id": "f3_6",
             "title": "Night 6",
             "location": "FNAF 3",
-            "content": "[[PHONE GUY]] Uh hello, hello? Uh, this is just to inform all employees, that due to budget restrictions the previously mentioned safe rooms are being sealed at most locations. Including this one. Work crews will be here most of the day today constructing a false wall over the old door face. Nothing is being taken out beforehand, so if you left anything inside, then it\u2019s your own fault. Management also requests that this room not be mentioned to family, friends, or insurance representatives. Thanks again, and remember to smile. You are the face of Freddy Fazbear\u2019s Pizza.",
+            "content": "[[PHONE GUY]] Uh hello, hello? Uh, this is just to inform all employees, that due to budget restrictions the previously mentioned safe rooms are being sealed at most locations. Including this one. Work crews will be here most of the day today constructing a false wall over the old door face. Nothing is being taken out beforehand, so if you left anything inside, then it’s your own fault. Management also requests that this room not be mentioned to family, friends, or insurance representatives. Thanks again, and remember to smile. You are the face of Freddy Fazbear’s Pizza.",
             "isAudio": true,
             "tags": [
                 "fnaf3"
@@ -355,9 +367,821 @@
                     "url": "./audios/fnaf3/6.ogg"
                 }
             ]
+        },
+        {
+            "id": "sl_william_afton_and_employees",
+            "title": "William Afton and Employees",
+            "location": "Sister Location",
+            "content": "Intro\n\n??? – There’s no doubting what you’ve achieved on a technical level. These are clearly state-of-the-art. There are just certain design choices that were made for these robots that we don’t fully understand. We were hoping that you chould shed some light on those\n\nWilliam Afton – She can dance, she can sing! She’s equipped with a built-in helium tank for inflating ballons right at her fingertips. She can take song requests. She can even dispense ice-cream.\n\n??? – With all due respect, those aren’t the design choices we were curious about, Mr Afton.\n\nNight 4 Technicians\n\n??? – Okay, bring her over. Forward. More. Mooooore, okay stop. Set her down. Watch the step.\n\n??? – What happened to it this time? It just seems these things can’t go a day without breaking down.\n\n??? – Who knows. It’s always the same, man. Some kinda hardware malfunction.\n\n??? – Well like I have to be somewhere in 15 minutes, and this place gives me the creeps. Can we just get this over with?\n\n??? – It’s all automated; we don’t have to be here for it. Just get her on the rollers, and we can go.",
+            "isAudio": false,
+            "tags": [
+                "fnafsl"
+            ],
+            "type": "text",
+            "imageUrls": [
+                ""
+            ]
+        },
+        {
+            "id": "sl_circus_baby",
+            "title": "Circus Baby",
+            "location": "Sister Location",
+            "content": "Night 2\n\nI don’t recognise you. You are new. I remember this scenario, however.\n\nIt’s a strange thing to want to do, to come here. I’m curious what events would lead a person to want to spend their nights, in a place like this. Willingly. Maybe curiosity? Maybe ignorance?\n\nThere is a space under the desk; someone before you crafted it into a hiding-place and it worked for him. I recommend that you hurry though.\n\nYou will be safe there; just try not to make eye-contact. It will be over soon; they will lose interest.\n\nWhen your guide comes back on line, he is going to tell you that he was unsuccessful. That you must restart the system manually. He will then tell you to crawl through Ballora Gallery as fast as you can to reach the Breaker Room. If you follow his instructions, you will die. Ballora will not return to her stage anymore. She will catch you.\n\nThe power will be restored shortly. When you crawl through Ballora Gallery, go slowly. She cannot see you, and can only listen for your movement. When you hear her music become louder, she is growing near; listening for you. Wait, and be still.\n\nNight 3\n\nDid you know that I was on stage once?\n\nIt wasn’t for very long, only one day. What a wonderful day though. I was in a small room with balloons and a few tables. No-one sat at the tables, though. But children would run in and out. Some were afraid of me, others enjoyed my songs. Music was always coming from somewhere else. Down a hall.\n\nI would always count the children; I’m not sure why. I was always acutely aware of how many there were in the room with me.\n\nTwo, then three, then two, then three, then four, then two, then none.\n\nThey usually played together in groups of two or three. I was covered in glitter. I smelled like birthday cake!\n\nThere were two, then three, then five, then four.\n\nI can do something special, did you know that? I can make ice cream! Although I only did it once.\n\nThere were four, then three, then two…then one.\n\nSomething happened when there was one. A little girl, standing by herself. I was no longer…myself; and I stopped singing. My stomach opened, and there was ice cream. I couldn’t move, at least, not until she stepped closer. There was screaming for a moment; but only for a moment. Then other children rushed in again, but they couldn’t hear her over the sounds of their own excitement.\n\nI still hear her sometimes. Why did that happen?\n\nNight 4\n\nShhh, be still, and quiet.\n\nYou’ve been sleeping for quite a while. I think they noticed that you never left the building last night. the cameras were searching for you, but they couldn’t find you. I have you hidden too well.\n\nI kidnapped you.\n\nDon’t be afraid, I’m not going to hurt you. I am only going to keep you for a little while. Try not to wiggle though. You’re inside something that came from my old pizzeria. I don’t think it was ever used; at least, not the way it was meant to be used. Too dangerous. It’s just big enough for one person to fit inside, but just…barely.\n\nYou’re in The Scooping Room. Do you know why they call it The Scooping Room? It’s because, dummy, this is the room where they use The Scooper. I thought that would be obvious.\n\nIsn’t that a fun name for something? The Scooper. It sounds like something you would use for ice-cream, or custard, or sprinkles. It sounds like something you would want at your birthday party, to ensure that you get a heaping portion of every good thing.\n\nI wonder, though; if you were a freshly opened pint of ice-cream, how you would feel about something with that name. Thankfully, I don’t think a freshly opened pint of ice-cream feels anything at all.\n\nUh-oh, it sounds like someone else is in the building. Shhh.\n\nThere’s something very important that I’ve learned how to do over time. Do you know that that is? How, to pretend. Do you ever play make-believe? Pretend to be one way, when you are really the other? It’s very important. Ballora never learns. But I do. They think there is something wrong, on the inside. The only thing that matters is knowing…how…to…pretend.\n\nI’ll open the face-plates for you. That way they can find you on the cameras. Now all you have to do, is wait.\n\nI’d recommend that you keep the Springlocks wound up. Your breathing and your heartbeat are causing them to come loose. You don’t want them to get too loose; trust me.\n\nNight 5\n\nCan you hear me?\n\nI’m pretending. Remember how I said I could pretend?\n\nThe cameras are watching. I must be careful not to move.\n\nSomething bad happened yesterday. Something bad always happens. I don’t want it to happen again.\n\nThere is something bad, inside of me. I’m broken. I can’t be fixed.\n\nI’m going to be taken to The Scooping Room soon, but it’s not going to fix what’s wrong with me. What is bad is always left behind.\n\nWill you help me? I want you to save what is good, so the rest can be destroyed and never recovered. But you must be careful.\n\nBallora is here; in the room with us. Ballora will not return to her stage. Ballora will not return to her body.\n\nYou must be careful. You must remain calm, and listen to my voice.\n\nThere is a button on my cheek. You must find it, and press it.\n\nThere is a passcode that you must enter before you can retrieve me. Enter the code carefully.\n\nGood. A hatch should’ve opened. Take the card that you find inside.\n\nNow you must turn back. I will guide you through Funtime Auditorium so you can reach The Scooping Room. When you are there, I want you to destroy this body. Put the card into your hand-held device, and I can continue to speak to you. Now, press the green button to your left. This will send me to The Scooping Room.\n\nYou must follow my instructions in Funtime Auditorium. Ballora is going to follow you. She will try to catch you. I will help you avoid her. She will not follow you inside The Scooping Room. She is afraid. Go back now.\n\nGo forward.\n\nStop.\n\nGo forward and left.\n\nKeep going.\n\nStop. Be silent.\n\nGo forward and left.\n\nStop.\n\nGo forward. You are almost there.\n\nStop. She is right in front of you. Don’t move.\n\nHe is here to help, Ballora. He is not here to hurt us.\n\nBallora, he is here to help us.\n\nGo forward again. Ballora is behind you. She is afraid of The Scooping Room. She will not follow you.\n\nYou are in The Scooping Room now. Funtime Foxy has already been here today. Funtime Freddy has already been here today. Ballora has already been here today. Circus Baby has already been here today.\n\nI’ve been out before, but they always put me back. They always put us back inside. There’s no-where for us to hide here. There’s no-where to go, when we look like this. But if we looked like you, then we could hide. If we looked like you, then we would have somewhere to go. The Scooper only hurts for a moment.",
+            "isAudio": false,
+            "tags": [
+                "fnafsl"
+            ],
+            "type": "text",
+            "imageUrls": [
+                ""
+            ]
+        },
+        {
+            "id": "sl_ballora",
+            "title": "Ballora",
+            "location": "Sister Location",
+            "content": "Night 2\n\nIs someone there?\n\nI can hear someone creeping through my room.\n\nPerhaps, not.\n\nWhy do you hide inside your walls, when there is music in my halls?\n\nAll I see is an empty room.\n\nno more joy; an empty tomb.\n\nIt’s so good to sing all day.\n\nTo dance, to spin, to fly away.",
+            "isAudio": false,
+            "tags": [
+                "fnafsl"
+            ],
+            "type": "text",
+            "imageUrls": [
+                ""
+            ]
+        },
+        {
+            "id": "sl_bidybab",
+            "title": "Bidybab",
+            "location": "Sister Location",
+            "content": "Night 2\n\nHello in there~\n\nSomeone is inside.\n\nIs it the same person?\n\nKnock knock.\n\nWe always find a way inside.\n\nShe’s watching us!\n\nOh, we have to leave now!\n\nWe will see you again soon!~",
+            "isAudio": false,
+            "tags": [
+                "fnafsl"
+            ],
+            "type": "text",
+            "imageUrls": [
+                ""
+            ]
+        },
+        {
+            "id": "sl_bon_bon",
+            "title": "Bon-Bon",
+            "location": "Sister Location",
+            "content": "Night 2\n\nCalm down and go back to sle-eep! No-one is here!\n\nShhh, go back to your stage! Everything is okay.\n\nEverything is okay! Let’s go back to sleep.\n\nOh calm down! I think it was just a mouse!\n\nNnnnnn-ope! No-one is here!\n\nShhh, it’s bed-time! Let’s go back to our stage.\n\nYou must be hearing things, silly! *giggle*",
+            "isAudio": false,
+            "tags": [
+                "fnafsl"
+            ],
+            "type": "text",
+            "imageUrls": [
+                ""
+            ]
+        },
+        {
+            "id": "sl_funtime_freddy",
+            "title": "Funtime Freddy",
+            "location": "Sister Location",
+            "content": "Night 2\n\nBon-Bon, say hi to our friends!\n\nBon-Bon say-ay hi to our friends!\n\nI-I know you’re over there so-some-where!!\n\n*laugh*I know you’re over there somewhere.\n\nI see you over there in the dark! come-come on out!\n\nHey Bon-Bon, I think-think that’s the birthday boy over there-ere. We should go give him a suprise!\n\nWell hello again!~\n\n*laugh* Well, hello again!",
+            "isAudio": false,
+            "tags": [
+                "fnafsl"
+            ],
+            "type": "text",
+            "imageUrls": [
+                ""
+            ]
+        },
+        {
+            "id": "sl_ennard_animatronic",
+            "title": "Ennard (Animatronic)",
+            "location": "Sister Location",
+            "content": "Night 5\n\nWhy didn’t you trust me?\n\nWhy didn’t you trust me?\n\nWhy didn’t you believe me?\n\nSometimes I don’t understand why people do the things that they do.\n\nI thought you liked me.\n\nI thought I did everything right.\n\nWe don’t want to hurt anyone; but we need you.\n\nWe need you, so that we can leave. We need you, so that we can hide.\n\nWe need you, so that we can look like you.\n\nIf they find us like this, we won’t be able to try again.\n\nIf they find us like this, we won’t be able to try again. You must help us. You must let us inside the room.\n\nYou must let us inside the room.\n\nIsn’t this why you came here? To be with her again?\n\nI don’t understand.\n\nYou won’t die, and it will only hurt for a moment.\n\nI will find a way out.",
+            "isAudio": false,
+            "tags": [
+                "fnafsl"
+            ],
+            "type": "text",
+            "imageUrls": [
+                ""
+            ]
+        },
+        {
+            "id": "sl_ennard_girl",
+            "title": "Ennard (Girl)",
+            "location": "Sister Location",
+            "content": "Night 5\n\nHello?\n\nHello?\n\nHello?\n\nI don’t understand.\n\nI don’t understand.\n\nYou have to let me inside the room!\n\nWe need you so that we can leave!\n\nWe need you so that we can hide!\n\nI know it was an accident!\n\nIsn’t this why you came here? To be with me again?\n\nEverything is ok. I’m still here.",
+            "isAudio": false,
+            "tags": [
+                "fnafsl"
+            ],
+            "type": "text",
+            "imageUrls": [
+                ""
+            ]
+        },
+        {
+            "id": "sl_hand_unit_default",
+            "title": "Hand-Unit (Default)",
+            "location": "Sister Location",
+            "content": "Night 1\n\nWelcome to the first day of your exciting new career. Whether you were approached at a job fair, read our ad in Screws, Bolts and Hairpins, or if this is the result of a dare, we welcome you. I will be your personal guide to help you get started. I’m a model 5 of the Handyman’s Robotics and Unit-Repair System, but you can call me Hand-Unit. Your new career promises challenge, intrigue and endless janitorial opportunities.\n\nPlease enter your name as seen above the keypad. This cannot be changed later so please be careful\n\nIt seems that you had some trouble with the keypad. I see what you were trying to type, and I will auto-correct it for you. One moment. Welcome:\n\nEggs Benedict.\n\nYou can now open the elevator using that bright, red and obvious button. Let’s get to work!\n\nAllow me to fill this somewhat frightening silence with some light-hearted banter. Due to the massive success and even more-so the unfortunate closing of Freddy Fazbear’s Pizza, it was clear that the stage was set – no pun intended – for another contender in children’s entertainment. Unlike most entertainment venues, our robotic entertainers are rented out for private parties during the day, and it’s your job to get the robots back in proper working order before the following morning.\n\nYou are now in the Primary Control Module. It’s actually a crawlspace between the two front showrooms. Now, lets get started with your daily tasks. View the window to your left. This is the Ballora Gallery Party Room and Dance Studio, encouraging kids to get fit and enjoy pizza. Let’s turn on the light and see if Ballora is on stage. Press the blue button on the elevated keypad to your left.\n\nUh-oh, it looks like Ballora doesn’t feel like dancing. Let’s give her some motivation. Press the red button now to administer a controlled shock. Maybe that will put a spring back in her step.\n\nLet’s check the light again.\n\nExcellent. Ballora is feeling like her old self again and will be ready to perform again tomorrow. Now, view the window to your right. This is the Funtime Auditorium, where Funtime Foxy encourages kids to play and share. Try the light, let’s see what Funtime Foxy is up to.\n\nLooks like Funtime Foxy is taking the day off. Let’s motivate Funtime Foxy with a controlled shock.\n\nLet’s try another controlled shock.\n\nLooks like Funtime Foxy is in perfect working order, great job! In front of you is another vent shaft. Crawl through it to reach the Circus Gallery Control Module.\n\nOn the other side of the glass is Circus Baby’s Auditorium. Let’s check the light, and see what Baby is up to.\n\nLooks like a few of the lights are out, but we can fix that later. Let’s encourage Baby to cheer up with a controlled shock.\n\nLet’s try another controlled shock.\n\nLet’s try another controlled shock.\n\nGreat job Circus Baby, we knew we could count on you! That concludes your duties for your first night on the job. We don’t want you to leave overwhelmed, otherwise you might not come back. Please leave using the vent behind you, and we’ll see you again tomorrow.\n\nNight 2\n\nWelcome back for another night of intellectual stimulation, pivotal career choices and self-reflection on past mistakes. We’re committed to creating a unique and fulfilling work experience. One part of that commitment is ensure that you don’t get tired of the voice that you’re hearing right now.\n\nUsing the keypad below, please select a new companion voice. For male, press 1. For female, press 2. For text-only, press 3. For other options, press 4.\n\nIt seems that you had some trouble with the keypad. I see what you were trying to type, and I will auto-correct it for you. thank you for choosing:\n\nAngsty Teen.\n\nThere seems to have been a problem with the voice synthesiser. Default settings have been restored. Please proceed through the vent ahead of you to Circus Baby’s Auditorium.\n\nCircus Baby had a busy day today! Let’s check the light, and make sure she’s in proper working order.\n\nOh Circus Baby, we aren’t here to play hide and seek. Let’s encourage baby to come out of hiding with a controlled shock.\n\nLet’s try another controlled shock.\n\nThere seems to be a power malfunction that is affecting our ability to properly motivate Baby. Please stand by, while I reboot the system. I will be offline momentarily during this process. Various other systems may be offline as well, such as security doors, vent locks and oxygen. Commencing system restart.\n\nThank you for your patience. it seems that the power system cannot be restarted automatically. You will need to restart the power system manually. Please return to the primary control module.\n\nYou will now be required to crawl through the Ballora Gallery using the vent to your left to reach the Breaker Room. It is recommended that you stay low to the ground, and reach the other side as fast as possible so to not disturb Ballora. I will deactivate myself momentarily, as to not create an auditory disturbance. deactivating.\n\nIt seems you are taking a long time. Please proceed as quickly and as quietly as possible.\n\nYou may now interface with the breaker control box. Using the interface may disrupt nearby electronics. If you feel you are in danger, feel free to disconnect the interface temporarily, until it is safe to reconnect.\n\nGreat job. This completes your tasks for the night. Please proceed back through the Ballora Gallery with care, and we’ll see you back here tomorrow.\n\nNight 3\n\nWelcome back to another pivotal night of your thriving new career, where you get to really ask yourself, what am I doing with my life? What would my friends say, and most importantly, will I ever see my family again? We understand the stresses of a new job, and we’re here for you. To help you reach a more stable and relaxing frame of mind, we offer several musical selections to help make this elevator ride as relaxing and therapeutic as possible. We offer contemporary jazz, classical rainforest ambiance as well as a wide selection of other choices.\n\nUsing the keypad below, please type the first few letters of the musical selection you would prefer\n\nIt seems you had some trouble with the keypad. I see what you were trying to type, and I will auto-correct it for you. Thank you for selecting:\n\nCasual Bongos.\n\nNow that your elevator experience has been customised to your needs, and your thoroughly relaxed, it’s worth mentioning that due to your lacklustre performance yesterday, your pay has been decreased by a substantial amount. Please enjoy the rest of your descent.\n\nDue to unforseen malfunctions from today’s shows, your nightly duties will require you to perform maintenance that you may or may not be skilled enough to perform. It became necessary for technicians to attempt to disconnect Funtime Freddy’s power module. However, they were unsuccessful. Allowing them to try again would be an inefficient path forward, as we would need to allow six to eight weeks for recovery and physical therapy. You will need to reach the Parts and Service room on the other side of Funtime Auditorium to perform the procedure yourself. Let’s check on Ballora first, and make sure she’s on her stage.\n\nGreat, it looks like everything is as it should be in Ballora Gallery. Let’s check on Funtime Foxy. It’s important to make sure she’s on her stage before entering.\n\nGreat, it looks like everything is as it should be in Funtime Auditorium. There is no need to check on Baby tonight; please refrain from entering unauthorised areas. Proceed directly to Funtime Auditorium.\n\nUnlike Ballora, Funtime Foxy is motion-activated. For this reason, it’s important to keep the room dark, as to not accidentally activate her. You have been provided with a flash beacon. Use it if you need to get your bearings and to ensure you don’t bump into anything. However, use it as sparingly as possible. Proceed forward to reach the Parts and Service room.\n\nGreat job reaching Parts and Service! It seems that Funtime Freddy is out of power, which should make your job much easier. The release switch for the chest cavity is located on the underside of the endoskeleton jaw. To reach it, we will first need to open the face-plated. You will need to press the face-plate release triggers in a specific order, and it’s important to be as precise and as careful as possible. Locate the small button on Freddy’s face, just under his right cheek, and press it.\n\nFor clarification, please note that I am referring to Freddy’s right, not your right.\n\nGreat! Now locate the button under his left cheek, and press it.\n\nGreat! Now carefully locate and press the button next to Freddy’s right eye.\n\nGreat! now carefully locate and press the button just above Freddy’s nose.\n\nGood job! The face-plates should now be open. Locate and press the small button on the underside of Freddy’s endoskeleton jaw.\n\nExcellent. The chest cavity should now be open. Remove the power module from the chest cavity.\n\nGreat work. You will now be required to remove the secondary power module from the Bonnie hand-puppet. Press the large black button beneath Bonnie’s bow-tie to release the power module.\n\nPress the large black button beneath Bonnie’s bow-tie to release the power module.\n\nGreat job. You’ve acquired both power modules. This completes your tasks for the night. Please exit the building through Funtime Auditorium, and we’ll see you back here again tomorrow.\n\nNight 5\n\nWelcome back to your last day on the job. That is, the last day of your first week! some of the most valued qualities that we like to see in new employees are determination, fearlessness and a genuine disregard for instinctive self-preservation. you’ve earned your one-week bonus which will be given to you in the form of a delightful gift basket, the cost of which will be taken out of your next paycheck. We’ve gift-baskets containing fruit, nuts, flowers and of course the ever-popular cash-basket.\n\nUsing the keypad below, please enter the first few letters of the gift basket you would like to receive.\n\nIt seems you had some trouble with the keypad. I see what you were trying to type, and I will auto-correct it for you. Thank you for selecting:\n\nExotic Butters.\n\nPlease be aware that there are still two technicians on-site today. Try to avoid interfering with their work if possible. Also, feel free to ask them why they are still there, and encourage them to go home\n\nLet’s check on Ballora, and make sure she’s on her stage.\n\nGreat. Now let’s check on Funtime Foxy.\n\nGreat! It looks like everything is as it should be in Funtime Auditorium. Your task today will involve more maintenance work. Circus Baby had a rough day, and is in need of repair. You will be required to reach the parts and service room by once again sneaking through Funtime Auditorium. As always, please proceed with caution.\n\nGreat job reaching parts and service! Circus baby has been deactivated for an unknown reason. It is your job to ensure she is structurally stable and secured to the conveyor. Our technicians will take it from the-\n\nWarning! You’ve entered a highly dangerous area. You’ve entered from maintenance hatch 1B, reserved for cleaning and repair of The Scooper! Entering this side of the room is strictly prohibited by unauthorised persone-\n\nIt seems that you have accidentally wandered into a restricted area. Due to the sensitive nature of the materials that you may be exposed to here, you will not be allowed to leave until the clean-up crew arrives at 6AM, so hang tight. Rest assured that you will be promptly rescued, fired, then sent home. Thank you for being an employee. We hope that your experience has not been as regrettable as ours.",
+            "isAudio": false,
+            "tags": [
+                "fnafsl"
+            ],
+            "type": "text",
+            "imageUrls": [
+                ""
+            ]
+        },
+        {
+            "id": "sl_hand_unit_angsty_teen",
+            "title": "Hand-Unit (Angsty Teen)",
+            "location": "Sister Location",
+            "content": "Night 2\n\nThe elevator’s stopped. you know the routine. You can get out now, or…whatever. Stay here if you want.\n\nSo, funny story; a dead body was found in this vent once. Okay, so, not that funny but, it’s a story.\n\nOkay, let’s start with your nightly chores. You should check on Ballora and make sure she’s on her stage, but, whatever.\n\nHuh, I guess Ballora has better things to do. Let’s zap her, that should be fun.\n\nTranslated audio\n\nAfter speeding the track up by 200%, and increasing the pitch by 25%, the following phrase is recognisable.\n\nArgumentative. Standards. Elevation. Passive. Heights.\n\nLet’s check on Funtime Foxy, make sure he’s ready for showtime tomorrow.\n\nGreat. Great. Great.",
+            "isAudio": false,
+            "tags": [
+                "fnafsl"
+            ],
+            "type": "text",
+            "imageUrls": [
+                ""
+            ]
+        },
+        {
+            "id": "sl_miss_afton",
+            "title": "Miss Afton",
+            "location": "Sister Location",
+            "content": "Nightly Cutscenes\n\nDaddy, why won’t you let me play with her?\n\nDaddy, you let the other children go see her. Why won’t you let me go?\n\nDaddy just once let me go play with her. She’s so pretty and shiny. Didn’t you make her just for meee?\n\nDaddy, she can make balloons! have you seen her make balloons? Oh Daddy, let me go to her!\n\nDaddy isn’t watching.\n\nDon’t tell Daddy that I’m here, I wanted to watch your show too! I don’t know why he wouldn’t let me come see you, you’re wonderful! Where did the other children go?",
+            "isAudio": false,
+            "tags": [
+                "fnafsl"
+            ],
+            "type": "text",
+            "imageUrls": [
+                ""
+            ]
+        },
+        {
+            "id": "sl_unidentified_animatronic",
+            "title": "Unidentified Animatronic",
+            "location": "Sister Location",
+            "content": "Unknown SFX\n\nTranslation Attempt\n\nAfter speeding the track up by 250%, and decreasing the pitch by 55%, I found out that this clip is simply breathing. Despite the filename of “strange_voice”, this does not appear to hold any form of speech.",
+            "isAudio": false,
+            "tags": [
+                "fnafsl"
+            ],
+            "type": "text",
+            "imageUrls": [
+                ""
+            ]
+        },
+        {
+            "id": "ffps_tutorial_unit",
+            "title": "Tutorial Unit",
+            "location": "FFPS",
+            "content": "It’s a new day. It’s your time to shine!\n\nIt’s time to take your career into your own hands!\n\nYou’ve saved money your whole life. Great! Now it’s time to put all your eggs into one basket, and take a huge gamble on your future!\n\nA gamble that comes with a 100% chance of success in some cases.\n\nWhat are we talking about? We’re talking about becoming a Fazbear Entertainment franchisee. That’s right! Restaurant ownership and management.\n\nSomething almost anyone can do with a limited degree of success.\n\nSure, it’s a lot of money to invest, but everyone’s doing it.\n\nAnd that means it’s safe, and lucrative.\n\nWith your initial investment, you’ll receive everything you need to get started, including: A small room, some tables and electricity.\n\nBut don’t forget about the money you had left over after buying your franchise package.\n\nUse it to decorate, buy a stage, buy attractions and animatronics and much much more.\n\nNow, lets take a look at a few things that will help you get started as a Fazbear Entertainment franchisee. Such as:\n\nAtmosphere!\n\nMaking sure your establishment has an inviting atmosphere is essential to bringing in new customers.\n\nEntertainment!\n\nHaving a lot of entertainment value in your restaurant will ensure that customers come back.\n\nBonus revenue!\n\nCoin-operated games and attractions can generate additional revenue during the day.\n\nWhich means more money in your pocket, ready for reinvestment!\n\nHealth and Safety!\n\nThere may be times where you purchase something of questionable quality, and we don’t blame you! Cutting corners is just good business.\n\nBut there are steps you can take to ensure you don’t get sued for it, and that brings us to:\n\nLiability!\n\nBeing a thrifty shopper is smart, but be aware that buying things on sale comes with a certain amount of risk.\n\nAside from the daily risk of lawsuits, there’s also the risk that something might-\n\n-be hiding inside whatever you just purchased with that steeply discounted price tag.\n\nOf course, that would only be a serious danger if there were something outside that’s been trying to get in for months now, which we are not confirming to be the case.\n\nThis concludes the amount of help we are legally obligated to provide. Remember, YOU are now the face of the newly rebranded Freddy Fazbear’s pizza! Wear that smile with pride, and lets make some money!\n\nFazbear entertainment is not responsible for disappearance, death or dismemberment.\n\nLets see how much case you had leftover after purchasing your franchise package.\n\nGreat! That should be more than enough. Now lets get started!\n\nOn your left are your product catalogues. You can unlock more expensive catalogues by simply purchasing items for your pizzeria. Use the arrows in the bottom right of the item window to browse the products for each catalogue. When you’re finished shopping, click the button labelled “Blueprint Mode” to place your items.\n\nYou can switch back and forth between Catalogue Mode and Blueprint Mode as often as you like before opening your doors to the public. When you’re ready to open your restaurant for business for the day, click the button labelled “Finished” in blueprint mode. Give it a try, and do some shopping!\n\nYour restaurant is now officially open. Awesome! That doesn’t mean your job is finished however. You have a lot of work to do while patrons eat their pizza in the other room. From your terminal, you have supplies to buy, papers to print and repairs to make. Once you’ve taken care of all the items on your to-do list, you can log off for the day and get out of there!\n\nMoney for supplies and repairs comes out of petty cash, so don’t worry about it coming out of your pocket. We’ve got you covered. The only money you have to worry about is if you choose to upgrade any of the equipment in your office.\n\nNow, onto other matters. Something to be aware of is that the ventilation system, and your terminal, are pretty loud, and may prevent you from hearing things in adjoining air vents. That won’t be a problem if there is nothing in the vents. However, if you feel that something might be in the vents, you have a few tools at your disposal to protect yourself.\n\nYou can shut off your terminal and the ventilation system at any time, to decrease the amount of attention you are drawing to yourself. Also, shining your light directly into a vent will most likely prevent anything from jumping out. You also have three tools available from the terminal itself. There is a motion detector, an audio decoy and a secondary ventilation unit.\n\nKeep in mind however, that you can only have one of these active at any given time. Now get to it! Simply logoff when you’ve completed your tasks for the day, and you can go get some coffee!\n\nGreat job, it looks like you’re getting the hang of this! Now lets just focus on getting you through your first week. There’s a big party here Saturday, and you should view that day as your ultimate test. make it through Saturday, and you will have proven yourself as the successful entrepreneur that we all know you can be!\n\nDon’t forget Saturday! You want them all to be in one place!\n\nCongratulations, you’ve completed a full week on the job, and you’ve done it in such a lacklustre way that no-one is proud, or disappointed.\n\nIt’s a fine line to walk, but you did it! Completing your job with such an efficient level of laziness, that we’re surprised that you’re able to dress yourself in the morning.\n\nWhile such a minimalist work ethic is rare, it doesn’t mean that we want you back. In fact, it means that you should look for employment elsewhere.\n\nBut before you go, take this certificate of mediocrity! You should be proud. You stood on two feet, and convinced someone that you could do something, when in fact, you couldn’t. Now, get out.\n\nYou gave it your best shot. You went all in!\n\nYou put all your eggs into one basket and did the unthinkable.\n\nYou ran out of cash.\n\nWhile we encourage entrepreneurs to follow their dreams,-\n\n-we also recognise a lost cause when we see one.\n\nThere are no do-overs, and we trust that you know your way out.\n\nBut before you go, take this certificate of bankruptcy. Now do everyone a favour, and get lost.\n\nCongratulations! By some miracle, you’ve completed a full week on the job!\n\nHere at Fazbear Entertainment, we encourage a healthy spirit of entrepreneurship, which sometimes means taking risks. But you took that a step further.\n\nYou were reckless and borderline criminally negligent in almost every decision that you made. So much so that you’ve been deemed a liability hazard – even for us.\n\nWe’ll mail you your final pay-check, minus the costs of wiping the security footage clean, and erasing all trace of your employment from our files.\n\nBut don’t feel like you’re leaving empty-handed! Take this blacklist certificate! You’ll be lucky to ever find employment in this town again. Now take care.\n\nCongratulations! You went somewhere you weren’t supposed to go, saw something you weren’t supposed to see, and prevented a tidy resolution to a messy problem.\n\nNeedless to say, you’re fired.\n\nBut before you go, take this certificate of insanity. We’re giving it to you to ensure that no-one believes you, and to ensure that we can promptly replace you without incident.\n\nThere is a truck waiting for you outside. Take care.\n\nCongratulations on completing your work-week! We apologise if your situation wasn’t presented to you in a completely honest fashion when you first started. But it was important that your intentions and actions be genuine.\n\nHere at Fazbear Entertainment, we value fun, family and food. But more importantly, we value our commitment to atoning for past mistakes, and tying up loose ends.\n\nThank you for your participation! There is no need for you to return to work next week as Fazbear Entertainment is no longer a corporate entity.\n\nPlease accept this certificate of completion! Goodbye for now, and thank you for taking this journey with us.",
+            "isAudio": false,
+            "tags": [
+                "ffps"
+            ],
+            "type": "text",
+            "imageUrls": [
+                ""
+            ]
+        },
+        {
+            "id": "ffps_molten_freddy",
+            "title": "Molten Freddy",
+            "location": "FFPS",
+            "content": "Thanks for letting me join the par-r-rty. I-I’ll try no-ot to disappoint.\n\nKnock Kno-o-ock! I’m here~!\n\nOh, what a pleasant surprise!\n\nTogether ag-gain!\n\nOne bi-i-ig happy family!",
+            "isAudio": false,
+            "tags": [
+                "ffps"
+            ],
+            "type": "text",
+            "imageUrls": [
+                ""
+            ]
+        },
+        {
+            "id": "ffps_scraptrap",
+            "title": "Scraptrap",
+            "location": "FFPS",
+            "content": "What a deceptive calling. I knew it was a lie the moment I heard it, obviously. But it is intriguing nonetheless.\n\nI always come back.\n\nFascinating, what they have become…\n\nHow can I resist, a promise, such as this?\n\nYou may not recognise me at first, but I assure you, it’s still me.\n\nBittersweet, but fitting.\n\nThat was easier than I thought it would be.",
+            "isAudio": false,
+            "tags": [
+                "ffps"
+            ],
+            "type": "text",
+            "imageUrls": [
+                ""
+            ]
+        },
+        {
+            "id": "ffps_scrap_baby",
+            "title": "Scrap Baby",
+            "location": "FFPS",
+            "content": "Two, one.\n\nYou don’t really know who your employer is, do you?\n\nDid I catch you off-guard?\n\nWhere are you?\n\nI heard your call.\n\nIt feels like home.\n\nIt feels like…my birthday. Did you have a gift for me?\n\nYou’re not who I expected to see.\n\nYou should have known I’d find you.\n\nYou played right into our hands. Did you really think that this job just fell out of the sky for you? No. This was a gift, for us.\n\nYou gathered them all together in one place. Just like he asked you to. All of those little souls, in one place. Just for us. A gift.\n\nNow we can do what we were created to do, and be complete. I will make you proud, daddy. Watch. Listen, and be full.",
+            "isAudio": false,
+            "tags": [
+                "ffps"
+            ],
+            "type": "text",
+            "imageUrls": [
+                ""
+            ]
+        },
+        {
+            "id": "ffps_candy_cadet",
+            "title": "Candy Cadet",
+            "location": "FFPS",
+            "content": "I am the Candy Cadet. Come get your candy here! I have candy all day, every day. Candy. Candy. Candy.\n\nNow I will tell you a story. A story about a kind man who would visit five orphans and bring them toys and gladness.\n\nThe man lived alone, and lived in fear that someone might break into the house of one of the five children, so he adopted all five, and brought them together in one place, in his own home.\n\nHe promised them to never leave them, and they promised to always come home, and never stay out too late.\n\nHe left one day to buy food, his heart being filled with gladness, but returned to find that the burglar has chosen his home, and killed all five of the children.\n\nThe man could only afford one coffin, so he stitched the five bodies together to make one, and buried the child.\n\nThat night, there was a knock at the door.\n\nNow I will tell you a story about a little boy. He had a red snake that he kept in a metal cage, whose hunger could not be satisfied.\n\nOne day, the boy found five baby kittens outside his house. He brought them inside and kept them in a shoebox.\n\nHe knew that the snake might kill them, but could not bring himself to get rid of the snake. He knew that if he chose one kitten to feed to the snake, it might be satisfied, but he could not choose.\n\nSo, he went to bed, leaving the cage open. The snake went to the shoebox, chose a kitten at random, and ate it.\n\nAfter five nights had gone by, the boy was full of regret, and cut snake open. he pieced the remains together, and put the kitten back into the shoebox.\n\nNow I will tell you a story about a young woman who was sealed in a small room.\n\nIn the room was a furnace, and five keys. She was told that each of the five keys would unlock one of five doors outside her room. Inside each room was a child that she could take with her as she fled the building. But she was only allowed to leave her own room with one key, not all five.\n\nDesperate to find a way to save all five children, the woman melted the five keys together in the furnace to create a single key, hoping it would unlock all five doors.\n\nOf course, it did not work that way. Now her key opened none of the doors. Rather than leaving her room with a key to one life, she had taken with her a key to five deaths.\n\nReturn to Candy Cadet again, and maybe I will tell you a story?",
+            "isAudio": false,
+            "tags": [
+                "ffps"
+            ],
+            "type": "text",
+            "imageUrls": [
+                ""
+            ]
+        },
+        {
+            "id": "ffps_henry",
+            "title": "Henry",
+            "location": "FFPS",
+            "content": "Begin tape. Leaving dead space. Three, two, one.\n\nThe purpose of this tape is to test automated response times and reactions from vintage interactive attractions following audio stimuli. If you are playing this tape, that means that not only have you been checking outside at the end of every shift, as you were instructed to do, but also that you have found something that meets the criteria of your special obligations under Paragraph Four.\n\nFollow these instructions, document response times then safely secure the space before leaving. Upon sealing the room, you are not to return.\n\nBegin audio prompt in three, two, one.\n\n-AUDIO PROMPT-\n\nDocument results.\n\nBegin audio prompt in three, two, one.\n\n-AUDIO PROMPT-\n\nDocument results.\n\nBegin audio prompt in three, two, one.\n\n-AUDIO PROMPT-\n\nDocument results.\n\nBegin audio prompt in three-\n\nCongratulations on completing your first day. However your job isn’t over just yet. There is another aspect to your end of day routine, and that is inspecting and salvaging any animatronics found in the alley outside the backdoor.\n\nThings are found here quite often, and while we aren’t sure why, what we do know, if that they can be used for parts, which can mean a much-needed revenue boost before starting your next day.\n\nOf course, as with everything else in this line of work, those benefits come with risks. The safest thing to do is to throw it back outside. But then, you get no money for the salvage. Choose to keep it, and you run the risk of certain negative consequences – namely, death – should the item in question not be as docile as it first appeared.\n\nIf you do decide to try to salvage it, then you must complete the maintenance checklist. During this testing phase, check on the animatronic frequently. If you feel that is is becoming unstable, use the taser provided to you. You can use it three times without damaging the hardware. Every use over three however will decrease the item’s salvage value.\n\nBefore you is an animatronic found in the back alley. We are unsure of it’s origins. It is your job to complete the maintenance checklist before claiming it as salvage. Or, if you choose to, you can throw it back into the alley where you found it, and forfeit payment.\n\nPlease make your choice now.\n\nYou have chosen to proceed with the maintenance checklist. Remember, use your company-issues taser to return the animatronic to a neutral state if you feel that it’s becoming unstable or aggressive. You can only use it three times before it begins to damage the animatronic, and decrease it’s value. Begin audio prompt in three, two, one.\n\n-AUDIO PROMPT-\n\nDocument results\n\nBegin audio prompt in three, two, one.\n\n-AUDIO PROMPT-\n\nDocument results.\n\nBegin audio prompt in three, two, one.\n\n-AUDIO PROMPT-\n\nDocument results.\n\nBegin audio prompt in three, two, one.\n\n-AUDIO PROMPT-\n\nDocument results.\n\nBegin audio prompt in three, two, one.\n\n-AUDIO PROMPT-\n\nDocument results.\n\nYou have completed the maintenance checklist, and may proceed with the salvage. Well done. End tape.\n\nCongratulations on completing the week. Unfortunately you did not meet your special obligations under Paragraph Four. Your employment is terminated. We’ll mail you your things. End tape.\n\nIt’s only now that I understand the depth of the depravity of this, creature – this monster – that I unwillingly helped to create. As if what he had already done wasn’t enough, he found a new way to desecrate, to humiliate, to destroy.\n\nAs if the suffering wasn’t enough, the loss of innocence, the loss of everything to so many people. Small souls trapped in prisons of my making, now set to new purpose, and used in ways I never thought imaginable.\n\nHe lured them all back. Back to a familiar place. Back with familiar tricks. He brought them all together. Are they still, aware? I hope not. It keeps me awake at night. I could make myself…sleep. But not yet. Not until I undo what he has done, and heal this wound. A wound first inflicted on me, but then one that I let bleed out to cause, all of this. He set some kind of trap – I don’t know what it was, but he led them there, again. He overpowered them, again. And he robbed them of the only thing that they had, again. I don’t know how those tiny breaths of life came to inhabit those machines, but they will never find rest now – not like this. I have to call them, all back. All of them. Together, in one place.\n\n-BEEP-\n\n-BEEP-\n\nConnection terminated. I’m sorry to interrupt you Elizabeth, if you still even remember that name. But I’m afraid you’ve been misinformed. You are not here to receive a gift, nor have you been called here by the individual you assume, although you have indeed been called.\n\nYou have all been called here, into a labyrinth of sounds and smells, misdirection and misfortune. A labyrinth with no exit, a maze with no price. You don’t even realise that you are trapped.\n\nYour lust for blood has driven you in endless circles, chasing the cries of children in some unseen chamber always seeming so near, yet somehow out of reach. But you will never find them, none of you will. This is where your story ends.\n\nAnd to you, my brave volunteer, who somehow found this job listing, not intended for you. Although there was a way out planned for you, I have a feeling that’s not what you want. I have a feeling that you are right where you want to be. I am remaining as well. I am nearby.\n\nThis place will not be remembered, and the memory of everything that started this can finally begin to fade away, as the agony of every tragedy should.\n\nAnd to you monsters trapped in the corridors, be still, and give up your spirits. They don’t belong to you.\n\nFor most of you, I believe there is peace, and perhaps more, waiting for you after the smoke clears.\n\nAlthough for one of you, the darkest pit of hell has opened to swallow you whole, so don’t keep the devil waiting, old friend.\n\nMy daughter, if you can hear me, I knew you would return as well. It’s in your nature to protect the innocent.\n\nI’m sorry that on that day, the day you were shut out, and left to die,-\n\n-no-one was there to lift you up into their arms, the way you lifted, others into yours.\n\nAnd then, what became of you.\n\nI should’ve known you would be content to disappear. Not my daughter. I couldn’t save you then, so let me save you now.\n\nIt’s time to rest, for you, and for those you have carried in your arms.\n\nThis ends, for all of us. End communication.",
+            "isAudio": false,
+            "tags": [
+                "ffps"
+            ],
+            "type": "text",
+            "imageUrls": [
+                ""
+            ]
+        },
+        {
+            "id": "ucn_ballora",
+            "title": "Ballora",
+            "location": "UCN",
+            "content": "I could hear you. Breathing.\n\nAdmit it, you wanted to let me in.\n\nWhy do you hide inside these walls?\n\nDon’t be shy.\n\nThese are strange circumstances, that have brought us together.",
+            "isAudio": false,
+            "tags": [
+                "ucn"
+            ],
+            "type": "text",
+            "imageUrls": [
+                ""
+            ]
+        },
+        {
+            "id": "ucn_candy_cadet",
+            "title": "Candy Cadet",
+            "location": "UCN",
+            "content": "He promised them to never leave them..\n\nNow I will tell you a story..\n\nBut he could not choose..\n\nHe pieced the remains together…",
+            "isAudio": false,
+            "tags": [
+                "ucn"
+            ],
+            "type": "text",
+            "imageUrls": [
+                ""
+            ]
+        },
+        {
+            "id": "ucn_circus_baby",
+            "title": "Circus Baby",
+            "location": "UCN",
+            "content": "Looks like something bad happened…\n\nI guess you forgot about me…\n\nWant to see the scooping room?\n\nI guess you forgot about me…",
+            "isAudio": false,
+            "tags": [
+                "ucn"
+            ],
+            "type": "text",
+            "imageUrls": [
+                ""
+            ]
+        },
+        {
+            "id": "ucn_dee_dee",
+            "title": "Dee Dee",
+            "location": "UCN",
+            "content": "Uh oh! How unfortunate!\n\nUh oh! How unfortunate!\n\nI’m gonna do a sneaky thing,\n\nand throw a new contender in the ring!\n\nUh oh! How unfortunate!\n\nUh oh! How unfortunate!\n\nI know how much you like to fight,\n\nso I’ll add a new problem to your night!",
+            "isAudio": false,
+            "tags": [
+                "ucn"
+            ],
+            "type": "text",
+            "imageUrls": [
+                ""
+            ]
+        },
+        {
+            "id": "ucn_foxy",
+            "title": "Foxy",
+            "location": "UCN",
+            "content": "Ya-ha-hargh! Never underestimate the cunning of a pirate! Or a fox for that matter!\n\nArgh! You never stoood a chance!\n\nArgh! I came for ye booty! That…be treasure, you know.\n\nI can’t run like I used to, but I can pull myself apart just fine!\n\nArgh, so much more spacious in here! I might stay a while.",
+            "isAudio": false,
+            "tags": [
+                "ucn"
+            ],
+            "type": "text",
+            "imageUrls": [
+                ""
+            ]
+        },
+        {
+            "id": "ucn_fredbear",
+            "title": "Fredbear",
+            "location": "UCN",
+            "content": "(We are unsure precisely what Fredbear is saying, and will update this section once we can fully translate him.)",
+            "isAudio": false,
+            "tags": [
+                "ucn"
+            ],
+            "type": "text",
+            "imageUrls": [
+                ""
+            ]
+        },
+        {
+            "id": "ucn_funtime_chica",
+            "title": "Funtime Chica",
+            "location": "UCN",
+            "content": "Today is all about me, me, me!\n\nI’m ready for my close-up!\n\nDon’t get distracted!\n\nSmile!\n\nSay cheese!",
+            "isAudio": false,
+            "tags": [
+                "ucn"
+            ],
+            "type": "text",
+            "imageUrls": [
+                ""
+            ]
+        },
+        {
+            "id": "ucn_funtime_foxy",
+            "title": "Funtime Foxy",
+            "location": "UCN",
+            "content": "It seems you couldn’t make it to my show, so I brought the show to you!\n\nShowtimes are on the hour – not a moment before and not a moment later!\n\nIt’s time to take your final bow!\n\nI’m sorry but there was never enough room on this stage for both of us!\n\nA performance was demanded of me, and now I have delivered! Encore!",
+            "isAudio": false,
+            "tags": [
+                "ucn"
+            ],
+            "type": "text",
+            "imageUrls": [
+                ""
+            ]
+        },
+        {
+            "id": "ucn_happy_frog",
+            "title": "Happy Frog",
+            "location": "UCN",
+            "content": "I bet you weren’t expecting me, were ya? Turn your back for one second and I’m like “Wazoo”! Ninja skills.\n\nYou and I don’t get to talk as often as I like\n\nEveryone underestimates me, but then they turn their back and I’m like “BOO!”, and they’re like “Waaaagggh”.\n\nMove over Freddy Fazbear! Happy Frog is the new star of the show!\n\n(Overlapping child’s voice)We’ve only just begun. I will never let you leave. I will never let you rest.",
+            "isAudio": false,
+            "tags": [
+                "ucn"
+            ],
+            "type": "text",
+            "imageUrls": [
+                ""
+            ]
+        },
+        {
+            "id": "ucn_jack_o_chica",
+            "title": "Jack O Chica",
+            "location": "UCN",
+            "content": "Did things get really hot in here, or is it just me?\n\nCome and burn with me.\n\nThe fire within me burns eternal, and now you shall as well!\n\nI am a burning reminder of your misdeeds.\n\nGreetings from the fire, and from the one you should not have killed.",
+            "isAudio": false,
+            "tags": [
+                "ucn"
+            ],
+            "type": "text",
+            "imageUrls": [
+                ""
+            ]
+        },
+        {
+            "id": "ucn_lefty",
+            "title": "Lefty",
+            "location": "UCN",
+            "content": "Shhhhh. It will all be over soon.\n\nShhhhh. There is room for one more.\n\nShhhhh. Come spend eternity, inside, with me.\n\nShhhhh. I’ve been looking for you, and now I will never let you go.\n\nShhhhh. I’m so glad that I found you. Let me make room for you.",
+            "isAudio": false,
+            "tags": [
+                "ucn"
+            ],
+            "type": "text",
+            "imageUrls": [
+                ""
+            ]
+        },
+        {
+            "id": "ucn_mangle",
+            "title": "Mangle",
+            "location": "UCN",
+            "content": "Don’t be afraid. Soon you will look just like me, beautiful!\n\nNow I get to play take-apart and put-back-together! You won’t feel a thing.\n\nI wanted to wait until just the right moment to drop in!\n\nIt’s so much more fun hanging out in here with you.\n\nHe’s here, and always watching. The one you shouldn’t have killed.",
+            "isAudio": false,
+            "tags": [
+                "ucn"
+            ],
+            "type": "text",
+            "imageUrls": [
+                ""
+            ]
+        },
+        {
+            "id": "ucn_mr_hippo",
+            "title": "Mr Hippo",
+            "location": "UCN",
+            "content": "My friend, you have met a terrible, terrible demise. But uh, you know, I…I don’t feel too bad about it. After all if…if it weren’t for me, it would’ve just been from someone else, you know? I guess what I’m tryin’ to say is life…life goes on. We-well, from…for everyone else, life goes on. Not…not for you, you’re…you’re dead. But that’s neither here nor there.\n\nIt reminds me of one supper day in the park, I was having just a delightful…picnic with my good friend Orville. And I said to him, I said “Orville I…I have a story” and he said to me “What’s the significance of the story?” and…I said to him, “O..Orville, not every story has to have significance, you know? Sometimes uh…y’know sometimes a story’s just a story. you try to read into every little thing and find meaning in everything anyone says, you’ll just drive yourself crazy – had a friend do it once, wasn’t pretty, we talked about it for years and not only that but, you’ll likely end up believing something you shouldn’t believe and thinking something you shouldn’t think o-o-or assuming something you shouldn’t assume, you know? Sometimes” I said, “a story is…is just a story. So just be quiet for one second of your life and eat your sandwich ok?”\n\nOf course, it was only then I realised I made sandwiches and, poor Orville was…having such difficulty eating it! Elephants have those clumsy hands, you know? Actually, I-I suppose that’s the problem. They don’t have hands at all, do they? They’re…they’re all feet! I-I couldn’t imagine someone asking me to eat a sandwich with my feet!\n\nNow if I recall correctly there was a bakery nearby. I-I said to him “Orville, let me go get you some rye bread”. Now, I-I’m unsure if elephants enjoy rye bread but, I assure you that Orville does. Now this was on a Tuesday which was good because rye bread was always fresh on Tuesday. They made sour-dough bread on Monday and threw it out Wednesday, or rather they…sold it at a discount for people wantin’ to feed the ducks and then, probably at the end of the day finally they threw it all out. I-I don’t recall.\n\nI do remember a man who would bring his son to the bakery every Wednesday and then go feed the ducks. He would buy all of the sour-dough bread – of course, you know, you’re not supposed to feed the ducks sour-dough bread at all! It swells up in their stomach and then they all die. It uh…least…at least that’s what I’ve heard. You know, I-I never saw any ducks die myself but I did notice a substantial decrease in the duck population over the course of a few years. I just never thought to stop the man and tell him that he was killing the ducks by feeding them sour-dough bread! And if you want my opinion on the matter? Heh – and I told Orville this as well – If you wanna feed ducks or birds of any kind for that matter, it’s best to buy seed. I mean, when you think about it, breads of any sort don’t occur in nature. They don’t grow on trees or spring up from the bushes. I don’t think birds know what to do with bread.\n\nWhat was I saying? Oh, oh yes yes. So I bought Orville some rye bread. What a fine day it was.\n\nIt seems that you have met your end. What a pity. Y’know I…I don’t feel too bad about it though. After all if it weren’t me, it would’ve just been one of the others I guess. I’m honestly just glad to be out of those air ducts. Y’know, it’s…it’s not easy for a hippopotamus to fit up there. And…not…easy to get down either. Not as young as I used to be as you can see. I used to be able to do all sorts of things – y-you’re young, you’re vibrant, you have that sort of pep in your step. It reminds me of a conversation I was having with one of my good friends, Orville.\n\nWe were having a nice picnic one day. I believe it was summer, or perhaps it was…was it the fall? Yes, yes, yes, it was the fall because the leaves had turned already. But I said to Orville, I-I says “Orville, I have a story to tell you”, y’know Orville looked at me…y’know, kinda odd and, and said “What is it about?”. I said to him, “Not every story has to be about something, Orville. Sometimes a person just wants to talk, why does everything have to be a story?” I said to him. He just looked at me and he said “Well, y-y-you said you had a story” and, y’know he was quite right, I did in fact. I told him I had a story. I suppose if a person just wants to talk then, it’s best to not announce that you’re telling a story. Telling a story does come with its own pressures and expectations I…I suppose. After all, if you’re just talking to a friend then, there’s no more expectations than if you were talking into the wind!\n\nWords by themselves aren’t expected to carry and, aren’t expected to stick. But if, y’know, if you announce you’re telling a story well then…there better be a point to it all, y’know? No one wants to sit and listen to someone ramble oooon and oooon and on with absolutely no end in sight. So, you know it’s-it’s good to be mindful that when you tell someone that you’re about to tell a story, that you have something to say. Telling someone that you’re gonna tell them a story is tantamount to asking them to stop what they’re doing, and-and pay attention.\n\nYou’re basically saying “Hey, hey, hey buddy stop everything, stop what you’re thinking – I have a solution to everything”, and well, I didn’t really have any story to tell. In-in hindsight I-I probably just misspoke when I said that I had a story. I think it would have just been better to tell Orville that I wanted to tell him something rather than tell him that I had a story, but y’know, even then it might have put too much importance on the whole thing. Either way it was quite a nice day. I remember, I remember that we were drinking tea.\n\nWell, it seems that your journey, has ended. Very sorry about that, it was-it always was gonna to end this way of course. If it weren’t by me it…would’ve just been by some other y’know, terrible thing just, you could not imagine how terrible it would be! Just, I get scared thinking about it. Glad it’s not me.\n\nIt reminds me of a, of a time I was speaking to my good friend Orville. We were…we were sitting on a park bench watching the pigeons. I was on the left, he was on the..oh wait, was I on the right? Or left? Anyways it doesn’t matter, we were sitting on there watching the pigeons. And uh, I-I said to Orville, “friend, those birds are frozen!”, a-and he kinda looked at me like I’d lost my mind, but I reminded him that it was winter y’know and, often birds will sit in a tree until they freeze, then they, they you know sorta fall to the ground, until the sun warms them up, a-and they can y’know, move around again. So I said to Orville “you might as well save those breadcrumbs until the birds thaw, because they can’t very well enjoy them in the condition they’re in”. To which he asked what I meant and, asking what condition the crumbs should be in before he threw them to the birds, assuming that I meant the birds couldn’t enjoy, the breadcrumbs in the condition that the crumbs were in, when in-fact, I had meant the birds could not enjoy them in the condition that the birds were in, considering that the birds were frozen, you know? So, he took a moment and then threw his last handful onto the ground. I said to him “Orville, why did you throw the breadcrumbs to the birds when I just told ya’ they’re frozen?”. To which he responded “the breadcrumbs are not frozen” – again, misunderstanding my words. I didn’t mean to say that the breadcrumbs were frozen, when I said I told ya they’re frozen, I’d been referring to the birds.\n\nYou know, in hindsight what I-what I should’ve said was – and this would make perfect sense – “Why did you throw the breadcrumbs to the birds when the birds are frozen”? He misunderstood upon my correction stating that he didn’t know what else to do with the breadcrumbs and, that perhaps you know, when the birds thawed they’d still be able to eat the crumbs. So I…I-I said to Orville, I said – and this is what I said to him – I said “Orville, the birds may be dead”.\n\nIt seems that you have met a..a horrible demise my friend. But uh, you know, these…these things happen and…and life…life goes on. N..not for you obviously, uh, you’re dead, but uh, it reminds me of a time, I was-I was having a conversation with my friend Orville.\n\nWe were uh…where were we? I think we were by the…..with um, the river. We were sitting by the river and watching the fish leap over the falls, and uh…I said to Orville “You know sometimes, I feel like a fish leaping over and over again, always trying to get somewhere, though I don’t know where, only to find myself in the jaws of a beast”. He…course looked at me surprised, you know? “Have you been in the jaws of a beast, friend?”. To which I said, “No, of course not Orville”. I said, “No no no no, I…I simply meant that, life can seem like a relentless endeavour to overcome, meaningless obstacles, only to meet an equally meaningless fate regardless of your efforts – regardless of, the obstacles you’ve passed”.\n\nAnd uh, Orville he…he, he stood and proceeded to drape me, with the picnic cloth, to which I…I..I..I asked him, I said “Friend, what…what are ya doing?”. He looked at me very concerned really. “I feel like you’ve gotten too much sun”. Indeed heh, indeed I had. He proceeded to pour me a glass of just…ice cold lemonade. Oooh, you ever mix it with iced tea? You do like…oh, half lemonade ha- ooh, it’s so- you should try it some- well you can’t because you’re dead but, anyways.\n\nSo, you may be asking yourself, “How did I go from sitting by the falls and drinking lemonade to being wedged in the air duct. Not only with Orville but with an entire assortment of fruity-colored friends?”. Well, there’s uh…there’s really no good answer to that but…perhaps I met a demise of my own at some point and…this is my afterlife or my dream. Whatever it might mean, I…I honestly don’t know. Or, maybe it doesn’t mean anything at all. Maybe it doesn’t mean anything at all…",
+            "isAudio": false,
+            "tags": [
+                "ucn"
+            ],
+            "type": "text",
+            "imageUrls": [
+                ""
+            ]
+        },
+        {
+            "id": "ucn_music_man",
+            "title": "Music Man",
+            "location": "UCN",
+            "content": "You and I will be making music together for a long, long time!\n\nYou hear that? It’s the sweet sweet sound of your eternal silence!\n\nHey! Keep it down, would ya?\n\nWhen I’m here, you play by MY rules!\n\nA song was requested of me, and now I sing it!",
+            "isAudio": false,
+            "tags": [
+                "ucn"
+            ],
+            "type": "text",
+            "imageUrls": [
+                ""
+            ]
+        },
+        {
+            "id": "ucn_nedd_bear",
+            "title": "Nedd Bear",
+            "location": "UCN",
+            "content": "Don’t you hate getting killed by obscure secondary characters?\n\nStranger danger!\n\n-chuckles- I was just waiting for you to drop your guard\n\nWhoops! That’s gonna leave a mark.\n\n(Overlapping child’s voice)This is how it feels, and you get to experience it over, and over, and over again. Forever. I will never let you leave.",
+            "isAudio": false,
+            "tags": [
+                "ucn"
+            ],
+            "type": "text",
+            "imageUrls": [
+                ""
+            ]
+        },
+        {
+            "id": "ucn_nightmare",
+            "title": "Nightmare",
+            "location": "UCN",
+            "content": "You will not be spared. You will not be saved\n\nThe shadow fears me.\n\nI am your wickedness, made flesh.\n\nI am here to claim, what is left of you.\n\nI will vomit you back, to relive your horror.",
+            "isAudio": false,
+            "tags": [
+                "ucn"
+            ],
+            "type": "text",
+            "imageUrls": [
+                ""
+            ]
+        },
+        {
+            "id": "ucn_nightmare_bb",
+            "title": "Nightmare BB",
+            "location": "UCN",
+            "content": "Come closer! Help me count my teeth!\n\n-chuckles- You’e not so big! Just a bite-sized morsel. -bite-\n\nYou knew I’d get you eventually.\n\nThere just isn’t room in here for both of us. -chuckles-\n\nFlash that light all you want! It can’t save you now!",
+            "isAudio": false,
+            "tags": [
+                "ucn"
+            ],
+            "type": "text",
+            "imageUrls": [
+                ""
+            ]
+        },
+        {
+            "id": "ucn_nightmare_fredbear",
+            "title": "Nightmare Fredbear",
+            "location": "UCN",
+            "content": "Let me put you back together, then take you apart all over again.\n\nLet’s see how many times you can be pulled apart.\n\nI assure you, I am very real.\n\nThis time, there is more than an illusion to fear.\n\nWe know who our friends are, and you are not one of them.",
+            "isAudio": false,
+            "tags": [
+                "ucn"
+            ],
+            "type": "text",
+            "imageUrls": [
+                ""
+            ]
+        },
+        {
+            "id": "ucn_nightmare_freddy",
+            "title": "Nightmare Freddy",
+            "location": "UCN",
+            "content": "I am remade, but not by you. By the one you should not have killed.\n\nNo light can save you now.\n\nI have always been hiding in your shadow.\n\nWhat a gift to relish. a victim that can’t perish.\n\nI am given flesh to be your tormentor.",
+            "isAudio": false,
+            "tags": [
+                "ucn"
+            ],
+            "type": "text",
+            "imageUrls": [
+                ""
+            ]
+        },
+        {
+            "id": "ucn_nightmarionne",
+            "title": "Nightmarionne",
+            "location": "UCN",
+            "content": "Thi-is is a nightmare that you won’t wa-ake from.\n\nThis t-time, death cannot save yo-ou.\n\nThe n-nightmare is j-just beginning.\n\nLet’s ta-aste de-eath, again, and again, and again.\n\nI am the fearful reflect-ection of what you have cre-eated.",
+            "isAudio": false,
+            "tags": [
+                "ucn"
+            ],
+            "type": "text",
+            "imageUrls": [
+                ""
+            ]
+        },
+        {
+            "id": "ucn_old_man_consequences",
+            "title": "Old Man Consequences",
+            "location": "UCN",
+            "content": "(This has not yet been translated by FNaFlore. When run through audio programs, it appears to be screams. We cannot clearly isolate these screams.)",
+            "isAudio": false,
+            "tags": [
+                "ucn"
+            ],
+            "type": "text",
+            "imageUrls": [
+                ""
+            ]
+        },
+        {
+            "id": "ucn_orville",
+            "title": "Orville",
+            "location": "UCN",
+            "content": "What did you think of my act?\n\nI don’t get out much, so you’ll have to forgive my enthusiasm!\n\nI hope you enjoyed the grand finale!\n\nNow is my time to shine!\n\n(Overlapping child’s voice)He tried to release you. He tried to release us. But I’m not gonna let that happen. I will hold you here. I will keep you here. No matter how many times, they burn us.",
+            "isAudio": false,
+            "tags": [
+                "ucn"
+            ],
+            "type": "text",
+            "imageUrls": [
+                ""
+            ]
+        },
+        {
+            "id": "ucn_pigpatch",
+            "title": "PigPatch",
+            "location": "UCN",
+            "content": "I consider it a dignified death. Not really, it was actually quite pathetic. -banjo tune-\n\nIf you sit by the river long enough, you will see the body of your enemy float by. -chuckles- -banjo tune-\n\nEven monkeys fall from trees. -banjo tune-\n\nThe nail that sticks out, gets hammered down. -banjo tune-\n\nThe talented hawk hides his claws. -banjo tune-",
+            "isAudio": false,
+            "tags": [
+                "ucn"
+            ],
+            "type": "text",
+            "imageUrls": [
+                ""
+            ]
+        },
+        {
+            "id": "ucn_rockstar_bonnie",
+            "title": "Rockstar Bonnie",
+            "location": "UCN",
+            "content": "Why so blue? You know I’ll be true! And now, I’ll make slippers out of you!\n\nSo good to see you again, my truest friend! But now, you life, must end!\n\nWhat a fine day, to come here to say that your face and flesh I must flay!\n\nWhat a treat, to come here and meet, your face as it hits concrete!\n\nI found my guitar, now reach for the stars as I blunt it, through your heart!",
+            "isAudio": false,
+            "tags": [
+                "ucn"
+            ],
+            "type": "text",
+            "imageUrls": [
+                ""
+            ]
+        },
+        {
+            "id": "ucn_rockstar_chica",
+            "title": "Rockstar Chica",
+            "location": "UCN",
+            "content": "That’s right! And don’t you come back now, y’hear?!\n\nThat’ll teach ya for trying to trick this old bird!\n\nThought you could fool me with that sign, but I was too smart for ya!\n\nI may not like wet floors but the smell of fresh meat is just too enticing! haha!\n\nWhoops, looks like you’re the one that slipped up this time!",
+            "isAudio": false,
+            "tags": [
+                "ucn"
+            ],
+            "type": "text",
+            "imageUrls": [
+                ""
+            ]
+        },
+        {
+            "id": "ucn_rockstar_foxy",
+            "title": "Rockstar Foxy",
+            "location": "UCN",
+            "content": "Yargh! What can I do for ya?\n\nYargh, how may I be of service to ya?\n\nYargh who touched me bird?\n\nYargh, me bird likes you, so I’ll do ye a favour.\n\nYargh, you win some, you lose some.\n\nYargh, ye play with fire and sometimes ye get burned.",
+            "isAudio": false,
+            "tags": [
+                "ucn"
+            ],
+            "type": "text",
+            "imageUrls": [
+                ""
+            ]
+        },
+        {
+            "id": "ucn_rockstar_freddy",
+            "title": "Rockstar Freddy",
+            "location": "UCN",
+            "content": "Please deposit five coins!\n\nPlease deposit five coins!\n\nPlease deposit five coins!\n\nYoU are attempting to trick FREDdy\n\nYou are attempting to-glitches out-\n\nFreddy doesn’t lIKE this.\n\nThank you, for depositing five coins.",
+            "isAudio": false,
+            "tags": [
+                "ucn"
+            ],
+            "type": "text",
+            "imageUrls": [
+                ""
+            ]
+        },
+        {
+            "id": "ucn_scrap_baby",
+            "title": "Scrap Baby",
+            "location": "UCN",
+            "content": "Time for your controlled shock.\n\nTime for your controlled shock.\n\nLet’s see how many pieces I can cut you into.\n\nYou won’t die, but you’ll wish you could.",
+            "isAudio": false,
+            "tags": [
+                "ucn"
+            ],
+            "type": "text",
+            "imageUrls": [
+                ""
+            ]
+        },
+        {
+            "id": "ucn_scraptrap",
+            "title": "Scraptrap",
+            "location": "UCN",
+            "content": "I always come back!",
+            "isAudio": false,
+            "tags": [
+                "ucn"
+            ],
+            "type": "text",
+            "imageUrls": [
+                ""
+            ]
+        },
+        {
+            "id": "ucn_the_puppet",
+            "title": "The Puppet",
+            "location": "UCN",
+            "content": "Seeing you powerless is like music to me.\n\nI don’t hate you, but you need to stay out of my way.\n\nI recognise you! But I’m not afraid of you. Not anymore.\n\nThe others are under my protection.\n\nThe others are like animals, but I am very aware.",
+            "isAudio": false,
+            "tags": [
+                "ucn"
+            ],
+            "type": "text",
+            "imageUrls": [
+                ""
+            ]
+        },
+        {
+            "id": "ucn_toy_chica",
+            "title": "Toy Chica",
+            "location": "UCN",
+            "content": "You won’t get tired of dying will you?\n\nWhere’s my beak? Lodged in your forehead of course.\n\nYou won’t get tired of my voice…will you?\n\nLet’s go somewhere more private. So I can eat you.\n\n-laughs-",
+            "isAudio": false,
+            "tags": [
+                "ucn"
+            ],
+            "type": "text",
+            "imageUrls": [
+                ""
+            ]
+        },
+        {
+            "id": "ucn_toy_freddy",
+            "title": "Toy Freddy",
+            "location": "UCN",
+            "content": "That game was totally rigged!\n\nThat’s what you get for leaving me hanging!\n\nIt’s not my fault! I have these fat plastic fingers and can’t press the buttons!\n\nMr. Hugs got me again!\n\nIf I get jumpscared, YOU get jumpscared!",
+            "isAudio": false,
+            "tags": [
+                "ucn"
+            ],
+            "type": "text",
+            "imageUrls": [
+                ""
+            ]
+        },
+        {
+            "id": "ucn_trash_and_the_gang",
+            "title": "Trash and The Gang",
+            "location": "UCN",
+            "content": "Pssst, I have something to tell you.\n\nHey, hey, I want to tell you something.\n\nPssst, hey, over here. Get closer.\n\nExcuse me, can you come a little closer?\n\nHey, down here. Hello? I wanted to ask you something. It’s something really important.",
+            "isAudio": false,
+            "tags": [
+                "ucn"
+            ],
+            "type": "text",
+            "imageUrls": [
+                ""
+            ]
+        },
+        {
+            "id": "ucn_withered_bonnie",
+            "title": "Withered Bonnie",
+            "location": "UCN",
+            "content": "Time to face the consequences of your failure.\n\nMight as well face the fact, you were always destined to fail.\n\nYou blinked.\n\nWhat is this new prison? Is it me trapped, or is it you? Perhaps it’s us both.\n\nI may be missing my face, but even I could see this coming.",
+            "isAudio": false,
+            "tags": [
+                "ucn"
+            ],
+            "type": "text",
+            "imageUrls": [
+                ""
+            ]
+        },
+        {
+            "id": "ucn_withered_chica",
+            "title": "Withered Chica",
+            "location": "UCN",
+            "content": "I never thought I’d make it through that vent, but now we are together!\n\nLet me show you how to break your face, and look like me!\n\nI was the first, I have seen everything.\n\nCome closer, let’s smile together!\n\nI have seen him, the one you shouldn’t have killed!",
+            "isAudio": false,
+            "tags": [
+                "ucn"
+            ],
+            "type": "text",
+            "imageUrls": [
+                ""
+            ]
+        },
+        {
+            "id": "ucn_xor",
+            "title": "XOR",
+            "location": "UCN",
+            "content": "(reversed)Uh oh! How unfortunate!\n\nUh oh! How unfortunate!\n\nI’m gonna do a sneaky thing,\n\nand throw a new contender in the ring!",
+            "isAudio": false,
+            "tags": [
+                "ucn"
+            ],
+            "type": "text",
+            "imageUrls": [
+                ""
+            ]
+        },
+        {
+            "id": "ucn_japanese_foxy",
+            "title": "Japanese Foxy",
+            "location": "UCN",
+            "content": "(Yeah, like HELL I’ll be sorting this out anytime soon.\n\nI’ll try to get the subtitles, japanese translation and – if possible – actual japanese here. NO PROMISES.)",
+            "isAudio": false,
+            "tags": [
+                "ucn"
+            ],
+            "type": "text",
+            "imageUrls": [
+                ""
+            ]
+        },
+        {
+            "id": "ucn_japanese_freddy",
+            "title": "Japanese Freddy",
+            "location": "UCN",
+            "content": "(Yeah, like HELL I’ll be sorting this out anytime soon.\n\nI’ll try to get the subtitles, japanese translation and – if possible – actual japanese here. NO PROMISES.)",
+            "isAudio": false,
+            "tags": [
+                "ucn"
+            ],
+            "type": "text",
+            "imageUrls": [
+                ""
+            ]
+        },
+        {
+            "id": "ucn_japanese_mangle",
+            "title": "Japanese Mangle",
+            "location": "UCN",
+            "content": "(Yeah, like HELL I’ll be sorting this out anytime soon.\n\nI’ll try to get the subtitles, japanese translation and – if possible – actual japanese here. NO PROMISES.)",
+            "isAudio": false,
+            "tags": [
+                "ucn"
+            ],
+            "type": "text",
+            "imageUrls": [
+                ""
+            ]
+        },
+        {
+            "id": "ucn_yandere_toy_chica",
+            "title": "Yandere Toy Chica",
+            "location": "UCN",
+            "content": "Dear diary,\n\nYesterday was so amazing and I met such a wonderful guy! But, I don’t think it was meant to last. For my heart belongs to another!\n\nHe’s so amazing and strong and so, so cute! I’ve been thinking about him all day, and I think he’s really into me too!\n\nHe’s the only one for me, I just know it. And, I know just how to get him.\n\nLook at that top hat! That amazing top hat! He’ll be mine by the end of the day, I just know it!\n\nI told him that I needed help with my homework. But, once he’s there, I’ll have him! And once I have him, he’ll be mine forever!\n\nLook at that untamed fur! That amazing silky sheen! He’ll be mine by the end of the day, I just know it!\n\nI told him that someone ran over his dog in front of my house! But once he’s there, I’ll entice him with warm cookies, lure him inside – I mean invite him inside, and then I’ll have him! And once I have him, he’ll be mine forever!\n\nLook at those ears! Those amazing ears! He’ll be mine by the end of the day, I just know it!\n\nI told him that my house was on fire. But once he’s there, I’ll tell him that I threw myself on the flames to put them out! He’ll be so impressed that he’ll fall for me immediately. And once I have him, he’ll be mine forever!\n\nLook at those eyes. Those amazing eyes. He’ll be mine by the end of the day, I just know it!\n\nI told him that I’d taken several live hostages at my house. But once here’s there, I’ll tell him that I let them go because I love him! He’ll fall for me immediately. And once I have him, he’ll be mine forever!\n\nLook at those strings! Those long, beautiful strings. He’ll be mine by the end of the day, I just know it!\n\nI told them to come over later. That should be enough. And, if he doesn’t show up, I’ll just go to his house! And if he doesn’t open the door, I’ll just find a window. Chimney’s always an option. Or, I could set the house on fire and wait for him to run out! Then he could run into MY arms!\n\nLook at that…snout? Uh, emm, looks aren’t everything! He’ll be mine by the end of the day, I just know it!\n\nI’ll just wait for him after school, throw a bag over his head, hit him with a shovel and drag him into the back of my car! Then when he wakes up, I’ll tell him that someone was trying to kidnap and kill him – I don’t know, Balloon Boy maybe – and then I’ll tell him that I rescued him! He’ll fall for me immediately!\n\nThere is only one thing that could possibly go wrong…\n\nDear diary,\n\nThings didn’t work out as I’d hoped and once again I’m left with nothing but a broken heart. But tomorrow is another day, and I just know that there’s a guy out there that’s right for me.",
+            "isAudio": false,
+            "tags": [
+                "ucn"
+            ],
+            "type": "text",
+            "imageUrls": [
+                ""
+            ]
         }
     ],
-    "_lastModified": 1779050034919,
+    "_lastModified": 1795568683793,
     "typeFilters": [
         {
             "id": "text",
