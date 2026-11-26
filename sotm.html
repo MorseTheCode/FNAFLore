@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Archive Logs</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/html-to-image@1.11.11/dist/html-to-image.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Inter:wght@400;600&display=swap');
         body { 
@@ -723,6 +724,16 @@
             }
 
             const encodedCopyText = encodeURIComponent(rawCopyText).replace(/'/g, "%27");
+            const safeFilename = (log.title || log.type || 'document').replace(/[^a-zA-Z0-9_\- ]/g, '_').trim() || 'document';
+            const encodedFilename = encodeURIComponent(safeFilename).replace(/'/g, "%27");
+
+            const pngCopySvg = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>`;
+            const pngDownloadSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>`;
+
+            const extraPngButtons = (log.type === 'memo' || log.type === 'order') ? `
+                        <button class="copy-btn" title="Copy as PNG" onclick="copyCardAsPng(this)">${pngCopySvg}</button>
+                        <button class="copy-btn" title="Download as PNG" onclick="downloadCardAsPng(this, '${encodedFilename}')">${pngDownloadSvg}</button>
+            ` : '';
 
             div.innerHTML = `
                 <div class="flex justify-between items-start mb-3">
@@ -730,7 +741,10 @@
                         ${typeBadge}
                         ${locHtml}
                     </div>
-                    <button class="copy-btn" title="Copy Content" onclick="copyContent(this, '${encodedCopyText}')">${copySvg}</button>
+                    <div class="flex items-center gap-1 shrink-0 card-actions">
+                        <button class="copy-btn" title="Copy Content" onclick="copyContent(this, '${encodedCopyText}')">${copySvg}</button>
+                        ${extraPngButtons}
+                    </div>
                 </div>
                 ${titleDisplay}
                 <div class="content-wrapper flex flex-col">
@@ -753,6 +767,74 @@
             const originalHTML = btn.innerHTML;
             btn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#4ade80" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
             setTimeout(() => { btn.innerHTML = originalHTML; }, 1500);
+        }
+
+        function flashBtnFeedback(btn, ok = true) {
+            const originalHTML = btn.innerHTML;
+            const color = ok ? '#4ade80' : '#f87171';
+            btn.innerHTML = ok
+                ? `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="${color}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>`
+                : `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="${color}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>`;
+            setTimeout(() => { btn.innerHTML = originalHTML; }, 1500);
+        }
+
+        async function copyCardAsPng(btn) {
+            if (!window.htmlToImage) {
+                alert('PNG export library failed to load.');
+                return;
+            }
+            const card = btn.closest('.log-card');
+            if (!card) return;
+            try {
+                btn.disabled = true;
+                const blob = await window.htmlToImage.toBlob(card, {
+                    pixelRatio: 3,
+                    backgroundColor: '#1a1a1a',
+                    filter: (node) => !node.classList || !node.classList.contains('card-actions')
+                });
+                if (!blob) throw new Error('Failed to generate PNG blob.');
+                if (!navigator.clipboard || typeof ClipboardItem === 'undefined') {
+                    throw new Error('Clipboard image copy requires HTTPS or localhost.');
+                }
+                await navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]);
+                flashBtnFeedback(btn, true);
+            } catch (err) {
+                console.error('Copy PNG failed:', err);
+                flashBtnFeedback(btn, false);
+                alert('Could not copy PNG to clipboard: ' + (err && err.message ? err.message : err));
+            } finally {
+                btn.disabled = false;
+            }
+        }
+
+        async function downloadCardAsPng(btn, encodedFilename) {
+            if (!window.htmlToImage) {
+                alert('PNG export library failed to load.');
+                return;
+            }
+            const card = btn.closest('.log-card');
+            if (!card) return;
+            try {
+                btn.disabled = true;
+                const dataUrl = await window.htmlToImage.toPng(card, {
+                    pixelRatio: 3,
+                    backgroundColor: '#1a1a1a',
+                    filter: (node) => !node.classList || !node.classList.contains('card-actions')
+                });
+                const a = document.createElement('a');
+                a.href = dataUrl;
+                a.download = `${decodeURIComponent(encodedFilename)}.png`;
+                document.body.appendChild(a);
+                a.click();
+                a.remove();
+                flashBtnFeedback(btn, true);
+            } catch (err) {
+                console.error('Download PNG failed:', err);
+                flashBtnFeedback(btn, false);
+                alert('Could not download PNG: ' + (err && err.message ? err.message : err));
+            } finally {
+                btn.disabled = false;
+            }
         }
 
         document.getElementById('searchInput').addEventListener('input', (e) => { currentSearch = e.target.value; render(); });

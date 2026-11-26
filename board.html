@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>THEORY_BOARD_OS</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/html-to-image@1.11.11/dist/html-to-image.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Space+Mono:wght@400;700&display=swap');
 
@@ -210,6 +211,10 @@
     <div class="controls items-center" style="bottom: 1.5rem; left: 14.5rem; right: auto;">
         <button class="control-btn w-auto px-3 text-green-400 hover:text-green-300 font-bold" id="btn-export" title="Export Board">Export</button>
         <button class="control-btn w-auto px-3" id="btn-import-trigger" title="Import Board">Import</button>
+        <button class="control-btn w-auto px-3 text-cyan-400 hover:text-cyan-300 font-bold flex items-center gap-1.5" id="btn-screenshot" title="High-Res Board Screenshot (No HUD)">
+            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+            <span>Print</span>
+        </button>
         <div class="w-px h-10 bg-zinc-700 mx-1"></div>
         <div class="grid grid-cols-3 gap-1">
             <button class="control-btn w-[72px] px-1 text-red-400 hover:text-red-300 text-[11px] !h-7" id="btn-clear-notes" title="Clear Notes">Notes</button>
@@ -228,6 +233,7 @@
     <!-- Board Context Menu -->
     <div id="board-menu" class="context-menu">
         <button id="menu-add-note">+ Add Theory Note</button>
+        <button id="menu-add-code">+ Add Code Snippet</button>
         <label for="image-upload-input" class="mb-0">+ Add Image</label>
         <button id="menu-add-youtube">+ Add YouTube Video</button>
         <label for="audio-upload-input" class="mb-0">+ Add Audio Log</label>
@@ -266,6 +272,7 @@
             <label class="text-xs text-zinc-400 mono mt-2">Line Label</label>
             <input type="text" id="line-label-input" class="bg-zinc-800 text-white p-1.5 rounded text-sm w-full border border-zinc-700 outline-none" placeholder="e.g. Is Related To">
             <button id="line-reverse-btn" class="w-full text-center p-1.5 mt-1 bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 rounded text-sm text-white">Reverse Arrow</button>
+            <button id="line-mirror-btn" class="w-full text-center p-1.5 mt-1 bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 rounded text-sm text-white">Mirror Curve</button>
         </div>
         <button id="line-menu-delete" style="color: #f87171;">Delete Connection</button>
     </div>
@@ -476,6 +483,7 @@
             document.getElementById('btn-close-alert').addEventListener('click', () => { document.getElementById('alert-modal-overlay').style.display = 'none'; });
             
             document.getElementById('btn-export').addEventListener('click', exportBoardJSON);
+            document.getElementById('btn-screenshot').addEventListener('click', exportBoardPNG);
 
             document.getElementById('btn-import-trigger').addEventListener('click', () => document.getElementById('import-input').click());
             document.getElementById('import-input').addEventListener('change', importBoard);
@@ -483,6 +491,7 @@
             document.getElementById('audio-upload-input').addEventListener('change', handleAudioUpload);
             
             document.getElementById('menu-add-note').addEventListener('click', () => createItem('note'));
+            document.getElementById('menu-add-code').addEventListener('click', () => createItem('code'));
             document.getElementById('menu-add-node').addEventListener('click', () => createItem('node'));
             document.getElementById('menu-add-timeline').addEventListener('click', () => createItem('timeline'));
             document.getElementById('menu-add-frame').addEventListener('click', () => createItem('frame'));
@@ -551,7 +560,7 @@
                 if (item) {
                     item.fontSize = e.target.value;
                     const el = domItems.get(item.id);
-                    if (item.type === 'note') el.querySelector('.node-content').style.fontSize = `${item.fontSize}px`;
+                    if (item.type === 'note' || item.type === 'code') el.querySelector('.node-content').style.fontSize = `${item.fontSize}px`;
                     if (item.type === 'image') el.querySelector('.image-caption').style.fontSize = `${item.fontSize}px`;
                     saveState();
                 }
@@ -566,6 +575,17 @@
                 const conn = boardData.connections.find(c => c.id === state.contextTargetId);
                 if (conn) {
                     const temp = conn.source; conn.source = conn.target; conn.target = temp;
+                    updateConnections(); saveState();
+                }
+            });
+            document.getElementById('line-mirror-btn').addEventListener('click', () => {
+                if (!state.contextTargetId) return;
+                const conn = boardData.connections.find(c => c.id === state.contextTargetId);
+                if (conn) {
+                    conn.mirrored = !conn.mirrored;
+                    const mBtn = document.getElementById('line-mirror-btn');
+                    mBtn.classList.toggle('border-green-500', !!conn.mirrored);
+                    mBtn.classList.toggle('text-green-400', !!conn.mirrored);
                     updateConnections(); saveState();
                 }
             });
@@ -636,6 +656,117 @@
             updateSidebar();
         }
 
+        function getBoardBounds() {
+            let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+
+            boardData.items.forEach(item => {
+                const el = domItems.get(item.id);
+                const w = el ? el.offsetWidth : (item.width || 300);
+                const h = el ? el.offsetHeight : (item.height || 200);
+                if (item.x < minX) minX = item.x;
+                if (item.y < minY) minY = item.y;
+                if (item.x + w > maxX) maxX = item.x + w;
+                if (item.y + h > maxY) maxY = item.y + h;
+            });
+
+            if (drawingsLayer) {
+                drawingsLayer.querySelectorAll('.freehand-drawing').forEach(path => {
+                    try {
+                        const b = path.getBBox();
+                        const pad = (parseFloat(path.getAttribute('stroke-width')) || 4) / 2 + 2;
+                        minX = Math.min(minX, b.x - 10000 - pad);
+                        minY = Math.min(minY, b.y - 10000 - pad);
+                        maxX = Math.max(maxX, b.x - 10000 + b.width + pad);
+                        maxY = Math.max(maxY, b.y - 10000 + b.height + pad);
+                    } catch (e) {}
+                });
+            }
+
+            if (connectionsLayer) {
+                Array.from(connectionsLayer.children).forEach(child => {
+                    if (child.classList && child.classList.contains('connector-hitbox')) return;
+                    try {
+                        const b = child.getBBox();
+                        if (b.width === 0 && b.height === 0) return;
+                        minX = Math.min(minX, b.x - 10000 - 6);
+                        minY = Math.min(minY, b.y - 10000 - 6);
+                        maxX = Math.max(maxX, b.x - 10000 + b.width + 6);
+                        maxY = Math.max(maxY, b.y - 10000 + b.height + 6);
+                    } catch (e) {}
+                });
+            }
+
+            if (!isFinite(minX)) return null;
+            return { minX, minY, maxX, maxY, width: maxX - minX, height: maxY - minY };
+        }
+
+        async function exportBoardPNG() {
+            if (!window.htmlToImage) {
+                showAlert("Screenshot library failed to load. Please check your internet connection and reload the page.");
+                return;
+            }
+            const bounds = getBoardBounds();
+            if (!bounds) {
+                showAlert("The board is empty. Add items or drawings before taking a screenshot.");
+                return;
+            }
+
+            const btn = document.getElementById('btn-screenshot');
+            const labelSpan = btn ? btn.querySelector('span') : null;
+            const prevLabel = labelSpan ? labelSpan.textContent : 'Print';
+
+            const padding = 80;
+            const contentW = Math.ceil(bounds.width + padding * 2);
+            const contentH = Math.ceil(bounds.height + padding * 2);
+            // High-resolution scale (3x), capped so giant boards don't exceed browser canvas limits
+            const exportScale = Math.max(1, Math.min(3, 8192 / Math.max(contentW, contentH)));
+
+            const prevTransform = workspace ? workspace.style.transform : '';
+            const prevResScale = workspace ? workspace.style.getPropertyValue('--img-res-scale') : '';
+
+            try {
+                if (btn) btn.disabled = true;
+                if (labelSpan) labelSpan.textContent = '...';
+
+                // Temporarily center the entire board at scale(1) regardless of current pan/zoom
+                if (workspace) {
+                    workspace.style.transform = `translate(${-bounds.minX + padding}px, ${-bounds.minY + padding}px) scale(1)`;
+                    workspace.style.setProperty('--img-res-scale', exportScale);
+                }
+
+                const dataUrl = await window.htmlToImage.toPng(container, {
+                    width: contentW,
+                    height: contentH,
+                    pixelRatio: exportScale,
+                    backgroundColor: '#0a0a0a',
+                    style: {
+                        width: `${contentW}px`,
+                        height: `${contentH}px`,
+                        position: 'relative',
+                        backgroundImage: 'radial-gradient(circle at 50% 50%, #1a1a1a 0%, #0a0a0a 100%)'
+                    },
+                    filter: (node) => node.id !== 'selection-box' && node.tagName !== 'IFRAME'
+                });
+
+                const a = document.createElement('a');
+                a.href = dataUrl;
+                a.download = `theory_board_${new Date().toISOString().slice(0, 10)}.png`;
+                document.body.appendChild(a);
+                a.click();
+                a.remove();
+            } catch (err) {
+                console.error('Screenshot export failed:', err);
+                showAlert("Failed to generate high-resolution screenshot: " + (err && err.message ? err.message : err));
+            } finally {
+                if (workspace) {
+                    workspace.style.transform = prevTransform;
+                    workspace.style.setProperty('--img-res-scale', prevResScale || Math.max(1, state.scale));
+                }
+                if (btn) btn.disabled = false;
+                if (labelSpan) labelSpan.textContent = prevLabel;
+            }
+        }
+
         function exportBoardJSON() {
             const exportData = JSON.parse(JSON.stringify(boardData));
             
@@ -688,6 +819,110 @@
             updateMinimap();
         }
 
+        function toggleAudio(btn, audioId) {
+            const audio = document.getElementById(audioId);
+            if (!audio) return;
+            if (audio.paused) {
+                document.querySelectorAll('audio').forEach(a => {
+                    if (a !== audio) {
+                        a.pause();
+                        const c = a.closest('.audio-player-container');
+                        if (c) {
+                            const b = c.querySelector('.play-pause-btn');
+                            if (b) b.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>';
+                        }
+                    }
+                });
+                audio.play();
+                btn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>';
+            } else {
+                audio.pause();
+                btn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>';
+            }
+        }
+
+        function updateProgress(audio) {
+            const c = audio.closest('.audio-player-container');
+            if (!c) return;
+            const fill = c.querySelector('.progress-fill');
+            const timeDisplay = c.querySelector('.time-display');
+            const percent = (audio.currentTime / audio.duration) * 100 || 0;
+            if (fill) fill.style.width = percent + '%';
+            if (timeDisplay) timeDisplay.textContent = formatTime(audio.currentTime) + ' / ' + formatTime(audio.duration || 0);
+        }
+
+        function setDuration(audio) {
+            const c = audio.closest('.audio-player-container');
+            if (!c) return;
+            const timeDisplay = c.querySelector('.time-display');
+            if (timeDisplay) timeDisplay.textContent = '0:00 / ' + formatTime(audio.duration);
+        }
+
+        function resetPlayer(audio) {
+            const c = audio.closest('.audio-player-container');
+            if (!c) return;
+            const btn = c.querySelector('.play-pause-btn');
+            if (btn) btn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>';
+            const fill = c.querySelector('.progress-fill');
+            if (fill) fill.style.width = '0%';
+            const timeDisplay = c.querySelector('.time-display');
+            if (timeDisplay) timeDisplay.textContent = '0:00 / ' + formatTime(audio.duration || 0);
+        }
+
+        let isScrubbingAudio = false;
+        let currentScrubAudio = null;
+        let currentScrubBar = null;
+
+        function startScrub(e, audioId) {
+            e.stopPropagation();
+            isScrubbingAudio = true;
+            currentScrubAudio = document.getElementById(audioId);
+            currentScrubBar = e.currentTarget;
+            doScrub(e);
+        }
+
+        function doScrub(e) {
+            if (!isScrubbingAudio || !currentScrubAudio || !currentScrubBar || !currentScrubAudio.duration) return;
+            const rect = currentScrubBar.getBoundingClientRect();
+            let clickX = e.clientX - rect.left;
+            clickX = Math.max(0, Math.min(clickX, rect.width));
+            const percent = clickX / rect.width;
+            currentScrubAudio.currentTime = percent * currentScrubAudio.duration;
+        }
+
+        function stopScrub() {
+            isScrubbingAudio = false;
+            currentScrubAudio = null;
+            currentScrubBar = null;
+        }
+
+        document.addEventListener('mousemove', doScrub);
+        document.addEventListener('mouseup', stopScrub);
+
+        function formatTime(seconds) {
+            if (isNaN(seconds) || !isFinite(seconds)) return '0:00';
+            const m = Math.floor(seconds / 60);
+            const s = Math.floor(seconds % 60);
+            return m + ':' + (s < 10 ? '0' : '') + s;
+        }
+
+        function getAudioDownloadFilename(item) {
+            const base = (item.title || 'audio_log').replace(/[^a-zA-Z0-9_\- ]/g, '_').trim() || 'audio_log';
+            let ext = '';
+            if (item.url && item.url.startsWith('data:audio/')) {
+                const mimeMatch = item.url.match(/^data:audio\/([a-zA-Z0-9.+\-]+);/);
+                if (mimeMatch) {
+                    const sub = mimeMatch[1].toLowerCase();
+                    const map = { mpeg: 'mp3', mp3: 'mp3', mp4: 'm4a', 'x-m4a': 'm4a', ogg: 'ogg', wav: 'wav', 'x-wav': 'wav', webm: 'webm', aac: 'aac', flac: 'flac' };
+                    ext = '.' + (map[sub] || sub.replace(/^x-/, ''));
+                }
+            } else if (item.url) {
+                const urlMatch = item.url.split('?')[0].match(/\.([a-zA-Z0-9]{2,5})$/);
+                if (urlMatch) ext = '.' + urlMatch[1].toLowerCase();
+            }
+            return ext && !base.toLowerCase().endsWith(ext) ? base + ext : base;
+        }
+
         function renderItem(item) {
             const el = document.createElement('div');
             el.className = `theory-node ${item.locked ? 'locked-node' : ''} ${item.type === 'node' ? 'small-node' : ''} ${item.type === 'image' ? 'image-node' : ''} ${item.type === 'timeline' ? 'timeline-node' : ''} ${item.type === 'frame' ? 'frame-node' : ''}`;
@@ -734,6 +969,60 @@
                         e.target.innerHTML = formatText(e.target.innerText); 
                         saveState(); 
                         updateSidebar(); 
+                    });
+                }
+
+            } else if (item.type === 'code') {
+                const langs = ['python', 'javascript', 'bash', 'bat', 'json', 'text'];
+                const currLang = item.language || 'python';
+                const langOptions = langs.map(l => `<option value="${l}" ${l === currLang ? 'selected' : ''}>${l}</option>`).join('');
+                el.innerHTML = `
+                    <div class="node-header flex gap-2 items-center pointer-events-auto">
+                        <div class="drag-handle cursor-grab active:cursor-grabbing text-zinc-500 hover:text-zinc-300 p-1">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="12" r="1"></circle><circle cx="9" cy="5" r="1"></circle><circle cx="9" cy="19" r="1"></circle><circle cx="15" cy="12" r="1"></circle><circle cx="15" cy="5" r="1"></circle><circle cx="15" cy="19" r="1"></circle></svg>
+                        </div>
+                        <span class="title-badge mono bg-cyan-900/50 text-cyan-400 border border-cyan-800 shrink-0">CODE</span>
+                        ${item.locked ? '<span class="text-red-400 text-xs shrink-0" title="Locked"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg></span>' : ''}
+                        <h2 class="text-sm font-bold text-white mono truncate ${editableClass} w-full" ${isEditable} spellcheck="false">${escapeHtml(item.title) || 'Code Snippet'}</h2>
+                        <select class="code-lang-select bg-zinc-900 text-zinc-400 text-[10px] mono border border-zinc-700 rounded px-1.5 py-0.5 outline-none shrink-0" ${item.locked ? 'disabled' : ''}>${langOptions}</select>
+                        <button class="copy-code-btn text-zinc-400 hover:text-cyan-400 p-1 rounded hover:bg-zinc-800 transition-colors shrink-0" title="Copy Code">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                        </button>
+                    </div>
+                    <pre class="node-content mono ${editableClass} flex-grow pointer-events-auto bg-[#0d0d0f] text-emerald-300 !whitespace-pre overflow-auto rounded-b-xl m-0" style="font-size: ${fontSize}px; tab-size: 4;" ${isEditable} spellcheck="false">${escapeHtml(item.content) || ''}</pre>
+                    <div class="resize-handle pointer-events-auto"></div>
+                `;
+                el.querySelector('.copy-code-btn').addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    navigator.clipboard.writeText(item.content || '');
+                    const btn = e.currentTarget;
+                    btn.classList.add('text-green-400');
+                    setTimeout(() => btn.classList.remove('text-green-400'), 1000);
+                });
+                if (!item.locked) {
+                    el.querySelector('h2').addEventListener('blur', (e) => {
+                        item.title = e.target.innerText.replace(/\n/g, ' ').trim() || 'Code Snippet';
+                        e.target.innerText = item.title;
+                        saveState();
+                        updateSidebar();
+                    });
+                    const langSelect = el.querySelector('.code-lang-select');
+                    langSelect.addEventListener('mousedown', (e) => e.stopPropagation());
+                    langSelect.addEventListener('change', (e) => {
+                        item.language = e.target.value;
+                        saveState();
+                    });
+                    const codeEl = el.querySelector('pre.node-content');
+                    codeEl.addEventListener('keydown', (e) => {
+                        if (e.key === 'Tab') {
+                            e.preventDefault();
+                            document.execCommand('insertText', false, '    ');
+                        }
+                    });
+                    codeEl.addEventListener('blur', (e) => {
+                        item.content = e.target.innerText;
+                        saveState();
+                        updateSidebar();
                     });
                 }
 
@@ -801,14 +1090,37 @@
                         <div class="drag-handle cursor-grab active:cursor-grabbing text-zinc-500 hover:text-zinc-300 p-1">
                             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="12" r="1"></circle><circle cx="9" cy="5" r="1"></circle><circle cx="9" cy="19" r="1"></circle><circle cx="15" cy="12" r="1"></circle><circle cx="15" cy="5" r="1"></circle><circle cx="15" cy="19" r="1"></circle></svg>
                         </div>
-                        <span class="title-badge heading-font bg-purple-900/50 text-purple-400 border border-purple-800">AUDIO LOG</span>
-                        ${item.locked ? '<span class="text-red-400 text-xs" title="Locked"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg></span>' : ''}
+                        <span class="title-badge heading-font bg-purple-900/50 text-purple-400 border border-purple-800 shrink-0">AUDIO LOG</span>
+                        ${item.locked ? '<span class="text-red-400 text-xs shrink-0" title="Locked"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg></span>' : ''}
+                        <h2 class="text-sm font-bold text-white mono truncate ${editableClass} w-full" ${isEditable} spellcheck="false">${escapeHtml(item.title) || 'Audio Log'}</h2>
                     </div>
-                    <div class="node-content p-4 w-full flex-grow pointer-events-auto relative overflow-hidden bg-black rounded-b-xl flex flex-col justify-center">
-                        <audio controls class="w-full" src="${item.url}"></audio>
+                    <div class="node-content p-0 w-full flex-grow pointer-events-auto relative overflow-hidden rounded-b-xl flex flex-col justify-center">
+                        <div class="audio-player-container bg-[#121212] p-3 flex items-center gap-3 w-full h-full">
+                            <button class="play-pause-btn text-purple-400 hover:text-purple-300 transition-colors flex-shrink-0" onclick="toggleAudio(this, 'audio-${item.id}')">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                            </button>
+                            <div class="bg-zinc-800 h-2 flex-grow rounded cursor-pointer relative" onmousedown="startScrub(event, 'audio-${item.id}')">
+                                <div class="progress-fill bg-purple-500 h-full rounded w-0 pointer-events-none transition-all duration-75"></div>
+                            </div>
+                            <span class="time-display text-zinc-500 text-xs mono pointer-events-none w-20 text-right flex-shrink-0">0:00 / 0:00</span>
+                            <a class="audio-download-btn text-zinc-500 hover:text-purple-400 transition-colors flex-shrink-0 ml-1" href="${escapeHtml(item.url)}" download="${escapeHtml(getAudioDownloadFilename(item))}" target="_blank" title="Download Audio" onclick="event.stopPropagation()">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                            </a>
+                            <audio id="audio-${item.id}" src="${escapeHtml(item.url)}" ontimeupdate="updateProgress(this)" onloadedmetadata="setDuration(this)" onended="resetPlayer(this)"></audio>
+                        </div>
                     </div>
                     <div class="resize-handle pointer-events-auto"></div>
                 `;
+                if (!item.locked) {
+                    el.querySelector('h2').addEventListener('blur', (e) => {
+                        item.title = e.target.innerText.replace(/\n/g, ' ').trim() || 'Audio Log';
+                        e.target.innerText = item.title;
+                        const dlBtn = el.querySelector('.audio-download-btn');
+                        if (dlBtn) dlBtn.setAttribute('download', getAudioDownloadFilename(item));
+                        saveState();
+                        updateSidebar();
+                    });
+                }
 
             } else if (item.type === 'node') {
                 // Unified listener applied below
@@ -861,6 +1173,7 @@
                     e.target.tagName === 'INPUT' || 
                     e.target.tagName === 'SELECT' || 
                     e.target.tagName === 'AUDIO' ||
+                    e.target.closest('.audio-player-container') ||
                     e.target.tagName === 'IFRAME' ||
                     e.target.closest('.connector-hitbox')
                 ) {
@@ -992,6 +1305,9 @@
                 document.getElementById('line-color-input').value = conn.color || '#4ade80';
                 document.getElementById('line-thickness-input').value = conn.thickness || 2;
                 document.getElementById('line-label-input').value = conn.label || '';
+                const mBtn = document.getElementById('line-mirror-btn');
+                mBtn.classList.toggle('border-green-500', !!conn.mirrored);
+                mBtn.classList.toggle('text-green-400', !!conn.mirrored);
                 
                 handleSelect(conn.id, 'line', false);
                 showMenu(lineMenu, e.clientX, e.clientY);
@@ -1002,6 +1318,64 @@
             
             domLines.set(conn.id, path);
             domHitboxes.set(conn.id, hitbox);
+        }
+
+        function lerp(a, b, t) { return a + (b - a) * t; }
+
+        function evalCubicBezier(x1, y1, cx1, cy1, cx2, cy2, x2, y2, t) {
+            const mt = 1 - t;
+            const px = mt*mt*mt*x1 + 3*mt*mt*t*cx1 + 3*mt*t*t*cx2 + t*t*t*x2;
+            const py = mt*mt*mt*y1 + 3*mt*mt*t*cy1 + 3*mt*t*t*cy2 + t*t*t*y2;
+            const dxt = 3*mt*mt*(cx1 - x1) + 6*mt*t*(cx2 - cx1) + 3*t*t*(x2 - cx2);
+            const dyt = 3*mt*mt*(cy1 - y1) + 6*mt*t*(cy2 - cy1) + 3*t*t*(y2 - cy2);
+            return { x: px, y: py, dx: dxt, dy: dyt };
+        }
+
+        function sliceCubicBezier(x1, y1, cx1, cy1, cx2, cy2, x2, y2, ta, tb) {
+            // 1. Split [0, 1] at tb -> left curve L0..L3
+            const L0x = x1, L0y = y1;
+            const L1x = lerp(x1, cx1, tb), L1y = lerp(y1, cy1, tb);
+            const M12x = lerp(cx1, cx2, tb), M12y = lerp(cy1, cy2, tb);
+            const L2x = lerp(L1x, M12x, tb), L2y = lerp(L1y, M12y, tb);
+            const P23x = lerp(cx2, x2, tb), P23y = lerp(cy2, y2, tb);
+            const R2x = lerp(M12x, P23x, tb), R2y = lerp(M12y, P23y, tb);
+            const L3x = lerp(L2x, R2x, tb), L3y = lerp(L2y, R2y, tb);
+
+            if (ta <= 0) {
+                return [L0x, L0y, L1x, L1y, L2x, L2y, L3x, L3y];
+            }
+
+            // 2. Split [0, tb] at u = ta / tb -> right curve Q0..Q3
+            const u = tb > 0 ? ta / tb : 0;
+            const Ax = lerp(L0x, L1x, u), Ay = lerp(L0y, L1y, u);
+            const Bx = lerp(L1x, L2x, u), By = lerp(L1y, L2y, u);
+            const Cx = lerp(L2x, L3x, u), Cy = lerp(L2y, L3y, u);
+            const Dx = lerp(Ax, Bx, u), Dy = lerp(Ay, By, u);
+            const Ex = lerp(Bx, Cx, u), Ey = lerp(By, Cy, u);
+            const Q0x = lerp(Dx, Ex, u), Q0y = lerp(Dy, Ey, u);
+            return [Q0x, Q0y, Ex, Ey, Cx, Cy, L3x, L3y];
+        }
+
+        function findBezierBorderTs(x1, y1, cx1, cy1, cx2, cy2, x2, y2, sW, sH, tW, tH) {
+            let tStart = 0;
+            for (let t = 0.01; t <= 0.99; t += 0.01) {
+                const pt = evalCubicBezier(x1, y1, cx1, cy1, cx2, cy2, x2, y2, t);
+                if (Math.abs(pt.x - x1) >= sW / 2 + 2 || Math.abs(pt.y - y1) >= sH / 2 + 2) {
+                    tStart = t;
+                    break;
+                }
+            }
+            let tEnd = 1;
+            let endPt = { x: x2, y: y2, dx: x2 >= x1 ? 1 : -1, dy: 0 };
+            for (let t = 0.99; t >= tStart; t -= 0.01) {
+                const pt = evalCubicBezier(x1, y1, cx1, cy1, cx2, cy2, x2, y2, t);
+                if (Math.abs(pt.x - x2) >= tW / 2 + 2 || Math.abs(pt.y - y2) >= tH / 2 + 2) {
+                    tEnd = t;
+                    endPt = pt;
+                    break;
+                }
+            }
+            return { tStart, tEnd, endPt };
         }
 
         function updateConnections() {
@@ -1022,11 +1396,20 @@
                 const tNode = boardData.items.find(i => i.id === targetId);
                 if (!sNode || !tNode) return;
 
-                const x1 = sNode.x + sourceEl.offsetWidth / 2 + 10000;
-                const y1 = sNode.y + sourceEl.offsetHeight / 2 + 10000;
-                const x2 = tNode.x + targetEl.offsetWidth / 2 + 10000;
-                const y2 = tNode.y + targetEl.offsetHeight / 2 + 10000;
+                const sW = sourceEl.offsetWidth;
+                const sH = sourceEl.offsetHeight;
+                const tW = targetEl.offsetWidth;
+                const tH = targetEl.offsetHeight;
+                const x1 = sNode.x + sW / 2 + 10000;
+                const y1 = sNode.y + sH / 2 + 10000;
+                const x2 = tNode.x + tW / 2 + 10000;
+                const y2 = tNode.y + tH / 2 + 10000;
                 const cpX1 = x1 + (x2 - x1) / 2;
+                const cpY1 = y1 + (y2 - y1) / 2;
+                const cx1 = connData.mirrored ? x1 : cpX1;
+                const cy1 = connData.mirrored ? cpY1 : y1;
+                const cx2 = connData.mirrored ? x2 : cpX1;
+                const cy2 = connData.mirrored ? cpY1 : y2;
 
                 const thickness = connData.thickness || 2;
                 const color = connData.color || '#4ade80';
@@ -1050,28 +1433,12 @@
                     arrow.setAttribute('fill', color);
                     
                     const size = parseInt(thickness) * 3 + 6;
-                    
-                    let arrowX = x2, arrowY = y2;
-                    let tDirX = x2 >= x1 ? 1 : -1, tDirY = 0;
-                    let foundT = 1;
-                    
-                    for (let t = 0.99; t >= 0; t -= 0.01) {
-                        let mt = 1 - t;
-                        let px = mt*mt*mt*x1 + 3*mt*mt*t*cpX1 + 3*mt*t*t*cpX1 + t*t*t*x2;
-                        let py = mt*mt*mt*y1 + 3*mt*mt*t*y1 + 3*mt*t*t*y2 + t*t*t*y2;
-                        
-                        if (Math.abs(px - x2) >= targetEl.offsetWidth / 2 + 2 || Math.abs(py - y2) >= targetEl.offsetHeight / 2 + 2) {
-                            arrowX = px;
-                            arrowY = py;
-                            foundT = t;
-                            let dxt = 3*mt*mt*(cpX1 - x1) + 3*t*t*(x2 - cpX1);
-                            let dyt = 6*mt*t*(y2 - y1);
-                            let len = Math.sqrt(dxt*dxt + dyt*dyt) || 1;
-                            tDirX = dxt / len;
-                            tDirY = dyt / len;
-                            break;
-                        }
-                    }
+                    const { tStart, tEnd, endPt } = findBezierBorderTs(x1, y1, cx1, cy1, cx2, cy2, x2, y2, sW, sH, tW, tH);
+                    const arrowX = endPt.x;
+                    const arrowY = endPt.y;
+                    const len = Math.sqrt(endPt.dx * endPt.dx + endPt.dy * endPt.dy) || 1;
+                    const tDirX = endPt.dx / len;
+                    const tDirY = endPt.dy / len;
                     
                     const backX = arrowX - tDirX * size;
                     const backY = arrowY - tDirY * size;
@@ -1081,31 +1448,42 @@
                     const pts = `${arrowX},${arrowY} ${backX + perpX},${backY + perpY} ${backX - perpX},${backY - perpY}`;
                     arrow.setAttribute('points', pts);
 
-                    let t = foundT;
-                    let p01x = x1 + t * (cpX1 - x1);
-                    let p01y = y1;
-                    let p12x = cpX1;
-                    let p12y = y1 + t * (y2 - y1);
-                    
-                    let p012x = p01x + t * (p12x - p01x);
-                    let p012y = p01y + t * (p12y - p01y);
+                    const [q0x, q0y, q1x, q1y, q2x, q2y, q3x, q3y] = sliceCubicBezier(x1, y1, cx1, cy1, cx2, cy2, x2, y2, tStart, tEnd);
+                    const centerX = q3x - tDirX * (size / 2);
+                    const centerY = q3y - tDirY * (size / 2);
 
-                    const centerX = arrowX - tDirX * (size / 2);
-                    const centerY = arrowY - tDirY * (size / 2);
-
-                    const d = `M ${x1} ${y1} C ${p01x} ${p01y}, ${p012x} ${p012y}, ${centerX} ${centerY}`;
+                    const d = `M ${q0x} ${q0y} C ${q1x} ${q1y}, ${q2x} ${q2y}, ${centerX} ${centerY}`;
                     path.setAttribute('d', d);
                     hitbox.setAttribute('d', d);
 
                 } else if (connData.type === 'orthogonal') {
                     if (arrow) arrow.remove();
-                    const d = `M ${x1} ${y1} L ${cpX1} ${y1} L ${cpX1} ${y2} L ${x2} ${y2}`;
+                    const canHoriz = Math.abs(x2 - x1) >= (sW + tW) / 2 + 4;
+                    const canVert = Math.abs(y2 - y1) >= (sH + tH) / 2 + 4;
+                    let d;
+                    if ((!connData.mirrored && canHoriz) || (connData.mirrored && !canVert && canHoriz)) {
+                        const dirX = x2 >= x1 ? 1 : -1;
+                        const sx = x1 + dirX * (sW / 2);
+                        const tx = x2 - dirX * (tW / 2);
+                        const midX = (sx + tx) / 2;
+                        d = `M ${sx} ${y1} L ${midX} ${y1} L ${midX} ${y2} L ${tx} ${y2}`;
+                    } else if (canVert) {
+                        const dirY = y2 >= y1 ? 1 : -1;
+                        const sy = y1 + dirY * (sH / 2);
+                        const ty = y2 - dirY * (tH / 2);
+                        const midY = (sy + ty) / 2;
+                        d = `M ${x1} ${sy} L ${x1} ${midY} L ${x2} ${midY} L ${x2} ${ty}`;
+                    } else {
+                        d = `M ${x1} ${y1} L ${cpX1} ${y1} L ${cpX1} ${y2} L ${x2} ${y2}`;
+                    }
                     path.setAttribute('d', d);
                     hitbox.setAttribute('d', d);
 
                 } else {
                     if (arrow) arrow.remove();
-                    const d = `M ${x1} ${y1} C ${cpX1} ${y1}, ${cpX1} ${y2}, ${x2} ${y2}`;
+                    const { tStart, tEnd } = findBezierBorderTs(x1, y1, cx1, cy1, cx2, cy2, x2, y2, sW, sH, tW, tH);
+                    const [q0x, q0y, q1x, q1y, q2x, q2y, q3x, q3y] = sliceCubicBezier(x1, y1, cx1, cy1, cx2, cy2, x2, y2, tStart, tEnd);
+                    const d = `M ${q0x} ${q0y} C ${q1x} ${q1y}, ${q2x} ${q2y}, ${q3x} ${q3y}`;
                     path.setAttribute('d', d);
                     hitbox.setAttribute('d', d);
                 }
@@ -1150,12 +1528,16 @@
                 const sourceEl = domItems.get(startId);
                 const sNode = boardData.items.find(i => i.id === startId);
                 if (sNode && sourceEl) {
-                    const x1 = sNode.x + sourceEl.offsetWidth / 2 + 10000;
-                    const y1 = sNode.y + sourceEl.offsetHeight / 2 + 10000;
+                    const sW = sourceEl.offsetWidth;
+                    const sH = sourceEl.offsetHeight;
+                    const x1 = sNode.x + sW / 2 + 10000;
+                    const y1 = sNode.y + sH / 2 + 10000;
                     const x2 = state.mouseX + 10000;
                     const y2 = state.mouseY + 10000;
                     const cpX1 = x1 + (x2 - x1) / 2;
-                    tempLine.setAttribute('d', `M ${x1} ${y1} C ${cpX1} ${y1}, ${cpX1} ${y2}, ${x2} ${y2}`);
+                    const { tStart } = findBezierBorderTs(x1, y1, cpX1, y1, cpX1, y2, x2, y2, sW, sH, 0, 0);
+                    const [q0x, q0y, q1x, q1y, q2x, q2y, q3x, q3y] = sliceCubicBezier(x1, y1, cpX1, y1, cpX1, y2, x2, y2, tStart, 1);
+                    tempLine.setAttribute('d', `M ${q0x} ${q0y} C ${q1x} ${q1y}, ${q2x} ${q2y}, ${q3x} ${q3y}`);
                 }
             } else if (tempLine) {
                 tempLine.remove();
@@ -1217,7 +1599,7 @@
                 return;
             }
 
-            if (e.target.closest('.context-menu') || e.target.closest('.controls') || e.target.closest('#sidebar-navigator')) return;
+            if (e.target.closest('.context-menu') || e.target.closest('.controls') || e.target.closest('#sidebar-navigator') || e.target.tagName === 'SELECT' || e.target.tagName === 'OPTION') return;
             hideMenus();
             state.contextTargetId = null;
             
@@ -1559,7 +1941,7 @@
                 const item = boardData.items.find(i => i.id === node.id);
                 
                 const fontWrapper = document.getElementById('font-size-wrapper');
-                if (item && (item.type === 'note' || item.type === 'image')) {
+                if (item && (item.type === 'note' || item.type === 'image' || item.type === 'code')) {
                     fontWrapper.style.display = 'block';
                     document.getElementById('item-font-size').value = item.fontSize || (item.type === 'note' ? 14 : 12);
                 } else {
@@ -1588,15 +1970,16 @@
             boardMenu.style.display = 'none'; itemMenu.style.display = 'none'; lineMenu.style.display = 'none';
         }
 
-        function createItem(type, url = null) {
+        function createItem(type, url = null, title = null) {
             hideMenus();
             const pos = screenToWorld(state.startX, state.startY);
             const item = { id: generateId(), type: type, x: pos.x, y: pos.y, zIndex: ++state.zIndexCounter, locked: false };
             
             if (type === 'note') { item.width = 250; item.height = 250; item.title = 'New Note'; item.content = ''; item.fontSize = 14; }
+            if (type === 'code') { item.width = 420; item.height = 280; item.title = 'Code Snippet'; item.language = 'python'; item.content = ''; item.fontSize = 12; }
             if (type === 'image') { item.width = 300; item.url = url; item.caption = ''; item.fontSize = 12; }
             if (type === 'youtube') { item.width = 400; item.height = 265; item.url = url; }
-            if (type === 'audio') { item.width = 350; item.url = url; }
+            if (type === 'audio') { item.width = 350; item.url = url; item.title = title || 'Audio Log'; }
             if (type === 'node') { item.width = 24; item.height = 24; }
             if (type === 'frame') { item.width = 400; item.height = 400; item.title = 'Zone'; item.zIndex = 0; }
             if (type === 'timeline') {
@@ -1780,8 +2163,9 @@
         }
 
         function readAudioFile(file) {
+            const defaultTitle = (file && file.name) ? file.name.replace(/\.[^/.]+$/, '') : 'Audio Log';
             const reader = new FileReader();
-            reader.onload = (event) => createItem('audio', event.target.result);
+            reader.onload = (event) => createItem('audio', event.target.result, defaultTitle);
             reader.readAsDataURL(file);
         }
 
@@ -1917,9 +2301,10 @@
                 if (item.type === 'node') return;
                 let text = '';
                 if (item.type === 'note') text = item.title + ' ' + item.content;
+                if (item.type === 'code') text = (item.title || 'Code Snippet') + ' ' + (item.content || '');
                 if (item.type === 'image') text = item.caption;
                 if (item.type === 'youtube') text = 'YouTube Video';
-                if (item.type === 'audio') text = 'Audio Log';
+                if (item.type === 'audio') text = item.title || 'Audio Log';
                 if (item.type === 'frame') text = item.title + ' (Zone)';
                 if (item.type === 'timeline') text = item.events.map(e => e.title).join(' ');
                 
