@@ -46,12 +46,22 @@
         }
     </style>
 </head>
-<body class="relative overflow-hidden">
+<body class="relative overflow-x-hidden py-10">
     <div class="scanline"></div>
 
     <div class="max-w-6xl mx-auto px-4 w-full z-10 text-center">
         <h1 class="text-4xl md:text-6xl font-bold mono text-green-400 mb-4 tracking-widest">FAZBEAR_ARCHIVES</h1>
-        <p class="text-zinc-500 italic mb-12 mono">Select database terminal to access restricted files.</p>
+        <p class="text-zinc-500 italic mb-8 mono">Select database terminal to access restricted files.</p>
+
+        <div class="max-w-2xl mx-auto mb-10 relative text-left">
+            <div class="relative flex items-center">
+                <svg class="absolute left-3.5 text-zinc-500 pointer-events-none" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                <input type="text" id="hubSearchInput" placeholder="Search across SOTM, Classic & Pizzaplex archives..." autocomplete="off"
+                       class="w-full bg-zinc-900/90 border border-zinc-700/70 rounded-xl pl-10 pr-24 py-3 focus:outline-none focus:border-green-400 mono text-green-400 text-sm transition-colors shadow-lg">
+                <span id="hubSearchCount" class="hidden absolute right-3.5 text-[11px] mono text-zinc-400 pointer-events-none"></span>
+            </div>
+            <div id="hubSearchResults" class="hidden absolute left-0 right-0 mt-2 bg-zinc-900/95 border border-zinc-700 rounded-xl shadow-2xl max-h-80 overflow-y-auto z-50 backdrop-blur-xl divide-y divide-zinc-800/80"></div>
+        </div>
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
             <a href="sotm.html" class="hub-card p-8 rounded-xl flex flex-col items-center text-center group cursor-pointer block">
@@ -93,5 +103,117 @@
             Disclaimer: This site is a fan-made archive and is not affiliated with, endorsed by, or in any way officially connected to Scott Cawthon, Steel Wool Studios, or the Five Nights at Freddy's franchise.
         </div>
     </div>
+
+    <script>
+        let hubArchiveCache = null;
+        let hubArchiveLoading = null;
+
+        async function loadHubArchives() {
+            if (hubArchiveCache) return hubArchiveCache;
+            if (hubArchiveLoading) return hubArchiveLoading;
+
+            const sources = [
+                { label: 'SOTM', page: 'sotm.html', url: 'sotm.json', badgeClass: 'text-green-400 border-green-800 bg-green-900/30' },
+                { label: 'CLASSIC', page: 'classic.html', url: 'classic.json', badgeClass: 'text-purple-400 border-purple-800 bg-purple-900/30' },
+                { label: 'PIZZAPLEX', page: 'pizzaplex_archive.html', url: 'sb.json', badgeClass: 'text-cyan-400 border-cyan-800 bg-cyan-900/30' }
+            ];
+
+            hubArchiveLoading = (async () => {
+                const entries = [];
+                await Promise.all(sources.map(async src => {
+                    try {
+                        const res = await fetch(src.url);
+                        if (!res.ok) return;
+                        const data = await res.json();
+                        (data.logs || []).forEach(log => {
+                            entries.push({ ...log, _srcLabel: src.label, _page: src.page, _badgeClass: src.badgeClass });
+                        });
+                    } catch (e) {
+                        console.warn(`Failed to load ${src.url}:`, e);
+                    }
+                }));
+                hubArchiveCache = entries;
+                return entries;
+            })();
+            return hubArchiveLoading;
+        }
+
+        function escapeHubHtml(str) {
+            return String(str || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+        }
+
+        async function runHubSearch() {
+            const input = document.getElementById('hubSearchInput');
+            const resultsBox = document.getElementById('hubSearchResults');
+            const countBadge = document.getElementById('hubSearchCount');
+            const query = input.value.trim().toLowerCase();
+
+            if (!query) {
+                resultsBox.classList.add('hidden');
+                countBadge.classList.add('hidden');
+                return;
+            }
+
+            resultsBox.classList.remove('hidden');
+            if (!hubArchiveCache) {
+                resultsBox.innerHTML = '<div class="p-4 text-xs mono text-zinc-400 text-center">Indexing archives...</div>';
+            }
+
+            const entries = await loadHubArchives();
+            if (!entries || entries.length === 0) {
+                resultsBox.innerHTML = '<div class="p-4 text-xs mono text-zinc-500 text-center">Unable to load archive JSONs (serve via HTTP/localhost).</div>';
+                return;
+            }
+
+            const matches = entries.filter(e => {
+                const hay = [
+                    e.title, e.location, e.content, e.memoSubject, e.memoTo, e.memoFrom, e.orderName,
+                    (e.tags || []).join(' ')
+                ].filter(Boolean).join(' ').toLowerCase();
+                return hay.includes(query);
+            });
+
+            countBadge.textContent = `${matches.length} FOUND`;
+            countBadge.classList.remove('hidden');
+
+            if (matches.length === 0) {
+                resultsBox.innerHTML = '<div class="p-4 text-xs mono text-zinc-500 text-center">No matching entries found.</div>';
+                return;
+            }
+
+            resultsBox.innerHTML = matches.slice(0, 40).map(e => {
+                const title = e.title || 'Untitled';
+                const targetUrl = `${e._page}?q=${encodeURIComponent(title)}`;
+                const snippet = (e.content || e.memoSubject || e.orderDetails || e.location || '').replace(/\s+/g, ' ').slice(0, 110);
+                return `
+                    <a href="${targetUrl}" class="block p-3 hover:bg-zinc-800/80 transition-colors">
+                        <div class="flex items-center justify-between gap-2 mb-1">
+                            <span class="text-sm font-bold text-white mono truncate">${escapeHubHtml(title)}</span>
+                            <div class="flex items-center gap-1.5 shrink-0">
+                                <span class="text-[10px] mono px-1.5 py-0.5 rounded border ${e._badgeClass}">${escapeHubHtml(e._srcLabel)}</span>
+                                <span class="text-[10px] mono px-1.5 py-0.5 rounded bg-zinc-800 text-zinc-400 uppercase">${escapeHubHtml(e.type || 'text')}</span>
+                            </div>
+                        </div>
+                        <div class="text-xs text-zinc-400 truncate">${escapeHubHtml(snippet || e.location || '')}</div>
+                    </a>
+                `;
+            }).join('');
+        }
+
+        const hubInput = document.getElementById('hubSearchInput');
+        hubInput.addEventListener('focus', loadHubArchives);
+        hubInput.addEventListener('input', runHubSearch);
+        hubInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                document.getElementById('hubSearchResults').classList.add('hidden');
+                hubInput.blur();
+            }
+        });
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('#hubSearchInput') && !e.target.closest('#hubSearchResults')) {
+                document.getElementById('hubSearchResults').classList.add('hidden');
+            }
+        });
+    </script>
 </body>
 </html>

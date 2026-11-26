@@ -2218,9 +2218,9 @@
             const filtered = archiveEntriesCache.filter(entry => {
                 if (archiveFilterSource !== 'all' && entry._sourceKey !== archiveFilterSource) return false;
                 if (!query) return true;
-                const hay = `${entry.title || ''} ${entry.location || ''} ${entry.content || ''} ${(entry.tags || []).join(' ')}`.toLowerCase();
+                const hay = `${entry.title || ''} ${entry.location || ''} ${entry.content || ''} ${entry.memoSubject || ''} ${entry.memoTo || ''} ${entry.memoFrom || ''} ${entry.orderName || ''} ${(entry.tags || []).join(' ')}`.toLowerCase();
                 return hay.includes(query);
-            }).slice(0, 80);
+            });
 
             if (filtered.length === 0) {
                 list.innerHTML = '<div class="text-zinc-500 text-sm mono text-center py-8">No matching entries found.</div>';

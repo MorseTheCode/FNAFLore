@@ -765,6 +765,12 @@
             }
         });
         
+        const urlQ = new URLSearchParams(window.location.search).get('q');
+        if (urlQ) {
+            currentSearch = urlQ;
+            document.getElementById('searchInput').value = urlQ;
+        }
+
         // Start execution
         init();
     </script>
