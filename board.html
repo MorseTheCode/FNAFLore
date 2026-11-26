@@ -1575,8 +1575,33 @@
             return [];
         }
 
+        function getFrameChildIds(frameItem) {
+            const fEl = domItems.get(frameItem.id);
+            const fw = fEl ? fEl.offsetWidth : (frameItem.width || 400);
+            const fh = fEl ? fEl.offsetHeight : (frameItem.height || 400);
+            const childIds = [];
+            boardData.items.forEach(child => {
+                if (child.id === frameItem.id || child.type === 'frame') return;
+                const cEl = domItems.get(child.id);
+                const cw = cEl ? cEl.offsetWidth : (child.width || 200);
+                const ch = cEl ? cEl.offsetHeight : (child.height || 200);
+                const cx = child.x + cw / 2;
+                const cy = child.y + ch / 2;
+                if (cx >= frameItem.x && cy >= frameItem.y && cx <= frameItem.x + fw && cy <= frameItem.y + fh) {
+                    childIds.push(child.id);
+                }
+            });
+            return childIds;
+        }
+
         function buildClipboardPayload(itemIds) {
             const idSet = new Set(itemIds);
+            itemIds.forEach(id => {
+                const item = boardData.items.find(i => i.id === id);
+                if (item && item.type === 'frame') {
+                    getFrameChildIds(item).forEach(cid => idSet.add(cid));
+                }
+            });
             const items = boardData.items
                 .filter(i => idSet.has(i.id))
                 .map(i => JSON.parse(JSON.stringify(i)));
