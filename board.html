@@ -54,6 +54,22 @@
         ::-moz-selection { background-color: rgba(74, 222, 128, 0.4); color: #fff; }
 
         .title-badge { background: #2d2d2d; color: #4ade80; padding: 2px 8px; border-radius: 4px; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.05em; pointer-events: none; }
+        .speaker-tag {
+            display: inline-block;
+            background-color: #3b0764;
+            color: #d8b4fe;
+            border: 1px solid #7e22ce;
+            border-radius: 0.25rem;
+            padding: 0.125rem 0.375rem;
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            vertical-align: middle;
+            margin-right: 0.25rem;
+            font-family: 'Space Mono', monospace;
+            line-height: 1;
+        }
         
         .scanline {
             width: 100%; height: 100px; z-index: 9999; position: fixed; left: 0; top: 0; pointer-events: none;
@@ -470,6 +486,8 @@
             s = escapeHtml(s);
             s = s.replace(/~~(.*?)~~/g, '<del class="opacity-70 text-red-400 decoration-red-500">$1</del>');
             s = s.replace(/\(\((.*?)\)\)/g, '<span class="inline-block align-middle whitespace-nowrap border border-red-500/70 text-red-400 px-2 py-0.5 leading-none mx-0.5 text-center" style="border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;">$1</span>');
+            s = s.replace(/\[\[(.*?)\]\]/g, '<span class="speaker-tag">$1</span>');
+            s = s.replace(/\[(.*?)\]:/g, '<span class="speaker-tag">$1</span>');
             return s;
         }
 
@@ -1084,7 +1102,11 @@
                         saveState(); 
                         updateSidebar(); 
                     });
-                    el.querySelector('.node-content').addEventListener('blur', (e) => { 
+                    const noteContentEl = el.querySelector('.node-content');
+                    noteContentEl.addEventListener('focus', (e) => {
+                        e.target.innerText = item.content || '';
+                    });
+                    noteContentEl.addEventListener('blur', (e) => { 
                         item.content = e.target.innerText; 
                         e.target.innerHTML = formatText(e.target.innerText); 
                         saveState(); 
@@ -1108,6 +1130,9 @@
                         <button class="copy-code-btn text-zinc-400 hover:text-cyan-400 p-1 rounded hover:bg-zinc-800 transition-colors shrink-0" title="Copy Code">
                             <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
                         </button>
+                        <button class="download-code-btn text-zinc-400 hover:text-cyan-400 p-1 rounded hover:bg-zinc-800 transition-colors shrink-0" title="Download Script">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                        </button>
                     </div>
                     <pre class="node-content mono ${editableClass} flex-grow pointer-events-auto bg-[#0d0d0f] text-emerald-300 !whitespace-pre overflow-auto rounded-b-xl m-0" style="font-size: ${fontSize}px; tab-size: 4;" ${isEditable} spellcheck="false">${escapeHtml(item.content) || ''}</pre>
                     <div class="resize-handle pointer-events-auto"></div>
@@ -1118,6 +1143,22 @@
                     const btn = e.currentTarget;
                     btn.classList.add('text-green-400');
                     setTimeout(() => btn.classList.remove('text-green-400'), 1000);
+                });
+                el.querySelector('.download-code-btn').addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const extMap = { python: '.py', javascript: '.js', bash: '.sh', bat: '.bat', json: '.json', text: '.txt' };
+                    const ext = extMap[item.language || 'python'] || '.txt';
+                    const base = (item.title || 'script').replace(/[^a-zA-Z0-9_\-. ]/g, '_').trim() || 'script';
+                    const filename = base.toLowerCase().endsWith(ext) ? base : base + ext;
+                    const blob = new Blob([item.content || ''], { type: 'text/plain;charset=utf-8' });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = filename;
+                    document.body.appendChild(a);
+                    a.click();
+                    a.remove();
+                    URL.revokeObjectURL(url);
                 });
                 if (!item.locked) {
                     el.querySelector('h2').addEventListener('blur', (e) => {
@@ -1215,12 +1256,12 @@
                         <h2 class="text-sm font-bold text-white mono truncate ${editableClass} w-full" ${isEditable} spellcheck="false">${escapeHtml(item.title) || 'Audio Log'}</h2>
                     </div>
                     <div class="node-content p-0 w-full flex-grow pointer-events-auto relative overflow-hidden rounded-b-xl flex flex-col justify-center">
-                        <div class="audio-player-container bg-[#121212] p-3 flex items-center gap-3 w-full h-full">
+                        <div class="audio-player-container bg-[#121212] p-3 flex items-center gap-3 w-full h-full !whitespace-normal">
                             <button class="play-pause-btn text-purple-400 hover:text-purple-300 transition-colors flex-shrink-0" onclick="toggleAudio(this, 'audio-${item.id}')">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
                             </button>
-                            <div class="bg-zinc-800 h-2 flex-grow rounded cursor-pointer relative" onmousedown="startScrub(event, 'audio-${item.id}')">
-                                <div class="progress-fill bg-purple-500 h-full rounded w-0 pointer-events-none transition-all duration-75"></div>
+                            <div class="bg-zinc-800 h-2 flex-grow rounded cursor-pointer relative overflow-hidden" onmousedown="startScrub(event, 'audio-${item.id}')">
+                                <div class="progress-fill bg-purple-500 h-full rounded w-0 pointer-events-none transition-all duration-75 absolute top-0 left-0"></div>
                             </div>
                             <span class="time-display text-zinc-500 text-xs mono pointer-events-none w-20 text-right flex-shrink-0">0:00 / 0:00</span>
                             <a class="audio-download-btn text-zinc-500 hover:text-purple-400 transition-colors flex-shrink-0 ml-1" href="${escapeHtml(item.url)}" download="${escapeHtml(getAudioDownloadFilename(item))}" target="_blank" title="Download Audio" onclick="event.stopPropagation()">
