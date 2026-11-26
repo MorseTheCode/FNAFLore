@@ -185,7 +185,20 @@
             RETURN TO HUB
         </a>
         <h1 class="text-2xl font-bold mono text-green-400 mb-1 tracking-wider filter drop-shadow-md" style="pointer-events: none;">THEORY_BOARD_OS</h1>
-        <p class="text-zinc-500 italic text-sm" style="pointer-events: none;">Right-click board/lines/nodes for options. Shift+Drag nodes to connect.</p>
+        <p class="text-zinc-500 italic text-sm mb-3" style="pointer-events: none;">Right-click board/lines/nodes for options. Shift+Drag nodes to connect.</p>
+        <div class="inline-flex items-center gap-1.5 bg-zinc-900/90 border border-zinc-700/80 rounded-lg px-2 py-1.5 backdrop-blur-md shadow-lg" style="pointer-events: auto;">
+            <span class="text-[10px] mono text-zinc-500 font-bold px-1">BOARD</span>
+            <select id="board-selector" class="bg-zinc-800 text-green-400 text-xs mono font-bold rounded px-2 py-1 border border-zinc-700 outline-none max-w-[160px] cursor-pointer"></select>
+            <button id="btn-new-board" class="control-btn !w-7 !h-7 text-green-400 hover:text-green-300" title="New Board">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+            </button>
+            <button id="btn-rename-board" class="control-btn !w-7 !h-7" title="Rename Current Board">
+                <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+            </button>
+            <button id="btn-delete-board" class="control-btn !w-7 !h-7 text-red-400 hover:text-red-300" title="Delete Current Board">
+                <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path><path d="M10 11v6"></path><path d="M14 11v6"></path></svg>
+            </button>
+        </div>
     </div>
 
     <div class="controls" style="top: 1.5rem; left: 50%; transform: translateX(-50%); bottom: auto; right: auto; flex-wrap: wrap; justify-content: center;">
@@ -286,7 +299,27 @@
             <label class="text-xs text-zinc-400 mb-1 block mono">Font Size</label>
             <input type="range" id="item-font-size" min="10" max="48" value="14" class="w-full accent-green-400">
         </div>
+        <div class="p-2 border-b border-zinc-700 mb-1" id="item-color-wrapper">
+            <label class="text-xs text-zinc-400 mb-1.5 block mono">Accent Color</label>
+            <div class="flex items-center gap-1.5 flex-wrap">
+                <button type="button" class="item-color-swatch !w-5 !h-5 !p-0 rounded-full border border-zinc-500 bg-zinc-700" data-color="" title="Default"></button>
+                <button type="button" class="item-color-swatch !w-5 !h-5 !p-0 rounded-full border border-zinc-600" style="background:#4ade80;" data-color="#4ade80" title="Green"></button>
+                <button type="button" class="item-color-swatch !w-5 !h-5 !p-0 rounded-full border border-zinc-600" style="background:#a855f7;" data-color="#a855f7" title="Purple"></button>
+                <button type="button" class="item-color-swatch !w-5 !h-5 !p-0 rounded-full border border-zinc-600" style="background:#ef4444;" data-color="#ef4444" title="Red"></button>
+                <button type="button" class="item-color-swatch !w-5 !h-5 !p-0 rounded-full border border-zinc-600" style="background:#f59e0b;" data-color="#f59e0b" title="Gold"></button>
+                <button type="button" class="item-color-swatch !w-5 !h-5 !p-0 rounded-full border border-zinc-600" style="background:#22d3ee;" data-color="#22d3ee" title="Cyan"></button>
+                <input type="color" id="item-color-picker" class="w-6 h-5 bg-transparent border-0 p-0 cursor-pointer" value="#4ade80" title="Custom Color">
+            </div>
+        </div>
         <button id="item-menu-connect" class="text-indigo-400">Connect to...</button>
+        <button id="item-menu-duplicate" class="text-cyan-400">Duplicate (Ctrl+D)</button>
+        <div class="p-2 border-y border-zinc-700 my-1 flex flex-col gap-1.5" id="copy-to-board-wrapper">
+            <label class="text-[11px] text-zinc-400 mono">Copy to Board</label>
+            <div class="flex gap-1">
+                <select id="item-copy-board-select" class="bg-zinc-800 text-white text-xs mono rounded px-1.5 py-1 border border-zinc-700 outline-none flex-grow min-w-0"></select>
+                <button type="button" id="item-copy-board-btn" class="!w-auto !px-2.5 !py-1 bg-zinc-800 hover:bg-zinc-700 text-green-400 border border-zinc-700 rounded text-xs mono font-bold">Copy</button>
+            </div>
+        </div>
         <button id="item-menu-lock">Lock / Unlock Item</button>
         <button id="item-menu-front">Bring to Front</button>
         <button id="item-menu-back">Send to Back</button>
@@ -429,7 +462,102 @@
 
     <script>
         const STORAGE_KEY = 'theory_board_data';
+        const BOARDS_META_KEY = 'theory_board_slots';
+        const BOARD_CLIPBOARD_KEY = 'theory_board_clipboard';
         let boardData = { items: [], connections: [], drawings: [] };
+
+        function getBoardStorageKey(boardId) {
+            return boardId === 'default' ? STORAGE_KEY : `${STORAGE_KEY}_${boardId}`;
+        }
+
+        function getBoardsMeta() {
+            try {
+                const raw = localStorage.getItem(BOARDS_META_KEY);
+                if (raw) {
+                    const parsed = JSON.parse(raw);
+                    if (parsed && Array.isArray(parsed.boards) && parsed.boards.length > 0) {
+                        return parsed;
+                    }
+                }
+            } catch (e) {}
+            return { activeId: 'default', boards: [{ id: 'default', name: 'Main Board' }] };
+        }
+
+        function saveBoardsMeta(meta) {
+            try { localStorage.setItem(BOARDS_META_KEY, JSON.stringify(meta)); } catch (e) {}
+        }
+
+        function getActiveBoardStorageKey() {
+            return getBoardStorageKey(getBoardsMeta().activeId);
+        }
+
+        function renderBoardSelector() {
+            const meta = getBoardsMeta();
+            const sel = document.getElementById('board-selector');
+            if (!sel) return;
+            sel.innerHTML = meta.boards.map(b => `<option value="${escapeHtml(b.id)}" ${b.id === meta.activeId ? 'selected' : ''}>${escapeHtml(b.name)}</option>`).join('');
+            const delBtn = document.getElementById('btn-delete-board');
+            if (delBtn) delBtn.style.opacity = meta.boards.length > 1 ? '1' : '0.35';
+        }
+
+        function switchBoard(boardId) {
+            const meta = getBoardsMeta();
+            if (!meta.boards.some(b => b.id === boardId)) return;
+            meta.activeId = boardId;
+            saveBoardsMeta(meta);
+            historyStack = [];
+            historyIndex = -1;
+            clearSelection();
+            boardData = { items: [], connections: [], drawings: [] };
+            loadState();
+            renderBoardSelector();
+            resetView();
+        }
+
+        function createNewBoard() {
+            const meta = getBoardsMeta();
+            const name = prompt('New board name:', `Board ${meta.boards.length + 1}`);
+            if (!name || !name.trim()) return;
+            const id = 'b_' + Date.now().toString(36) + Math.random().toString(36).slice(2, 5);
+            meta.boards.push({ id, name: name.trim() });
+            meta.activeId = id;
+            saveBoardsMeta(meta);
+            historyStack = [];
+            historyIndex = -1;
+            clearSelection();
+            boardData = { items: [], connections: [], drawings: [] };
+            renderAll();
+            updateSidebar();
+            saveState();
+            renderBoardSelector();
+            resetView();
+        }
+
+        function renameCurrentBoard() {
+            const meta = getBoardsMeta();
+            const curr = meta.boards.find(b => b.id === meta.activeId);
+            if (!curr) return;
+            const name = prompt('Rename board:', curr.name);
+            if (!name || !name.trim()) return;
+            curr.name = name.trim();
+            saveBoardsMeta(meta);
+            renderBoardSelector();
+        }
+
+        function deleteCurrentBoard() {
+            const meta = getBoardsMeta();
+            if (meta.boards.length <= 1) {
+                showAlert('You must keep at least one board.');
+                return;
+            }
+            const curr = meta.boards.find(b => b.id === meta.activeId);
+            if (!confirm(`Delete board "${curr ? curr.name : ''}"? This cannot be undone.`)) return;
+            try { localStorage.removeItem(getBoardStorageKey(meta.activeId)); } catch (e) {}
+            meta.boards = meta.boards.filter(b => b.id !== meta.activeId);
+            meta.activeId = meta.boards[0].id;
+            saveBoardsMeta(meta);
+            switchBoard(meta.activeId);
+        }
 
         let state = {
             scale: 1, panX: 0, panY: 0,
@@ -520,6 +648,10 @@
             document.getElementById('btn-zoom-out').addEventListener('click', () => zoom(-0.2));
             document.getElementById('btn-reset').addEventListener('click', resetView);
             document.getElementById('btn-fit-view').addEventListener('click', fitBoardToView);
+            document.getElementById('board-selector').addEventListener('change', (e) => switchBoard(e.target.value));
+            document.getElementById('btn-new-board').addEventListener('click', createNewBoard);
+            document.getElementById('btn-rename-board').addEventListener('click', renameCurrentBoard);
+            document.getElementById('btn-delete-board').addEventListener('click', deleteCurrentBoard);
             document.getElementById('btn-undo').addEventListener('click', undo);
             document.getElementById('btn-redo').addEventListener('click', redo);
             document.getElementById('btn-snap').addEventListener('click', toggleSnap);
@@ -617,6 +749,24 @@
                 document.getElementById('media-modal-title').classList.replace('text-purple-400', 'text-red-400'); // Reset
             });
             
+            document.getElementById('item-menu-duplicate').addEventListener('click', () => {
+                hideMenus();
+                duplicateSelectedItems();
+            });
+            document.getElementById('item-copy-board-btn').addEventListener('click', () => {
+                const targetId = document.getElementById('item-copy-board-select').value;
+                hideMenus();
+                if (targetId) copySelectedToBoard(targetId);
+            });
+            document.querySelectorAll('.item-color-swatch').forEach(sw => {
+                sw.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    setItemColor(sw.dataset.color || '');
+                });
+            });
+            document.getElementById('item-color-picker').addEventListener('input', (e) => {
+                setItemColor(e.target.value);
+            });
             document.getElementById('item-menu-front').addEventListener('click', () => changeZIndex(1));
             document.getElementById('item-menu-back').addEventListener('click', () => changeZIndex(-1));
             document.getElementById('item-menu-delete').addEventListener('click', deleteSelectedItems);
@@ -741,7 +891,7 @@
                     connections: parsed.connections || [],
                     drawings: parsed.drawings || []
                 };
-                try { localStorage.setItem(STORAGE_KEY, snap); } catch (e) {}
+                try { localStorage.setItem(getActiveBoardStorageKey(), snap); } catch (e) {}
                 clearSelection();
                 renderAll();
                 updateSidebar();
@@ -767,15 +917,16 @@
             const snap = JSON.stringify(boardData);
             if (!isRestoringHistory) pushHistory(snap);
             try {
-                localStorage.setItem(STORAGE_KEY, snap);
+                localStorage.setItem(getActiveBoardStorageKey(), snap);
             } catch (e) {
                 console.warn('Failed to auto-save board to localStorage (quota may be exceeded):', e);
             }
         }
 
         function loadState() {
+            renderBoardSelector();
             try {
-                const saved = localStorage.getItem(STORAGE_KEY);
+                const saved = localStorage.getItem(getActiveBoardStorageKey());
                 if (saved) {
                     const parsed = JSON.parse(saved);
                     boardData.items = parsed.items || [];
@@ -1044,6 +1195,24 @@
             return m + ':' + (s < 10 ? '0' : '') + s;
         }
 
+        function cycleAudioSpeed(btn, audioId) {
+            const audio = document.getElementById(audioId);
+            if (!audio) return;
+            const speeds = [1, 1.5, 2, 0.5, 0.75];
+            const idx = speeds.indexOf(audio.playbackRate);
+            const next = speeds[(idx + 1) % speeds.length];
+            audio.playbackRate = next;
+            btn.textContent = next + 'x';
+        }
+
+        function toggleAudioLoop(btn, audioId) {
+            const audio = document.getElementById(audioId);
+            if (!audio) return;
+            audio.loop = !audio.loop;
+            btn.classList.toggle('text-purple-400', audio.loop);
+            btn.classList.toggle('text-zinc-500', !audio.loop);
+        }
+
         function getAudioDownloadFilename(item) {
             const base = (item.title || 'audio_log').replace(/[^a-zA-Z0-9_\- ]/g, '_').trim() || 'audio_log';
             let ext = '';
@@ -1264,7 +1433,11 @@
                                 <div class="progress-fill bg-purple-500 h-full rounded w-0 pointer-events-none transition-all duration-75 absolute top-0 left-0"></div>
                             </div>
                             <span class="time-display text-zinc-500 text-xs mono pointer-events-none whitespace-nowrap text-right flex-shrink-0">0:00 / 0:00</span>
-                            <a class="audio-download-btn text-zinc-500 hover:text-purple-400 transition-colors flex-shrink-0 ml-1" href="${escapeHtml(item.url)}" download="${escapeHtml(getAudioDownloadFilename(item))}" target="_blank" title="Download Audio" onclick="event.stopPropagation()">
+                            <button type="button" class="audio-speed-btn text-[10px] mono text-zinc-400 hover:text-purple-400 px-1.5 py-0.5 rounded bg-zinc-900 border border-zinc-800 flex-shrink-0" onclick="cycleAudioSpeed(this, 'audio-${item.id}')" title="Playback Speed">1x</button>
+                            <button type="button" class="audio-loop-btn text-zinc-500 hover:text-purple-400 p-1 rounded flex-shrink-0 transition-colors" onclick="toggleAudioLoop(this, 'audio-${item.id}')" title="Toggle Loop">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="17 1 21 5 17 9"></polyline><path d="M3 11V9a4 4 0 0 1 4-4h14"></path><polyline points="7 23 3 19 7 15"></polyline><path d="M21 13v2a4 4 0 0 1-4 4H3"></path></svg>
+                            </button>
+                            <a class="audio-download-btn text-zinc-500 hover:text-purple-400 transition-colors flex-shrink-0 ml-0.5" href="${escapeHtml(item.url)}" download="${escapeHtml(getAudioDownloadFilename(item))}" target="_blank" title="Download Audio" onclick="event.stopPropagation()">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
                             </a>
                             <audio id="audio-${item.id}" src="${escapeHtml(item.url)}" ontimeupdate="updateProgress(this)" onloadedmetadata="setDuration(this)" onended="resetPlayer(this)"></audio>
@@ -1346,9 +1519,171 @@
 
             nodesLayer.appendChild(el);
             domItems.set(item.id, el);
+            applyItemColor(el, item);
 
             if (item.type === 'timeline') {
                 renderTimelineSVG(el.querySelector('.timeline-svg'), item);
+            }
+        }
+
+        function applyItemColor(el, item) {
+            if (!el || !item) return;
+            if (item.type === 'note' || item.type === 'code') {
+                el.style.borderColor = item.color || '';
+                const hdr = el.querySelector('.node-header');
+                if (hdr) hdr.style.borderBottomColor = item.color ? `${item.color}66` : '';
+                const h2 = el.querySelector('.node-header h2');
+                if (h2) h2.style.color = item.color || '';
+            } else if (item.type === 'frame') {
+                el.style.borderColor = item.color || '';
+                el.style.backgroundColor = item.color ? `${item.color}14` : '';
+                const h2 = el.querySelector('.node-header h2');
+                if (h2) h2.style.color = item.color || '';
+            }
+        }
+
+        function setItemColor(color) {
+            const ids = getTargetItemIds();
+            if (ids.length === 0) return;
+            ids.forEach(id => {
+                const item = boardData.items.find(i => i.id === id);
+                const el = domItems.get(id);
+                if (item && !item.locked && (item.type === 'note' || item.type === 'code' || item.type === 'frame')) {
+                    item.color = color || '';
+                    applyItemColor(el, item);
+                }
+            });
+            saveState();
+        }
+
+        function getTargetItemIds() {
+            if (state.selectedItemIds.size > 0) return Array.from(state.selectedItemIds);
+            if (state.contextTargetId && boardData.items.some(i => i.id === state.contextTargetId)) {
+                return [state.contextTargetId];
+            }
+            return [];
+        }
+
+        function buildClipboardPayload(itemIds) {
+            const idSet = new Set(itemIds);
+            const items = boardData.items
+                .filter(i => idSet.has(i.id))
+                .map(i => JSON.parse(JSON.stringify(i)));
+            const connections = boardData.connections
+                .filter(c => idSet.has(c.source) && idSet.has(c.target))
+                .map(c => JSON.parse(JSON.stringify(c)));
+            return { items, connections, ts: Date.now() };
+        }
+
+        function pasteClipboardPayload(payload, offsetX = 40, offsetY = 40) {
+            if (!payload || !Array.isArray(payload.items) || payload.items.length === 0) return;
+            const idMap = {};
+            const newIds = [];
+            payload.items.forEach(orig => {
+                const newItem = JSON.parse(JSON.stringify(orig));
+                const newId = generateId();
+                idMap[orig.id] = newId;
+                newItem.id = newId;
+                newItem.x = (newItem.x || 0) + offsetX;
+                newItem.y = (newItem.y || 0) + offsetY;
+                newItem.zIndex = newItem.type === 'frame' ? 0 : ++state.zIndexCounter;
+                newItem.locked = false;
+                boardData.items.push(newItem);
+                newIds.push(newId);
+            });
+            (payload.connections || []).forEach(origConn => {
+                if (idMap[origConn.source] && idMap[origConn.target]) {
+                    const newConn = JSON.parse(JSON.stringify(origConn));
+                    newConn.id = generateId();
+                    newConn.source = idMap[origConn.source];
+                    newConn.target = idMap[origConn.target];
+                    boardData.connections.push(newConn);
+                }
+            });
+            state.selectedItemIds = new Set(newIds);
+            state.selectedLineIds.clear();
+            renderAll();
+            updateSelectionVisuals();
+            saveState();
+            updateSidebar();
+        }
+
+        function duplicateSelectedItems() {
+            const ids = getTargetItemIds();
+            if (ids.length === 0) return;
+            pasteClipboardPayload(buildClipboardPayload(ids), 40, 40);
+        }
+
+        function copySelectedToClipboard() {
+            const ids = getTargetItemIds();
+            if (ids.length === 0) return;
+            const payload = buildClipboardPayload(ids);
+            try { localStorage.setItem(BOARD_CLIPBOARD_KEY, JSON.stringify(payload)); } catch (e) {}
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText('__FNAFLORE_BOARD_CLIPBOARD__').catch(() => {});
+            }
+        }
+
+        function pasteFromClipboard() {
+            try {
+                const raw = localStorage.getItem(BOARD_CLIPBOARD_KEY);
+                if (!raw) return false;
+                const payload = JSON.parse(raw);
+                pasteClipboardPayload(payload, 40, 40);
+                return true;
+            } catch (e) {
+                return false;
+            }
+        }
+
+        function copySelectedToBoard(targetBoardId) {
+            const ids = getTargetItemIds();
+            if (ids.length === 0) return;
+            const payload = buildClipboardPayload(ids);
+            const activeId = getBoardsMeta().activeId;
+            if (targetBoardId === activeId) {
+                pasteClipboardPayload(payload, 40, 40);
+                return;
+            }
+            const targetKey = getBoardStorageKey(targetBoardId);
+            let targetData = { items: [], connections: [], drawings: [] };
+            try {
+                const raw = localStorage.getItem(targetKey);
+                if (raw) {
+                    const parsed = JSON.parse(raw);
+                    targetData = {
+                        items: parsed.items || [],
+                        connections: parsed.connections || [],
+                        drawings: parsed.drawings || []
+                    };
+                }
+            } catch (e) {}
+
+            const idMap = {};
+            payload.items.forEach(orig => {
+                const newItem = JSON.parse(JSON.stringify(orig));
+                const newId = generateId();
+                idMap[orig.id] = newId;
+                newItem.id = newId;
+                newItem.x = (newItem.x || 0) + 20;
+                newItem.y = (newItem.y || 0) + 20;
+                targetData.items.push(newItem);
+            });
+            (payload.connections || []).forEach(origConn => {
+                if (idMap[origConn.source] && idMap[origConn.target]) {
+                    const newConn = JSON.parse(JSON.stringify(origConn));
+                    newConn.id = generateId();
+                    newConn.source = idMap[origConn.source];
+                    newConn.target = idMap[origConn.target];
+                    targetData.connections.push(newConn);
+                }
+            });
+            try {
+                localStorage.setItem(targetKey, JSON.stringify(targetData));
+                const targetBoard = getBoardsMeta().boards.find(b => b.id === targetBoardId);
+                showAlert(`Copied ${payload.items.length} item(s) to "${targetBoard ? targetBoard.name : targetBoardId}".`);
+            } catch (e) {
+                showAlert('Failed to copy to target board (storage quota may be exceeded).');
             }
         }
 
@@ -2154,6 +2489,25 @@
                     fontWrapper.style.display = 'none';
                 }
 
+                const colorWrapper = document.getElementById('item-color-wrapper');
+                if (colorWrapper) {
+                    if (item && (item.type === 'note' || item.type === 'code' || item.type === 'frame')) {
+                        colorWrapper.style.display = 'block';
+                        if (item.color) document.getElementById('item-color-picker').value = item.color;
+                    } else {
+                        colorWrapper.style.display = 'none';
+                    }
+                }
+
+                const copyBoardSel = document.getElementById('item-copy-board-select');
+                const copyBoardWrap = document.getElementById('copy-to-board-wrapper');
+                if (copyBoardSel && copyBoardWrap) {
+                    const meta = getBoardsMeta();
+                    copyBoardSel.innerHTML = meta.boards.map(b => `<option value="${escapeHtml(b.id)}">${escapeHtml(b.name)}${b.id === meta.activeId ? ' (Current)' : ''}</option>`).join('');
+                    const other = meta.boards.find(b => b.id !== meta.activeId);
+                    if (other) copyBoardSel.value = other.id;
+                }
+
                 document.getElementById('item-menu-delete').style.display = item.locked ? 'none' : 'block';
                 document.getElementById('item-menu-lock').innerText = item.locked ? 'Unlock Item' : 'Lock Item';
 
@@ -2492,6 +2846,10 @@
             if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.isContentEditable) return;
             if ((e.ctrlKey || e.metaKey) && !e.shiftKey && e.key.toLowerCase() === 'z') { e.preventDefault(); undo(); return; }
             if ((e.ctrlKey || e.metaKey) && (e.key.toLowerCase() === 'y' || (e.shiftKey && e.key.toLowerCase() === 'z'))) { e.preventDefault(); redo(); return; }
+            if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'd') { e.preventDefault(); duplicateSelectedItems(); return; }
+            if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'c' && !window.getSelection().toString()) {
+                if (getTargetItemIds().length > 0) { e.preventDefault(); copySelectedToClipboard(); return; }
+            }
             if (e.key === 'Delete' || e.key === 'Backspace') deleteSelectedItems();
         }
 
@@ -2520,14 +2878,25 @@
                 return;
             }
 
-            if (!e.clipboardData || !e.clipboardData.items) return;
+            if (!e.clipboardData || !e.clipboardData.items) {
+                pasteFromClipboard();
+                return;
+            }
             const items = e.clipboardData.items;
+            if (items.length === 0) {
+                pasteFromClipboard();
+                return;
+            }
             for (let item of items) {
                 if (item.type.indexOf('image') === 0) {
                     state.startX = window.innerWidth/2; state.startY = window.innerHeight/2;
                     readImageFile(item.getAsFile());
                 } else if (item.type === 'text/plain') {
                     item.getAsString(text => {
+                        if (text === '__FNAFLORE_BOARD_CLIPBOARD__') {
+                            pasteFromClipboard();
+                            return;
+                        }
                         state.startX = window.innerWidth/2; state.startY = window.innerHeight/2;
                         hideMenus();
                         const pos = screenToWorld(state.startX, state.startY);

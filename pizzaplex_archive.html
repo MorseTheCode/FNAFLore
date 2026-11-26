@@ -715,6 +715,8 @@
             }
 
             const encodedCopyText = encodeURIComponent(rawCopyText).replace(/'/g, "%27");
+            const encodedLogId = encodeURIComponent(log.id).replace(/'/g, "%27");
+            const pinSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 17v5"></path><path d="M9 10.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24V16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V7a1 1 0 0 1 1-1 2 2 0 0 0 0-4H8a2 2 0 0 0 0 4 1 1 0 0 1 1 1z"></path></svg>`;
 
             div.innerHTML = `
                 <div class="flex justify-between items-start mb-3">
@@ -722,7 +724,10 @@
                         ${typeBadge}
                         ${locHtml}
                     </div>
-                    <button class="copy-btn" title="Copy Content" onclick="copyContent(this, '${encodedCopyText}')">${copySvg}</button>
+                    <div class="flex items-center gap-1 shrink-0">
+                        <button class="copy-btn" title="Send to Theory Board" onclick="sendToTheoryBoard(this, '${encodedLogId}')">${pinSvg}</button>
+                        <button class="copy-btn" title="Copy Content" onclick="copyContent(this, '${encodedCopyText}')">${copySvg}</button>
+                    </div>
                 </div>
                 ${titleDisplay}
                 <div class="content-wrapper flex flex-col">
@@ -745,6 +750,58 @@
             const originalHTML = btn.innerHTML;
             btn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#4ade80" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
             setTimeout(() => { btn.innerHTML = originalHTML; }, 1500);
+        }
+
+        function sendToTheoryBoard(btn, encodedId) {
+            const logId = decodeURIComponent(encodedId);
+            const log = (appData.logs || []).find(l => l.id === logId);
+            if (!log) return;
+
+            let activeId = 'default';
+            try {
+                const metaRaw = localStorage.getItem('theory_board_slots');
+                if (metaRaw) {
+                    const meta = JSON.parse(metaRaw);
+                    if (meta && meta.activeId) activeId = meta.activeId;
+                }
+            } catch (e) {}
+            const storageKey = activeId === 'default' ? 'theory_board_data' : `theory_board_data_${activeId}`;
+            let board = { items: [], connections: [], drawings: [] };
+            try {
+                const raw = localStorage.getItem(storageKey);
+                if (raw) {
+                    const parsed = JSON.parse(raw);
+                    board = { items: parsed.items || [], connections: parsed.connections || [], drawings: parsed.drawings || [] };
+                }
+            } catch (e) {}
+
+            const baseX = 200 + (board.items.length % 6) * 40;
+            const baseY = 200 + (board.items.length % 6) * 40;
+            const title = log.title || 'Archive Entry';
+
+            if (log.content) {
+                board.items.push({
+                    id: 'id_' + Math.random().toString(36).slice(2, 9) + Date.now().toString(36),
+                    type: 'note', x: baseX, y: baseY, width: 340, height: 280,
+                    title: title, content: log.content, fontSize: 13, zIndex: 20, locked: false
+                });
+            }
+            const audioUrl = (log.audios && log.audios[0] && log.audios[0].url) ? log.audios[0].url : log.audioUrl;
+            if (audioUrl) {
+                board.items.push({
+                    id: 'id_' + Math.random().toString(36).slice(2, 9) + Date.now().toString(36),
+                    type: 'audio', x: baseX, y: baseY + (log.content ? 300 : 0), width: 350,
+                    title: title, url: audioUrl, zIndex: 20, locked: false
+                });
+            }
+            try {
+                localStorage.setItem(storageKey, JSON.stringify(board));
+                const originalHTML = btn.innerHTML;
+                btn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#4ade80" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
+                setTimeout(() => { btn.innerHTML = originalHTML; }, 1500);
+            } catch (e) {
+                alert('Could not send to Theory Board: ' + e.message);
+            }
         }
 
         document.getElementById('searchInput').addEventListener('input', (e) => { currentSearch = e.target.value; render(); });
