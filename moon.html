@@ -1004,6 +1004,8 @@ function executeNode(sec, nodeIdx) {
                 tagsChanged = true;
             } else if (pn.type === 'ImageOption' && pn.img) {
                 setBackground(pn.img, []);
+            } else if (pn.type === 'TextOption' && pn.desc && evalCond(pn.showCond) && evalCond(pn.cond)) {
+                setTypewriterText(pn.desc);
             }
         });
         if (tagsChanged) {
