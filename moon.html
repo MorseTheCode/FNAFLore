@@ -239,7 +239,13 @@ body {
 <div class="crt-frame">
     <div class="crt-scanlines"></div>
     <div class="header-bar">
-        <div class="header-title">MOON.EXE // TERMINAL 2D ADVENTURE</div>
+        <div style="display:flex; align-items:center; gap:12px;">
+            <a href="index.html" class="ctrl-btn" style="text-decoration:none; display:inline-flex; align-items:center; gap:5px;" title="Return to Hub">
+                <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+                RETURN_TO_HUB
+            </a>
+            <div class="header-title">MOON.EXE // TERMINAL 2D ADVENTURE</div>
+        </div>
         <div class="header-controls">
             <span id="actLabel" style="color:#FFA347; font-size:12px;">ACT 1</span>
             <button class="ctrl-btn" id="btnPrepAnim" onclick="togglePrepAnim()">⌨️ Prep Anim: ON</button>
