@@ -83,9 +83,18 @@ body {
     position: relative;
     width: 100%;
     aspect-ratio: 1200 / 384;
-    background: #000;
+    background: #21292e;
     overflow: hidden;
     border-bottom: 2px solid #1e4d2e;
+}
+.viewport-wrap::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: #21292e;
+    mix-blend-mode: lighten;
+    pointer-events: none;
+    z-index: 15;
 }
 .viewport-layer {
     position: absolute;
@@ -260,9 +269,6 @@ body {
         <div class="inv-bar" id="invBar">Inventory: (empty)</div>
     </div>
 </div>
-<div style="margin-top:12px; display:flex; gap:8px; align-items:center; justify-content:center;">
-    <button class="ctrl-btn" style="border-color:#FFA347; color:#FFA347;" onclick="debugSkipToDavidsRoom()">🐞 Debug: Skip to David's Room (Tiger, Ball, Blocks)</button>
-</div>
 <canvas id="finaleOverlayCanvas" style="display:none; position:fixed; inset:0; width:100vw; height:100vh; z-index:9999; pointer-events:none;"></canvas>
 
 <script>
@@ -318,6 +324,17 @@ const ITEM_LABELS = {
     '2DGame.Act1.CollectedWindowKey': 'Window Key',
     '2DGame.Act1.CollectedHedgehogMask': 'Hedgehog Mask',
     '2DGame.Act1.WearingHedgehogMask': 'Wearing Hedgehog Mask',
+    '2DGame.Act2.DarkForest.CollectedFoxyPuppet': 'Foxy Puppet',
+    '2DGame.Act2.DarkForest.CollectedHoneyBottle': 'Honey Bottle',
+    '2DGame.Act2.DarkForest.CollectedSewingKit': 'Sewing Kit',
+    '2DGame.Act2.DarkForest.CollectedBowtie': 'Bowtie',
+    '2DGame.Act2.Forest.CollectedChicaThermos': 'Chica Cup',
+    '2DGame.Act2.Forest.CollectedPoisonSoup': 'Strange Soup',
+    '2DGame.Act2.Forest.CollectedRangerArmyKnife': 'Ranger Army Knife',
+    '2DGame.Act2.Forest.CollectedWalkingStick': 'Walking Stick',
+    '2DGame.Act2.Forest.CollectedNightLight': 'Star Orphan Nightlight',
+    '2DGame.Act2.InsideCabin.CollectedBabyOwlMask': 'Baby Owl Mask',
+    '2DGame.Act2.ForestWO.WearingOwlMask': 'Wearing Owl Mask',
     '2DGame.Act2.CollectedFishingRod': 'Fishing Net',
     '2DGame.Act2.CollectedWalkingStick': 'Walking Stick',
     '2DGame.Act2.CollectedHoney': 'Honey Bottle',
@@ -325,6 +342,8 @@ const ITEM_LABELS = {
     '2DGame.Act2.CollectedBowtie': 'Bowtie',
     '2DGame.Act2.CollectedOwlMask': 'Owl Mask',
     '2DGame.Act2.CollectedNightlight': 'Star Orphan Nightlight',
+    '2DGame.Act3.Cave.CollectedFishingNet': 'Fishing Net',
+    '2DGame.Act3.Cave.CollectedToyHammer': 'Toy Hammer',
     '2DGame.Act3.Cave.CollectedPickaxe': 'Pickaxe',
     '2DGame.Act3.Cave.CollectedMoonHead': 'Stone Moon Head',
     '2DGame.Act3.Cave.CollectedMoonLeftArm': 'Stone Left Arm',
@@ -334,6 +353,8 @@ const ITEM_LABELS = {
     '2DGame.Act3.TheGame.CollectedDavidBlocks': "David's Blocks",
     '2DGame.Act3.TheGame.CollectedWhiteTigerDoll': 'White Tiger Doll',
     '2DGame.Act3.TheGame.CollectedBirthdayCake': 'Birthday Cake',
+    '2DGame.Act3.TheGame.CollectedFallFestTicketBook': 'Fall Fest Ticket Book',
+    '2DGame.Act3.TheGame.CollectedJuniorDoctorKit': "Doctor's Kit",
     '2DGame.Act3.TheGame.CollectedDoctorsKit': "Doctor's Kit",
     '2DGame.Act3.TheGame.CollectedSecurityBadge': 'Security Badge',
     '2DGame.Minigame.CollectedGlitchedPermission': 'GLITCHED PERMISSION'
@@ -466,22 +487,6 @@ function restartFromCheckpoint() {
     state.busy = false;
     state.chestLockSeq = [];
     enterSection(state.checkpointSection);
-}
-
-function debugSkipToDavidsRoom() {
-    stopAllAnimations();
-    state.isDead = false;
-    state.busy = false;
-    state.boxes = { Moon: null, Star: null, Snow: null };
-    state.tags.add('2DGame.Act3.TheGame.CollectedDavidBall');
-    state.tags.add('2DGame.Act3.TheGame.CollectedDavidBlocks');
-    state.tags.add('2DGame.Act3.TheGame.CollectedWhiteTigerDoll');
-    state.tags.add('2DGame.Item.DavidBall');
-    state.tags.add('2DGame.Item.DavidBlocks');
-    state.tags.add('2DGame.Item.WhiteTigerDoll');
-    saveGame();
-    renderInventory();
-    enterSection('Section_GameDavidsRoom_Part1');
 }
 
 let finaleRaf = null;
