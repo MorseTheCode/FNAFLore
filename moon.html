@@ -541,6 +541,7 @@ function renderInventory() {
     const bar = document.getElementById('invBar');
     const items = [];
     state.tags.forEach(t => {
+        if (t === '2DGame.Act1.CollectedHedgehogMask' && state.tags.has('2DGame.Act1.WearingHedgehogMask')) return;
         if (ITEM_LABELS[t]) items.push(ITEM_LABELS[t]);
     });
     if (!items.length) {
