@@ -3348,6 +3348,61 @@
             });
         }
 
+        let pendingChunks = new Map(); // transferId -> { msgType, total, parts, count }
+
+        function uint8ToBase64(u8) {
+            let binary = '';
+            const chunkSize = 0x8000;
+            for (let i = 0; i < u8.length; i += chunkSize) {
+                binary += String.fromCharCode.apply(null, u8.subarray(i, i + chunkSize));
+            }
+            return btoa(binary);
+        }
+
+        function base64ToUint8(b64) {
+            const binary = atob(b64);
+            const len = binary.length;
+            const u8 = new Uint8Array(len);
+            for (let i = 0; i < len; i++) {
+                u8[i] = binary.charCodeAt(i);
+            }
+            return u8;
+        }
+
+        function sendYjsBytes(conn, msgType, u8) {
+            if (!conn || !conn.open) return;
+            try {
+                const b64 = uint8ToBase64(u8);
+                const CHUNK_LEN = 16000;
+                if (b64.length <= CHUNK_LEN) {
+                    conn.send({ type: msgType, b64 });
+                } else {
+                    const total = Math.ceil(b64.length / CHUNK_LEN);
+                    const transferId = Math.random().toString(36).slice(2) + Date.now().toString(36);
+                    for (let i = 0; i < total; i++) {
+                        conn.send({
+                            type: 'yjs-chunk',
+                            msgType,
+                            transferId,
+                            index: i,
+                            total,
+                            chunk: b64.slice(i * CHUNK_LEN, (i + 1) * CHUNK_LEN)
+                        });
+                    }
+                }
+            } catch (e) {
+                console.warn('Collab sendYjsBytes error:', e);
+            }
+        }
+
+        function broadcastYjsBytes(msgType, u8, excludePeerId = null) {
+            dataConns.forEach((c, pid) => {
+                if (pid !== excludePeerId && c.open) {
+                    sendYjsBytes(c, msgType, u8);
+                }
+            });
+        }
+
         function broadcastMsg(msg, excludePeerId = null) {
             dataConns.forEach((c, pid) => {
                 if (pid !== excludePeerId && c.open) {
@@ -3356,22 +3411,63 @@
             });
         }
 
+        function handleIncomingYjsBytes(u8, fromPeerId) {
+            if (!ydoc) return;
+            try {
+                Y.applyUpdate(ydoc, u8, 'remote');
+                if (isHost) {
+                    broadcastYjsBytes('yjs-update', u8, fromPeerId);
+                }
+            } catch (e) {
+                console.warn('Collab applyUpdate error:', e);
+            }
+        }
+
         function setupDataConn(conn) {
             dataConns.set(conn.peer, conn);
 
-            conn.on('open', () => {
+            const onConnOpen = () => {
                 setCollabStatus('online');
                 if (ydoc) {
-                    conn.send({ type: 'yjs-sync', data: Array.from(Y.encodeStateAsUpdate(ydoc)) });
+                    if (isHost) {
+                        window.collabSyncLocalToYjs();
+                        sendYjsBytes(conn, 'yjs-sync', Y.encodeStateAsUpdate(ydoc));
+                    } else {
+                        try { conn.send({ type: 'yjs-req-sync' }); } catch (e) {}
+                        sendYjsBytes(conn, 'yjs-sync', Y.encodeStateAsUpdate(ydoc));
+                    }
                 }
-            });
+            };
+
+            if (conn.open) onConnOpen();
+            else conn.on('open', onConnOpen);
 
             conn.on('data', (msg) => {
                 if (!msg || !msg.type) return;
-                if (msg.type === 'yjs-sync' || msg.type === 'yjs-update') {
-                    if (ydoc && msg.data) {
-                        Y.applyUpdate(ydoc, new Uint8Array(msg.data), 'remote');
-                        if (isHost) broadcastMsg(msg, conn.peer);
+                if (msg.type === 'yjs-req-sync') {
+                    if (ydoc && isHost) {
+                        window.collabSyncLocalToYjs();
+                        sendYjsBytes(conn, 'yjs-sync', Y.encodeStateAsUpdate(ydoc));
+                    }
+                } else if (msg.type === 'yjs-sync' || msg.type === 'yjs-update') {
+                    if (msg.b64) {
+                        handleIncomingYjsBytes(base64ToUint8(msg.b64), conn.peer);
+                    } else if (msg.data) {
+                        handleIncomingYjsBytes(new Uint8Array(msg.data), conn.peer);
+                    }
+                } else if (msg.type === 'yjs-chunk') {
+                    let entry = pendingChunks.get(msg.transferId);
+                    if (!entry) {
+                        entry = { msgType: msg.msgType, total: msg.total, parts: new Array(msg.total), count: 0 };
+                        pendingChunks.set(msg.transferId, entry);
+                    }
+                    if (entry.parts[msg.index] === undefined) {
+                        entry.parts[msg.index] = msg.chunk;
+                        entry.count++;
+                    }
+                    if (entry.count === entry.total) {
+                        pendingChunks.delete(msg.transferId);
+                        handleIncomingYjsBytes(base64ToUint8(entry.parts.join('')), conn.peer);
                     }
                 } else if (msg.type === 'cursor') {
                     const senderId = msg.id || conn.peer;
@@ -3418,17 +3514,15 @@
             yConns = ydoc.getMap('connections');
             yDraws = ydoc.getMap('drawings');
 
-            const onRemoteChange = (event) => {
-                if (event.transaction.origin === 'local') return;
-                applyRemoteToBoard();
-            };
-            yItems.observe(onRemoteChange);
-            yConns.observe(onRemoteChange);
-            yDraws.observe(onRemoteChange);
+            ydoc.on('afterTransaction', (tr) => {
+                if (tr.origin === 'remote') {
+                    applyRemoteToBoard();
+                }
+            });
 
             ydoc.on('update', (update, origin) => {
                 if (origin === 'remote') return;
-                broadcastMsg({ type: 'yjs-update', data: Array.from(update) });
+                broadcastYjsBytes('yjs-update', update);
             });
 
             const hostPeerId = 'fnaflore-room-' + cleanRoom;
@@ -3470,6 +3564,7 @@
             dataConns.forEach(c => { try { c.close(); } catch (e) {} });
             dataConns.clear();
             remotePeers.clear();
+            pendingChunks.clear();
             if (peer) {
                 try { peer.destroy(); } catch (e) {}
                 peer = null;
