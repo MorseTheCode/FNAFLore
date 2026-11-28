@@ -3954,7 +3954,7 @@
             }
             try {
                 const b64 = uint8ToBase64(u8);
-                const CHUNK_LEN = 16000;
+                const CHUNK_LEN = 48000;
                 if (b64.length <= CHUNK_LEN) {
                     conn.send({ type: msgType, b64 });
                     console.info('[Collab] sent', msgType, 'bytes:', u8.length, 'to', conn.peer);
@@ -3967,8 +3967,8 @@
                         while (i < total) {
                             if (!isConnReady(conn)) return;
                             const dc = conn._dc;
-                            if (dc && dc.bufferedAmount > 262144) {
-                                setTimeout(sendNextChunk, 20);
+                            if (dc && dc.bufferedAmount > 1048576) {
+                                setTimeout(sendNextChunk, 10);
                                 return;
                             }
                             conn.send({
@@ -4232,6 +4232,11 @@
             const startAsGuest = () => {
                 isHost = false;
                 hasInitialSync = false;
+                // Clear local view immediately without touching localStorage while waiting for host sync
+                boardData = { items: [], connections: [], drawings: [] };
+                clearSelection();
+                renderAll();
+                updateSidebar();
                 initYdoc();
                 peer = new Peer();
                 peer.on('open', () => {
@@ -4268,6 +4273,7 @@
         }
 
         function disconnectRoom() {
+            const wasGuest = !isHost && !!peer;
             dataConns.forEach(c => { try { c.close(); } catch (e) {} });
             dataConns.clear();
             remotePeers.clear();
@@ -4287,6 +4293,10 @@
             }
             if (cursorsLayer) cursorsLayer.innerHTML = '';
             setCollabStatus('offline');
+            if (wasGuest) {
+                boardData = { items: [], connections: [], drawings: [] };
+                loadState();
+            }
         }
 
         toggleBtn.addEventListener('click', () => {
