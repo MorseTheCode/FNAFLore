@@ -204,13 +204,35 @@ const GAME_DATA = {"audio": {"blip": "data:audio/mp3;base64,SUQzBAAAAAAAIlRTU0UA
         }
     }
 
+    function makeSeamlessBuffer(decoded, fadeSec = 0.015) {
+        const sr = decoded.sampleRate;
+        const fadeSamples = Math.min(Math.floor(sr * fadeSec), Math.floor(decoded.length / 4));
+        const newLen = decoded.length - fadeSamples;
+        if (newLen <= fadeSamples) return decoded;
+
+        const out = audioCtx.createBuffer(decoded.numberOfChannels, newLen, sr);
+        for (let ch = 0; ch < decoded.numberOfChannels; ch++) {
+            const oldData = decoded.getChannelData(ch);
+            const newData = out.getChannelData(ch);
+            for (let i = 0; i < fadeSamples; i++) {
+                const t = i / fadeSamples;
+                newData[i] = oldData[i] * t + oldData[newLen + i] * (1 - t);
+            }
+            for (let i = fadeSamples; i < newLen; i++) {
+                newData[i] = oldData[i];
+            }
+        }
+        return out;
+    }
+
     async function startGaplessLoop(key, gainNode, isMusic = false) {
         try {
             const buf = dataUrlToArrayBuffer(GAME_DATA.audio[key]);
             const decoded = await audioCtx.decodeAudioData(buf);
-            if (isMusic) musicBuffer = decoded;
+            const seamless = makeSeamlessBuffer(decoded, isMusic ? 0.020 : 0.030);
+            if (isMusic) musicBuffer = seamless;
             const src = audioCtx.createBufferSource();
-            src.buffer = decoded;
+            src.buffer = seamless;
             src.loop = true;
             src.connect(gainNode);
             src.start(0);
