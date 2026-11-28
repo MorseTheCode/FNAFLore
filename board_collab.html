@@ -3369,35 +3369,55 @@
             return u8;
         }
 
+        function isConnReady(c) {
+            return !!(c && (c.open || (c._dc && c._dc.readyState === 'open')));
+        }
+
         function sendYjsBytes(conn, msgType, u8) {
-            if (!conn || !conn.open) return;
+            if (!isConnReady(conn)) {
+                console.warn('[Collab] sendYjsBytes skipped: conn not open', conn && conn.peer, conn && conn.open, conn && conn._dc && conn._dc.readyState);
+                return;
+            }
             try {
                 const b64 = uint8ToBase64(u8);
                 const CHUNK_LEN = 16000;
                 if (b64.length <= CHUNK_LEN) {
                     conn.send({ type: msgType, b64 });
+                    console.info('[Collab] sent', msgType, 'bytes:', u8.length, 'to', conn.peer);
                 } else {
                     const total = Math.ceil(b64.length / CHUNK_LEN);
                     const transferId = Math.random().toString(36).slice(2) + Date.now().toString(36);
-                    for (let i = 0; i < total; i++) {
-                        conn.send({
-                            type: 'yjs-chunk',
-                            msgType,
-                            transferId,
-                            index: i,
-                            total,
-                            chunk: b64.slice(i * CHUNK_LEN, (i + 1) * CHUNK_LEN)
-                        });
-                    }
+                    console.info('[Collab] sending chunked', msgType, 'chunks:', total, 'bytes:', u8.length, 'to', conn.peer);
+                    let i = 0;
+                    const sendNextChunk = () => {
+                        while (i < total) {
+                            if (!isConnReady(conn)) return;
+                            const dc = conn._dc;
+                            if (dc && dc.bufferedAmount > 262144) {
+                                setTimeout(sendNextChunk, 20);
+                                return;
+                            }
+                            conn.send({
+                                type: 'yjs-chunk',
+                                msgType,
+                                transferId,
+                                index: i,
+                                total,
+                                chunk: b64.slice(i * CHUNK_LEN, (i + 1) * CHUNK_LEN)
+                            });
+                            i++;
+                        }
+                    };
+                    sendNextChunk();
                 }
             } catch (e) {
-                console.warn('Collab sendYjsBytes error:', e);
+                console.warn('[Collab] sendYjsBytes error:', e);
             }
         }
 
         function broadcastYjsBytes(msgType, u8, excludePeerId = null) {
             dataConns.forEach((c, pid) => {
-                if (pid !== excludePeerId && c.open) {
+                if (pid !== excludePeerId && isConnReady(c)) {
                     sendYjsBytes(c, msgType, u8);
                 }
             });
@@ -3405,7 +3425,7 @@
 
         function broadcastMsg(msg, excludePeerId = null) {
             dataConns.forEach((c, pid) => {
-                if (pid !== excludePeerId && c.open) {
+                if (pid !== excludePeerId && isConnReady(c)) {
                     try { c.send(msg); } catch (e) {}
                 }
             });
@@ -3414,41 +3434,47 @@
         function handleIncomingYjsBytes(u8, fromPeerId) {
             if (!ydoc) return;
             try {
+                console.info('[Collab] applying remote bytes:', u8.length, 'from', fromPeerId);
                 Y.applyUpdate(ydoc, u8, 'remote');
                 if (isHost) {
                     broadcastYjsBytes('yjs-update', u8, fromPeerId);
                 }
             } catch (e) {
-                console.warn('Collab applyUpdate error:', e);
+                console.warn('[Collab] applyUpdate error:', e);
             }
         }
 
         function setupDataConn(conn) {
             dataConns.set(conn.peer, conn);
+            let sentInitialSync = false;
+
+            const sendInitialSyncIfHost = () => {
+                if (!ydoc || !isHost || sentInitialSync) return;
+                sentInitialSync = true;
+                window.collabSyncLocalToYjs();
+                sendYjsBytes(conn, 'yjs-sync', Y.encodeStateAsUpdate(ydoc));
+            };
 
             const onConnOpen = () => {
+                console.info('[Collab] conn open with', conn.peer, 'isHost=', isHost);
                 setCollabStatus('online');
                 if (ydoc) {
                     if (isHost) {
-                        window.collabSyncLocalToYjs();
-                        sendYjsBytes(conn, 'yjs-sync', Y.encodeStateAsUpdate(ydoc));
+                        sendInitialSyncIfHost();
                     } else {
                         try { conn.send({ type: 'yjs-req-sync' }); } catch (e) {}
-                        sendYjsBytes(conn, 'yjs-sync', Y.encodeStateAsUpdate(ydoc));
                     }
                 }
             };
 
-            if (conn.open) onConnOpen();
+            if (isConnReady(conn)) onConnOpen();
             else conn.on('open', onConnOpen);
 
             conn.on('data', (msg) => {
                 if (!msg || !msg.type) return;
                 if (msg.type === 'yjs-req-sync') {
-                    if (ydoc && isHost) {
-                        window.collabSyncLocalToYjs();
-                        sendYjsBytes(conn, 'yjs-sync', Y.encodeStateAsUpdate(ydoc));
-                    }
+                    console.info('[Collab] received yjs-req-sync from', conn.peer);
+                    sendInitialSyncIfHost();
                 } else if (msg.type === 'yjs-sync' || msg.type === 'yjs-update') {
                     if (msg.b64) {
                         handleIncomingYjsBytes(base64ToUint8(msg.b64), conn.peer);
@@ -3514,14 +3540,11 @@
             yConns = ydoc.getMap('connections');
             yDraws = ydoc.getMap('drawings');
 
-            ydoc.on('afterTransaction', (tr) => {
-                if (tr.origin === 'remote') {
-                    applyRemoteToBoard();
-                }
-            });
-
             ydoc.on('update', (update, origin) => {
-                if (origin === 'remote') return;
+                if (origin === 'remote') {
+                    applyRemoteToBoard();
+                    return;
+                }
                 broadcastYjsBytes('yjs-update', update);
             });
 
@@ -3532,7 +3555,7 @@
                 peer = new Peer();
                 peer.on('open', () => {
                     setCollabStatus('online');
-                    const conn = peer.connect(hostPeerId, { reliable: true });
+                    const conn = peer.connect(hostPeerId);
                     setupDataConn(conn);
                 });
                 peer.on('error', (err) => {
