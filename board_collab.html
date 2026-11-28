@@ -3266,8 +3266,50 @@
         import * as Y from 'https://esm.sh/yjs@13.6.19';
         import { Peer } from 'https://esm.sh/peerjs@1.5.4';
 
-        const PEER_COLORS = ['#22d3ee', '#f472b6', '#facc15', '#a78bfa', '#fb923c', '#34d399'];
-        const myColor = PEER_COLORS[Math.floor(Math.random() * PEER_COLORS.length)];
+        function hslToHex(h, s, l) {
+            s /= 100;
+            l /= 100;
+            const k = n => (n + h / 30) % 12;
+            const a = s * Math.min(l, 1 - l);
+            const f = n => l - a * Math.max(-1, Math.min(k(n) - 3, Math.min(9 - k(n), 1)));
+            const toHex = x => Math.round(x * 255).toString(16).padStart(2, '0');
+            return `#${toHex(f(0))}${toHex(f(8))}${toHex(f(4))}`;
+        }
+
+        const peerAssignedColors = new Map(); // peerId -> { hue, color }
+        function getDistinctRandomPeerColor(peerId) {
+            if (peerAssignedColors.has(peerId)) return peerAssignedColors.get(peerId).color;
+            const usedHues = Array.from(peerAssignedColors.values()).map(v => v.hue);
+            let bestHue = Math.floor(Math.random() * 360);
+            let bestMinDist = -1;
+            for (let i = 0; i < 36; i++) {
+                const candidate = Math.floor(Math.random() * 360);
+                if (usedHues.length === 0) {
+                    bestHue = candidate;
+                    break;
+                }
+                let minDist = 360;
+                for (const uh of usedHues) {
+                    const d = Math.abs(candidate - uh);
+                    minDist = Math.min(minDist, Math.min(d, 360 - d));
+                }
+                if (minDist >= 45) {
+                    bestHue = candidate;
+                    break;
+                }
+                if (minDist > bestMinDist) {
+                    bestMinDist = minDist;
+                    bestHue = candidate;
+                }
+            }
+            const sat = 82 + Math.floor(Math.random() * 14); // 82% - 95%
+            const light = 60 + Math.floor(Math.random() * 10); // 60% - 69%
+            const color = hslToHex(bestHue, sat, light);
+            peerAssignedColors.set(peerId, { hue: bestHue, color });
+            return color;
+        }
+
+        const myColor = hslToHex(Math.floor(Math.random() * 360), 88, 64);
         const nameInput = document.getElementById('collab-name-input');
         const roomInput = document.getElementById('collab-room-input');
         const statusEl = document.getElementById('collab-status');
@@ -3633,7 +3675,7 @@
                     if (!peer || senderId !== peer.id) {
                         remotePeers.set(senderId, {
                             name: msg.name,
-                            color: msg.color,
+                            color: getDistinctRandomPeerColor(senderId),
                             mode: msg.mode || 'mouse',
                             x: msg.x,
                             y: msg.y,
@@ -3728,6 +3770,7 @@
             dataConns.forEach(c => { try { c.close(); } catch (e) {} });
             dataConns.clear();
             remotePeers.clear();
+            peerAssignedColors.clear();
             pendingChunks.clear();
             if (peer) {
                 try { peer.destroy(); } catch (e) {}
