@@ -194,6 +194,32 @@
             background: rgba(24, 24, 27, 0.8); border: 1px solid #3f3f46; border-radius: 0.5rem;
             backdrop-filter: blur(4px); z-index: 9000; overflow: hidden; pointer-events: auto; cursor: pointer;
         }
+
+        body.view-only-mode .ui-overlay,
+        body.view-only-mode #top-tools-bar,
+        body.view-only-mode #bottom-actions-bar,
+        body.view-only-mode #align-bar,
+        body.view-only-mode #sidebar-navigator,
+        body.view-only-mode .context-menu,
+        body.view-only-mode #btn-toggle-sidebar,
+        body.view-only-mode #nav-sidebar-divider,
+        body.view-only-mode .resize-handle,
+        body.view-only-mode .edit-timeline-btn {
+            display: none !important;
+        }
+        body.view-only-mode .theory-node {
+            cursor: grab !important;
+        }
+        body.view-only-mode .theory-node .editable {
+            pointer-events: none !important;
+            user-select: none !important;
+            cursor: grab !important;
+        }
+        body.view-only-mode .theory-node select,
+        body.view-only-mode .theory-node .copy-code-btn,
+        body.view-only-mode .theory-node .download-code-btn {
+            pointer-events: none !important;
+        }
     </style>
 </head>
 <body>
@@ -226,11 +252,12 @@
                 <input type="text" id="collab-name-input" class="bg-zinc-800 text-zinc-200 text-xs mono rounded px-2 py-1 border border-zinc-700 outline-none w-24" placeholder="Your name" title="Your Display Name">
                 <button id="btn-collab-toggle" class="control-btn !w-auto !h-7 px-2.5 text-xs mono font-bold text-cyan-400 hover:text-cyan-300" title="Connect / Disconnect P2P Room">Connect</button>
                 <button id="btn-collab-copy" class="control-btn !w-auto !h-7 px-2 text-xs mono text-green-400 hover:text-green-300" title="Copy Room Invite Link">Invite</button>
+                <button id="btn-collab-peers" class="control-btn !w-auto !h-7 px-2 text-xs mono text-amber-400 hover:text-amber-300 hidden" title="Manage Connected Peers (Host)">Peers (0)</button>
             </div>
         </div>
     </div>
 
-    <div class="controls" style="top: 1.5rem; left: 50%; transform: translateX(-50%); bottom: auto; right: auto; flex-wrap: wrap; justify-content: center;">
+    <div id="top-tools-bar" class="controls" style="top: 1.5rem; left: 50%; transform: translateX(-50%); bottom: auto; right: auto; flex-wrap: wrap; justify-content: center;">
         <button class="control-btn tool-active" id="mode-move" title="Move & Pan (Default)">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="5 9 2 12 5 15"></polyline><polyline points="9 5 12 2 15 5"></polyline><polyline points="19 9 22 12 19 15"></polyline><polyline points="9 19 12 22 15 19"></polyline><line x1="2" y1="12" x2="22" y2="12"></line><line x1="12" y1="2" x2="12" y2="22"></line></svg>
         </button>
@@ -260,12 +287,12 @@
         </div>
     </div>
 
-    <div class="controls">
+    <div id="nav-controls-bar" class="controls">
         <button class="control-btn" id="btn-zoom-in" title="Zoom In"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg></button>
         <button class="control-btn" id="btn-zoom-out" title="Zoom Out"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line></svg></button>
         <button class="control-btn" id="btn-reset" title="Reset View"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg></button>
         <button class="control-btn" id="btn-fit-view" title="Fit Board to Screen"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"></path></svg></button>
-        <div class="w-px h-6 bg-zinc-700 mx-1"></div>
+        <div id="nav-sidebar-divider" class="w-px h-6 bg-zinc-700 mx-1"></div>
         <button class="control-btn" id="btn-toggle-sidebar" title="Open Navigator"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></button>
     </div>
 
@@ -286,7 +313,7 @@
         <canvas id="minimap-canvas" width="192" height="128"></canvas>
     </div>
 
-    <div class="controls items-center" style="bottom: 1.5rem; left: 14.5rem; right: auto;">
+    <div id="bottom-actions-bar" class="controls items-center" style="bottom: 1.5rem; left: 14.5rem; right: auto;">
         <button class="control-btn w-auto px-3 text-green-400 hover:text-green-300 font-bold" id="btn-export" title="Export Board">Export</button>
         <button class="control-btn w-auto px-3" id="btn-import-trigger" title="Import Board">Import</button>
         <button class="control-btn w-auto px-3 text-emerald-400 hover:text-emerald-300 font-bold" id="btn-archive-picker" title="Import from FNAFLore Archive">Archive</button>
@@ -369,6 +396,29 @@
             <button id="line-mirror-btn" class="w-full text-center p-1.5 mt-1 bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 rounded text-sm text-white">Mirror Curve</button>
         </div>
         <button id="line-menu-delete" style="color: #f87171;">Delete Connection</button>
+    </div>
+
+    <!-- Host Moderation Modal -->
+    <div id="collab-peers-modal" style="display: none;" class="fixed inset-0 bg-black/75 z-[10000] flex items-center justify-center backdrop-blur-sm">
+        <div class="bg-zinc-900 border border-zinc-700 rounded-xl w-[500px] max-w-[94vw] max-h-[82vh] flex flex-col shadow-2xl overflow-hidden">
+            <div class="p-4 border-b border-zinc-800 flex justify-between items-center bg-zinc-950/60">
+                <div>
+                    <h3 class="text-sm font-bold text-amber-400 mono">HOST MODERATION</h3>
+                    <p class="text-[11px] text-zinc-400 mt-0.5">Manage permissions, kick, or ban peers from this room.</p>
+                </div>
+                <button id="btn-close-peers-modal" class="text-zinc-400 hover:text-white p-1">✕</button>
+            </div>
+            <div class="p-4 overflow-y-auto space-y-4">
+                <div>
+                    <div class="text-[10px] mono font-bold text-zinc-400 uppercase mb-2">Connected Peers</div>
+                    <div id="collab-peers-list" class="space-y-2"></div>
+                </div>
+                <div>
+                    <div class="text-[10px] mono font-bold text-zinc-400 uppercase mb-2">Banned IPs / IDs</div>
+                    <div id="collab-bans-list" class="space-y-1.5"></div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- Sidebar -->
@@ -1392,8 +1442,8 @@
             state.zIndexCounter = Math.max(state.zIndexCounter, item.zIndex || 10);
             
             const fontSize = item.fontSize || (item.type === 'note' ? 14 : 12);
-            const isEditable = !item.locked ? 'contenteditable="true"' : 'contenteditable="false"';
-            const editableClass = !item.locked ? 'editable' : '';
+            const isEditable = (!item.locked && !window.collabViewOnly) ? 'contenteditable="true"' : 'contenteditable="false"';
+            const editableClass = (!item.locked && !window.collabViewOnly) ? 'editable' : '';
 
             if (item.type === 'note') {
                 el.innerHTML = `
@@ -2026,12 +2076,13 @@
             hitbox.dataset.id = conn.id;
 
             hitbox.addEventListener('mousedown', (e) => {
-                if (e.button !== 0) return;
+                if (e.button !== 0 || window.collabViewOnly) return;
                 handleSelect(conn.id, 'line', e.ctrlKey);
             });
 
             hitbox.addEventListener('contextmenu', (e) => {
                 e.preventDefault(); e.stopPropagation();
+                if (window.collabViewOnly) return;
                 state.contextTargetId = conn.id;
                 
                 document.getElementById('line-type-select').value = conn.type || 'solid';
@@ -2349,12 +2400,14 @@
             state.contextTargetId = null;
             
             if (e.target.classList.contains('timeline-move-handle')) {
+                if (window.collabViewOnly) return;
                 state.isMovingTimelineEvent = true;
                 state.timelineTargetId = e.target.dataset.id;
                 state.timelineEventId = e.target.dataset.eventId;
                 e.stopPropagation(); return;
             }
             if (e.target.classList.contains('timeline-resize-handle')) {
+                if (window.collabViewOnly) return;
                 state.isResizingTimelineEvent = true;
                 state.timelineTargetId = e.target.dataset.id;
                 state.timelineEventId = e.target.dataset.eventId;
@@ -2371,12 +2424,12 @@
                 if (document.activeElement) document.activeElement.blur();
             }
 
-            if (e.target.closest('.editable') && !e.ctrlKey) return;
+            if (e.target.closest('.editable') && !e.ctrlKey && !window.collabViewOnly) return;
 
             e.preventDefault(); 
             const worldPos = screenToWorld(e.clientX, e.clientY);
 
-            if (state.cursorMode === 'move') {
+            if (state.cursorMode === 'move' || window.collabViewOnly) {
                 state.isPanning = true;
                 state.startX = e.clientX - state.panX;
                 state.startY = e.clientY - state.panY;
@@ -2595,6 +2648,7 @@
         function handleWheel(e) { e.preventDefault(); zoom(e.deltaY > 0 ? -0.1 : 0.1, e.clientX, e.clientY); }
 
         function startItemDrag(e, id) {
+            if (window.collabViewOnly) return;
             if (state.cursorMode !== 'move' && state.cursorMode !== 'select') return;
             const itemObj = boardData.items.find(i => i.id === id);
             if (itemObj && itemObj.locked) return;
@@ -2723,6 +2777,7 @@
 
         function handleContextMenu(e) {
             e.preventDefault();
+            if (window.collabViewOnly) return;
             const node = e.target.closest('.theory-node');
             state.startX = e.clientX; state.startY = e.clientY;
             
@@ -3083,6 +3138,7 @@
         }
 
         function handleKeyDown(e) {
+            if (window.collabViewOnly) return;
             if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.isContentEditable) return;
             if ((e.ctrlKey || e.metaKey) && !e.shiftKey && e.key.toLowerCase() === 'z') { e.preventDefault(); undo(); return; }
             if ((e.ctrlKey || e.metaKey) && (e.key.toLowerCase() === 'y' || (e.shiftKey && e.key.toLowerCase() === 'z'))) { e.preventDefault(); redo(); return; }
@@ -3098,6 +3154,7 @@
 
         function handleDrop(e) {
             e.preventDefault();
+            if (window.collabViewOnly) return;
             const file = e.dataTransfer.files[0];
             if (!file) return;
             if (file.type.startsWith('image/')) {
@@ -3110,6 +3167,7 @@
         }
 
         function handlePaste(e) {
+            if (window.collabViewOnly) return;
             if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
             if (e.target.isContentEditable) {
                 e.preventDefault();
@@ -3449,7 +3507,61 @@
         const statusEl = document.getElementById('collab-status');
         const toggleBtn = document.getElementById('btn-collab-toggle');
         const copyBtn = document.getElementById('btn-collab-copy');
+        const peersBtn = document.getElementById('btn-collab-peers');
+        const peersModal = document.getElementById('collab-peers-modal');
+        const closePeersModalBtn = document.getElementById('btn-close-peers-modal');
+        const peersListEl = document.getElementById('collab-peers-list');
+        const bansListEl = document.getElementById('collab-bans-list');
         const cursorsLayer = document.getElementById('remote-cursors-layer');
+
+        const BANS_STORAGE_KEY = 'theory_board_bans_v1';
+        let myClientId = localStorage.getItem('theory_board_client_id');
+        if (!myClientId) {
+            myClientId = 'cid_' + Math.random().toString(36).slice(2, 10) + Date.now().toString(36);
+            try { localStorage.setItem('theory_board_client_id', myClientId); } catch (e) {}
+        }
+
+        function loadBans() {
+            try {
+                const raw = localStorage.getItem(BANS_STORAGE_KEY);
+                if (raw) {
+                    const parsed = JSON.parse(raw);
+                    return {
+                        ips: Array.isArray(parsed.ips) ? parsed.ips : [],
+                        ids: Array.isArray(parsed.ids) ? parsed.ids : []
+                    };
+                }
+            } catch (e) {}
+            return { ips: [], ids: [] };
+        }
+
+        function saveBans(bans) {
+            try { localStorage.setItem(BANS_STORAGE_KEY, JSON.stringify(bans)); } catch (e) {}
+        }
+
+        function isBannedPeer(ip, clientId) {
+            const bans = loadBans();
+            if (ip && bans.ips.includes(ip)) return true;
+            if (clientId && bans.ids.includes(clientId)) return true;
+            return false;
+        }
+
+        window.collabViewOnly = false;
+        function setViewOnlyMode(enabled) {
+            const next = !!enabled;
+            if (window.collabViewOnly === next) return;
+            window.collabViewOnly = next;
+            document.body.classList.toggle('view-only-mode', next);
+            if (next) {
+                hideMenus();
+                clearSelection();
+                setMode('move');
+                if (document.activeElement && document.activeElement.isContentEditable) {
+                    document.activeElement.blur();
+                }
+            }
+            renderAll();
+        }
 
         const savedName = localStorage.getItem('theory_board_peer_name') || ('Theorist-' + Math.floor(100 + Math.random() * 900));
         nameInput.value = savedName;
@@ -3466,6 +3578,7 @@
         let isHost = false;
         let dataConns = new Map(); // peerId -> DataConnection
         let remotePeers = new Map(); // peerId -> { name, color, x, y }
+        let peerMeta = new Map(); // peerId -> { name, clientId, ip, viewOnly }
         let yItems = null;
         let yConns = null;
         let yDraws = null;
@@ -3479,10 +3592,12 @@
                 statusEl.textContent = '● OFFLINE';
                 statusEl.className = 'text-[10px] mono font-bold px-1.5 py-0.5 rounded bg-zinc-800 text-zinc-400 border border-zinc-700';
                 toggleBtn.textContent = 'Connect';
+                if (peersBtn) peersBtn.classList.add('hidden');
             } else if (mode === 'connecting') {
                 statusEl.textContent = '● CONNECTING...';
                 statusEl.className = 'text-[10px] mono font-bold px-1.5 py-0.5 rounded bg-yellow-950/60 text-yellow-400 border border-yellow-800';
                 toggleBtn.textContent = 'Disconnect';
+                if (peersBtn) peersBtn.classList.add('hidden');
             } else {
                 const others = dataConns.size;
                 const role = isHost ? 'HOST' : 'PEER';
@@ -3491,7 +3606,147 @@
                     ? 'text-[10px] mono font-bold px-1.5 py-0.5 rounded bg-green-900/50 text-green-400 border border-green-700'
                     : 'text-[10px] mono font-bold px-1.5 py-0.5 rounded bg-cyan-950/60 text-cyan-400 border border-cyan-800';
                 toggleBtn.textContent = 'Disconnect';
+                if (peersBtn) {
+                    peersBtn.classList.toggle('hidden', !isHost);
+                    peersBtn.textContent = `Peers (${others})`;
+                }
             }
+            if (peersModal && peersModal.style.display === 'flex') renderPeersModal();
+        }
+
+        function detectConnRemoteIp(conn) {
+            if (!conn || !conn.peerConnection || !conn.peerConnection.getStats) return;
+            const checkStats = () => {
+                if (!dataConns.has(conn.peer)) return;
+                conn.peerConnection.getStats().then(stats => {
+                    let activePair = null;
+                    stats.forEach(r => {
+                        if (r.type === 'candidate-pair' && (r.nominated || r.state === 'succeeded')) {
+                            activePair = r;
+                        }
+                    });
+                    if (activePair && activePair.remoteCandidateId) {
+                        const rc = stats.get(activePair.remoteCandidateId);
+                        const ip = rc && (rc.address || rc.ip);
+                        if (ip && !ip.endsWith('.local')) {
+                            const pm = peerMeta.get(conn.peer) || { name: 'Peer', clientId: '', ip: null, viewOnly: false };
+                            pm.ip = ip;
+                            peerMeta.set(conn.peer, pm);
+                            if (isHost && isBannedPeer(ip, pm.clientId)) {
+                                try { conn.send({ type: 'banned', reason: 'You are banned from this room.' }); } catch (e) {}
+                                setTimeout(() => { try { conn.close(); } catch (e) {} }, 50);
+                                return;
+                            }
+                            if (peersModal && peersModal.style.display === 'flex') renderPeersModal();
+                        }
+                    }
+                }).catch(() => {});
+            };
+            setTimeout(checkStats, 600);
+            setTimeout(checkStats, 2000);
+        }
+
+        function renderPeersModal() {
+            if (!peersListEl || !bansListEl) return;
+            if (!isHost || dataConns.size === 0) {
+                peersListEl.innerHTML = '<div class="text-xs text-zinc-500 mono py-2">No guests connected yet.</div>';
+            } else {
+                peersListEl.innerHTML = '';
+                dataConns.forEach((conn, pid) => {
+                    const pm = peerMeta.get(pid) || { name: 'Peer', clientId: '', ip: null, viewOnly: false };
+                    const rp = remotePeers.get(pid);
+                    const displayName = (rp && rp.name) || pm.name || 'Peer';
+                    const color = (rp && rp.color) || getDistinctRandomPeerColor(pid);
+                    const row = document.createElement('div');
+                    row.className = 'flex items-center justify-between gap-2 bg-zinc-800/80 border border-zinc-700 rounded-lg px-3 py-2';
+                    row.innerHTML = `
+                        <div class="min-w-0">
+                            <div class="flex items-center gap-2">
+                                <span style="width:10px;height:10px;border-radius:50%;background:${escapeHtml(color)};flex-shrink:0;"></span>
+                                <span class="text-xs font-bold text-white mono truncate">${escapeHtml(displayName)}</span>
+                                ${pm.viewOnly ? '<span class="text-[9px] mono px-1.5 py-0.5 rounded bg-amber-950 text-amber-300 border border-amber-800">VIEW ONLY</span>' : ''}
+                            </div>
+                            <div class="text-[10px] text-zinc-400 mono mt-0.5 truncate">IP: ${escapeHtml(pm.ip || 'hidden (mDNS/NAT)')} · ID: ${escapeHtml((pm.clientId || pid).slice(0, 12))}</div>
+                        </div>
+                        <div class="flex items-center gap-1.5 shrink-0">
+                            <button class="peer-perm-btn px-2 py-1 rounded text-[10px] mono font-bold border ${pm.viewOnly ? 'bg-green-900/50 text-green-300 border-green-700 hover:bg-green-800/60' : 'bg-amber-950/60 text-amber-300 border-amber-800 hover:bg-amber-900/60'}">${pm.viewOnly ? 'Allow Edit' : 'View Only'}</button>
+                            <button class="peer-kick-btn px-2 py-1 rounded text-[10px] mono font-bold bg-zinc-700 text-zinc-200 hover:bg-zinc-600 border border-zinc-600">Kick</button>
+                            <button class="peer-ban-btn px-2 py-1 rounded text-[10px] mono font-bold bg-red-950/80 text-red-300 hover:bg-red-900 border border-red-800">Ban IP</button>
+                        </div>
+                    `;
+                    row.querySelector('.peer-perm-btn').addEventListener('click', () => {
+                        pm.viewOnly = !pm.viewOnly;
+                        peerMeta.set(pid, pm);
+                        try { conn.send({ type: 'permission', viewOnly: pm.viewOnly }); } catch (e) {}
+                        if (pm.viewOnly) {
+                            remotePeers.delete(pid);
+                            renderRemoteCursors();
+                            broadcastMsg({ type: 'peer-left', id: pid }, pid);
+                        }
+                        renderPeersModal();
+                    });
+                    row.querySelector('.peer-kick-btn').addEventListener('click', () => {
+                        try { conn.send({ type: 'kicked', reason: 'You were kicked by the host.' }); } catch (e) {}
+                        setTimeout(() => { try { conn.close(); } catch (e) {} }, 60);
+                    });
+                    row.querySelector('.peer-ban-btn').addEventListener('click', () => {
+                        const bans = loadBans();
+                        if (pm.ip && !bans.ips.includes(pm.ip)) bans.ips.push(pm.ip);
+                        const banId = pm.clientId || pid;
+                        if (banId && !bans.ids.includes(banId)) bans.ids.push(banId);
+                        saveBans(bans);
+                        try { conn.send({ type: 'banned', reason: 'You were banned by the host.' }); } catch (e) {}
+                        setTimeout(() => { try { conn.close(); } catch (e) {} }, 60);
+                        renderPeersModal();
+                    });
+                    peersListEl.appendChild(row);
+                });
+            }
+
+            const bans = loadBans();
+            const entries = [
+                ...bans.ips.map(v => ({ kind: 'ip', val: v })),
+                ...bans.ids.map(v => ({ kind: 'id', val: v }))
+            ];
+            if (entries.length === 0) {
+                bansListEl.innerHTML = '<div class="text-xs text-zinc-500 mono py-1">No banned IPs or IDs.</div>';
+            } else {
+                bansListEl.innerHTML = '';
+                entries.forEach(entry => {
+                    const row = document.createElement('div');
+                    row.className = 'flex items-center justify-between bg-zinc-800/50 border border-zinc-800 rounded px-2.5 py-1.5';
+                    row.innerHTML = `
+                        <span class="text-[11px] mono text-red-300 truncate">${entry.kind === 'ip' ? 'IP' : 'ID'}: ${escapeHtml(entry.val)}</span>
+                        <button class="unban-btn text-[10px] mono text-zinc-300 hover:text-white px-2 py-0.5 rounded bg-zinc-700 hover:bg-zinc-600">Unban</button>
+                    `;
+                    row.querySelector('.unban-btn').addEventListener('click', () => {
+                        const cur = loadBans();
+                        if (entry.kind === 'ip') cur.ips = cur.ips.filter(x => x !== entry.val);
+                        else cur.ids = cur.ids.filter(x => x !== entry.val);
+                        saveBans(cur);
+                        renderPeersModal();
+                    });
+                    bansListEl.appendChild(row);
+                });
+            }
+        }
+
+        if (peersBtn) {
+            peersBtn.addEventListener('click', () => {
+                if (!isHost) return;
+                renderPeersModal();
+                peersModal.style.display = 'flex';
+            });
+        }
+        if (closePeersModalBtn) {
+            closePeersModalBtn.addEventListener('click', () => {
+                peersModal.style.display = 'none';
+            });
+        }
+        if (peersModal) {
+            peersModal.addEventListener('click', (e) => {
+                if (e.target === peersModal) peersModal.style.display = 'none';
+            });
         }
 
         function syncMapDiff(ymap, list) {
@@ -3767,6 +4022,20 @@
             const onConnOpen = () => {
                 console.info('[Collab] conn open with', conn.peer, 'isHost=', isHost);
                 setCollabStatus('online');
+                if (isHost) {
+                    if (!peerMeta.has(conn.peer)) {
+                        peerMeta.set(conn.peer, { name: 'Peer', clientId: '', ip: null, viewOnly: false });
+                    }
+                    detectConnRemoteIp(conn);
+                } else {
+                    try {
+                        conn.send({
+                            type: 'hello',
+                            name: nameInput.value.trim() || 'Anonymous',
+                            clientId: myClientId
+                        });
+                    } catch (e) {}
+                }
                 if (ydoc) {
                     if (isHost) {
                         sendInitialSyncIfHost();
@@ -3781,16 +4050,47 @@
 
             conn.on('data', (msg) => {
                 if (!msg || !msg.type) return;
-                if (msg.type === 'yjs-req-sync') {
+                if (msg.type === 'hello') {
+                    if (isHost) {
+                        const prevPm = peerMeta.get(conn.peer) || { ip: null, viewOnly: false };
+                        const pm = {
+                            name: msg.name || 'Peer',
+                            clientId: msg.clientId || '',
+                            ip: prevPm.ip || null,
+                            viewOnly: !!prevPm.viewOnly
+                        };
+                        peerMeta.set(conn.peer, pm);
+                        if (isBannedPeer(pm.ip, pm.clientId)) {
+                            try { conn.send({ type: 'banned', reason: 'You are banned from this room.' }); } catch (e) {}
+                            setTimeout(() => { try { conn.close(); } catch (e) {} }, 50);
+                            return;
+                        }
+                        if (peersModal && peersModal.style.display === 'flex') renderPeersModal();
+                    }
+                } else if (msg.type === 'permission') {
+                    setViewOnlyMode(!!msg.viewOnly);
+                } else if (msg.type === 'kicked' || msg.type === 'banned') {
+                    const reason = msg.reason || (msg.type === 'banned' ? 'You were banned by the host.' : 'You were kicked by the host.');
+                    disconnectRoom();
+                    showAlert(reason);
+                } else if (msg.type === 'yjs-req-sync') {
                     console.info('[Collab] received yjs-req-sync from', conn.peer);
                     sendInitialSyncIfHost();
                 } else if (msg.type === 'yjs-sync' || msg.type === 'yjs-update') {
+                    if (isHost) {
+                        const pm = peerMeta.get(conn.peer);
+                        if (pm && pm.viewOnly) return;
+                    }
                     if (msg.b64) {
                         handleIncomingYjsBytes(base64ToUint8(msg.b64), conn.peer);
                     } else if (msg.data) {
                         handleIncomingYjsBytes(new Uint8Array(msg.data), conn.peer);
                     }
                 } else if (msg.type === 'yjs-chunk') {
+                    if (isHost) {
+                        const pm = peerMeta.get(conn.peer);
+                        if (pm && pm.viewOnly) return;
+                    }
                     let entry = pendingChunks.get(msg.transferId);
                     if (!entry) {
                         entry = { msgType: msg.msgType, total: msg.total, parts: new Array(msg.total), count: 0 };
@@ -3806,6 +4106,13 @@
                     }
                 } else if (msg.type === 'cursor') {
                     const senderId = msg.id || conn.peer;
+                    if (isHost) {
+                        const pm = peerMeta.get(conn.peer);
+                        if (pm) {
+                            pm.name = msg.name || pm.name;
+                            if (pm.viewOnly) return;
+                        }
+                    }
                     if (!peer || senderId !== peer.id) {
                         remotePeers.set(senderId, {
                             name: msg.name,
@@ -3830,6 +4137,7 @@
             const handlePeerDisconnect = () => {
                 const hadConn = dataConns.delete(conn.peer);
                 remotePeers.delete(conn.peer);
+                peerMeta.delete(conn.peer);
                 peerAssignedColors.delete(conn.peer);
                 setCollabStatus('online');
                 renderRemoteCursors();
@@ -3910,8 +4218,11 @@
             dataConns.forEach(c => { try { c.close(); } catch (e) {} });
             dataConns.clear();
             remotePeers.clear();
+            peerMeta.clear();
             peerAssignedColors.clear();
             pendingChunks.clear();
+            setViewOnlyMode(false);
+            if (peersModal) peersModal.style.display = 'none';
             if (peer) {
                 try { peer.destroy(); } catch (e) {}
                 peer = null;
@@ -3978,7 +4289,7 @@
         }
 
         function sendLocalCursorOrCaret(force = false) {
-            if (!peer || dataConns.size === 0) return;
+            if (!peer || dataConns.size === 0 || window.collabViewOnly) return;
             const now = Date.now();
             if (!force && now - lastCursorSent < 40) return;
             lastCursorSent = now;
