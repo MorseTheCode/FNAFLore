@@ -421,6 +421,23 @@
         </div>
     </div>
 
+    <!-- Import Conflict Modal -->
+    <div id="import-conflict-modal" style="display: none;" class="fixed inset-0 bg-black/75 z-[10000] flex items-center justify-center backdrop-blur-sm">
+        <div class="bg-zinc-900 border border-amber-700/70 rounded-xl w-[440px] max-w-[92vw] flex flex-col shadow-2xl overflow-hidden">
+            <div class="p-4 border-b border-zinc-800 bg-zinc-950/60">
+                <h3 class="text-sm font-bold text-amber-400 mono">BOARD ALREADY EXISTS</h3>
+            </div>
+            <div class="p-4 space-y-4">
+                <p id="import-conflict-message" class="text-xs text-zinc-300 leading-relaxed"></p>
+                <div class="flex flex-col gap-2">
+                    <button id="btn-import-overwrite" class="w-full py-2 px-3 rounded-lg bg-red-950/80 hover:bg-red-900 border border-red-700 text-red-200 text-xs mono font-bold transition-colors">Overwrite Existing Board</button>
+                    <button id="btn-import-create-new" class="w-full py-2 px-3 rounded-lg bg-green-950/80 hover:bg-green-900 border border-green-700 text-green-300 text-xs mono font-bold transition-colors">Create as New Board</button>
+                    <button id="btn-import-cancel" class="w-full py-1.5 px-3 rounded-lg bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 text-zinc-300 text-xs mono transition-colors">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Sidebar -->
     <div id="sidebar-navigator">
         <div class="p-4 border-b border-zinc-700 flex justify-between items-center bg-zinc-800">
@@ -1168,18 +1185,86 @@
         }
 
         function exportBoardJSON() {
-            const exportData = JSON.parse(JSON.stringify(boardData));
+            const meta = getBoardsMeta();
+            const curr = meta.boards.find(b => b.id === meta.activeId);
+            const boardName = curr ? curr.name : 'Main Board';
+            const exportData = {
+                name: boardName,
+                items: JSON.parse(JSON.stringify(boardData.items || [])),
+                connections: JSON.parse(JSON.stringify(boardData.connections || [])),
+                drawings: JSON.parse(JSON.stringify(boardData.drawings || []))
+            };
             
+            const safeFile = boardName.replace(/[^a-zA-Z0-9_\-. ]/g, '_').trim() || 'board';
             const jsonBlob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
             const jsonDownloadUrl = URL.createObjectURL(jsonBlob);
             const aJson = document.createElement('a');
             aJson.href = jsonDownloadUrl;
-            aJson.download = 'board.json';
+            aJson.download = `${safeFile}.json`;
             document.body.appendChild(aJson);
             aJson.click();
             document.body.removeChild(aJson);
             URL.revokeObjectURL(jsonDownloadUrl);
         }
+
+        function getNextNumberedBoardName(baseName, boards) {
+            const existing = new Set((boards || []).map(b => (b.name || '').trim().toLowerCase()));
+            let n = 2;
+            while (existing.has(`${baseName} ${n}`.toLowerCase())) {
+                n++;
+            }
+            return `${baseName} ${n}`;
+        }
+
+        function applyImportedBoardData(parsed, targetBoardId, newBoardName = null) {
+            const meta = getBoardsMeta();
+            if (newBoardName) {
+                meta.boards.push({ id: targetBoardId, name: newBoardName });
+            }
+            meta.activeId = targetBoardId;
+            saveBoardsMeta(meta);
+
+            historyStack = [];
+            historyIndex = -1;
+            clearSelection();
+            boardData = {
+                items: parsed.items || [],
+                connections: parsed.connections || [],
+                drawings: parsed.drawings || []
+            };
+            renderBoardSelector();
+            renderAll(true);
+            updateSidebar();
+            saveState();
+            resetView();
+        }
+
+        let pendingImportData = null;
+        function closeImportConflictModal() {
+            pendingImportData = null;
+            const modal = document.getElementById('import-conflict-modal');
+            if (modal) modal.style.display = 'none';
+        }
+
+        document.getElementById('btn-import-overwrite').addEventListener('click', () => {
+            if (!pendingImportData) return;
+            const { parsed, existingId } = pendingImportData;
+            closeImportConflictModal();
+            applyImportedBoardData(parsed, existingId, null);
+        });
+
+        document.getElementById('btn-import-create-new').addEventListener('click', () => {
+            if (!pendingImportData) return;
+            const { parsed, altName } = pendingImportData;
+            const newId = 'b_' + Date.now().toString(36) + Math.random().toString(36).slice(2, 5);
+            closeImportConflictModal();
+            applyImportedBoardData(parsed, newId, altName);
+        });
+
+        document.getElementById('btn-import-cancel').addEventListener('click', closeImportConflictModal);
+        document.getElementById('import-conflict-modal').addEventListener('click', (e) => {
+            if (e.target.id === 'import-conflict-modal') closeImportConflictModal();
+        });
 
         function importBoard(e) {
             const file = e.target.files[0];
@@ -1187,8 +1272,28 @@
             const reader = new FileReader();
             reader.onload = (event) => {
                 try {
-                    boardData = JSON.parse(event.target.result);
-                    renderAll(); updateSidebar(); saveState();
+                    const parsed = JSON.parse(event.target.result);
+                    if (!parsed || !Array.isArray(parsed.items)) {
+                        showAlert("Invalid board file");
+                        return;
+                    }
+                    const fallbackName = file.name.replace(/\.json$/i, '').trim() || 'Imported Board';
+                    const importedName = (typeof parsed.name === 'string' && parsed.name.trim()) ? parsed.name.trim() : fallbackName;
+                    const meta = getBoardsMeta();
+                    const existing = meta.boards.find(b => (b.name || '').trim().toLowerCase() === importedName.toLowerCase());
+
+                    if (existing) {
+                        const altName = getNextNumberedBoardName(importedName, meta.boards);
+                        pendingImportData = { parsed, existingId: existing.id, altName };
+                        document.getElementById('import-conflict-message').textContent =
+                            `A board named "${importedName}" already exists. Do you want to overwrite it (this replaces its current contents), or create it as a new board named "${altName}"?`;
+                        document.getElementById('btn-import-create-new').textContent = `Create as "${altName}"`;
+                        document.getElementById('import-conflict-modal').style.display = 'flex';
+                        return;
+                    }
+
+                    const id = 'b_' + Date.now().toString(36) + Math.random().toString(36).slice(2, 5);
+                    applyImportedBoardData(parsed, id, importedName);
                 } catch (err) { showAlert("Invalid board file"); }
             };
             reader.readAsText(file); e.target.value = '';
