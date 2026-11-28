@@ -773,6 +773,9 @@ function openRootPage(rootIdx) {
                     break;
                 }
             }
+        } else if (pn.type === 'TagCollectionOption' && evalCond(pn.showCond) && evalCond(pn.cond)) {
+            (pn.tags || []).forEach(t => state.tags.add(t));
+            saveGame();
         }
     });
 
@@ -985,7 +988,8 @@ function executeNode(sec, nodeIdx) {
     const firstChild = activesList.length === 1 ? sec.nodes[String(activesList[0])] : null;
     const autoTransitionChild = firstChild && (
         ['GoToSectionOption', 'AnimOption', 'PlayerDeathOption', 'TagConditionOption'].includes(firstChild.type) ||
-        (firstChild.type === 'ReturnOption' && !firstChild.title)
+        (firstChild.type === 'ReturnOption' && !firstChild.title) ||
+        (firstChild.type === 'TextOption' && !firstChild.title && firstChild.desc)
     );
     const hasTimedWait = (node.seconds && node.seconds >= 0.5) || (node.type === 'TextOption' && node.desc && autoTransitionChild);
 
@@ -998,13 +1002,13 @@ function executeNode(sec, nodeIdx) {
         let tagsChanged = false;
         (node.passives || []).forEach(pIdx => {
             const pn = sec.nodes[String(pIdx)];
-            if (!pn) return;
+            if (!pn || !evalCond(pn.showCond) || !evalCond(pn.cond)) return;
             if (pn.type === 'TagCollectionOption') {
                 (pn.tags || []).forEach(t => state.tags.add(t));
                 tagsChanged = true;
             } else if (pn.type === 'ImageOption' && pn.img) {
                 setBackground(pn.img, []);
-            } else if (pn.type === 'TextOption' && pn.desc && evalCond(pn.showCond) && evalCond(pn.cond)) {
+            } else if (pn.type === 'TextOption' && pn.desc) {
                 setTypewriterText(pn.desc);
             }
         });
@@ -1038,7 +1042,7 @@ function runFollowUps(sec, node, skipPassives=false) {
     let tagsChanged = false;
     passives.forEach(pIdx => {
         const pn = sec.nodes[String(pIdx)];
-        if (!pn) return;
+        if (!pn || !evalCond(pn.showCond) || !evalCond(pn.cond)) return;
         if (pn.type === 'TagCollectionOption') {
             (pn.tags || []).forEach(t => state.tags.add(t));
             tagsChanged = true;
@@ -1056,7 +1060,7 @@ function runFollowUps(sec, node, skipPassives=false) {
         if (only && (
             ['GoToSectionOption', 'PlayerDeathOption', 'TagCollectionOption', 'TagConditionOption', 'AnimOption', 'ImageOption', 'PostAudioOption'].includes(only.type) ||
             (only.type === 'ReturnOption' && !only.title) ||
-            (only.type === 'TextOption' && !only.title && !node.desc)
+            (only.type === 'TextOption' && !only.title)
         )) {
             executeNode(sec, actives[0]);
             return;
