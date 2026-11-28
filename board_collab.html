@@ -533,6 +533,7 @@
             loadState();
             renderBoardSelector();
             resetView();
+            if (window.collabSyncLocalToYjs) window.collabSyncLocalToYjs();
         }
 
         function createNewBoard() {
@@ -563,6 +564,7 @@
             curr.name = name.trim();
             saveBoardsMeta(meta);
             renderBoardSelector();
+            if (window.collabSyncLocalToYjs) window.collabSyncLocalToYjs();
         }
 
         function deleteCurrentBoard() {
@@ -917,6 +919,7 @@
                 renderAll();
                 updateSidebar();
                 updateUndoRedoButtons();
+                if (window.collabSyncLocalToYjs) window.collabSyncLocalToYjs();
             } finally {
                 isRestoringHistory = false;
             }
@@ -3243,6 +3246,7 @@
         let yItems = null;
         let yConns = null;
         let yDraws = null;
+        let yMeta = null;
         let isApplyingRemote = false;
         let pendingRemoteRender = false;
         let lastCursorSent = 0;
@@ -3284,12 +3288,22 @@
             });
         }
 
+        function getActiveBoardName() {
+            const meta = getBoardsMeta();
+            const curr = meta.boards.find(b => b.id === meta.activeId);
+            return curr ? curr.name : 'Main Board';
+        }
+
         window.collabSyncLocalToYjs = function() {
             if (!ydoc || !peer || isApplyingRemote) return;
             ydoc.transact(() => {
                 syncMapDiff(yItems, boardData.items);
                 syncMapDiff(yConns, boardData.connections);
                 syncMapDiff(yDraws, boardData.drawings);
+                const activeName = getActiveBoardName();
+                if (yMeta && yMeta.get('boardName') !== activeName) {
+                    yMeta.set('boardName', activeName);
+                }
             }, 'local');
         };
 
@@ -3300,6 +3314,16 @@
                 boardData.items = Array.from(yItems.values()).map(v => JSON.parse(JSON.stringify(v)));
                 boardData.connections = Array.from(yConns.values()).map(v => JSON.parse(JSON.stringify(v)));
                 boardData.drawings = Array.from(yDraws.values()).map(v => JSON.parse(JSON.stringify(v)));
+                const remoteName = yMeta ? yMeta.get('boardName') : null;
+                if (remoteName && typeof remoteName === 'string') {
+                    const meta = getBoardsMeta();
+                    const curr = meta.boards.find(b => b.id === meta.activeId);
+                    if (curr && curr.name !== remoteName) {
+                        curr.name = remoteName;
+                        saveBoardsMeta(meta);
+                        renderBoardSelector();
+                    }
+                }
                 try {
                     localStorage.setItem(getActiveBoardStorageKey(), JSON.stringify(boardData));
                 } catch (e) {}
@@ -3539,6 +3563,7 @@
             yItems = ydoc.getMap('items');
             yConns = ydoc.getMap('connections');
             yDraws = ydoc.getMap('drawings');
+            yMeta = ydoc.getMap('meta');
 
             ydoc.on('update', (update, origin) => {
                 if (origin === 'remote') {
