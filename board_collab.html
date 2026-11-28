@@ -38,6 +38,27 @@
         }
         .theory-node:active { cursor: grabbing; }
         .theory-node:not(.frame-node).selected, .theory-node:not(.frame-node):hover { border-color: #4ade80; box-shadow: 0 0 15px rgba(74, 222, 128, 0.15); z-index: 100 !important; }
+        @keyframes nodePopIn {
+            0% { opacity: 0; transform: scale(0.86) translateY(8px); }
+            100% { opacity: 1; transform: scale(1) translateY(0); }
+        }
+        @keyframes nodePopOut {
+            0% { opacity: 1; transform: scale(1); }
+            100% { opacity: 0; transform: scale(0.84); }
+        }
+        .theory-node.anim-enter {
+            animation: nodePopIn 0.22s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+        }
+        .theory-node.anim-exit {
+            animation: nodePopOut 0.18s cubic-bezier(0.4, 0, 1, 1) forwards;
+            pointer-events: none !important;
+        }
+        .theory-node.anim-move {
+            transition: left 0.24s cubic-bezier(0.22, 1, 0.36, 1), top 0.24s cubic-bezier(0.22, 1, 0.36, 1), width 0.24s cubic-bezier(0.22, 1, 0.36, 1), height 0.24s cubic-bezier(0.22, 1, 0.36, 1), border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+        body.dragging-mode .theory-node.anim-move {
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
         
         .node-header { padding: 12px 16px; border-bottom: 1px solid #333; background: rgba(0, 0, 0, 0.2); border-top-left-radius: 0.75rem; border-top-right-radius: 0.75rem; pointer-events: none; }
         
@@ -693,10 +714,10 @@
                 boardData.connections = boardData.connections.filter(c => itemIds.has(c.source) && itemIds.has(c.target));
             };
 
-            document.getElementById('btn-clear-notes').addEventListener('click', () => { boardData.items = boardData.items.filter(i => i.type !== 'note'); cleanOrphanLines(); clearSelection(); renderAll(); saveState(); updateSidebar(); });
-            document.getElementById('btn-clear-images').addEventListener('click', () => { boardData.items = boardData.items.filter(i => i.type !== 'image'); cleanOrphanLines(); clearSelection(); renderAll(); saveState(); updateSidebar(); });
-            document.getElementById('btn-clear-nodes').addEventListener('click', () => { boardData.items = boardData.items.filter(i => i.type !== 'node'); cleanOrphanLines(); clearSelection(); renderAll(); saveState(); updateSidebar(); });
-            document.getElementById('btn-clear-videos').addEventListener('click', () => { boardData.items = boardData.items.filter(i => i.type !== 'youtube'); cleanOrphanLines(); clearSelection(); renderAll(); saveState(); updateSidebar(); });
+            document.getElementById('btn-clear-notes').addEventListener('click', () => { boardData.items = boardData.items.filter(i => i.type !== 'note'); cleanOrphanLines(); clearSelection(); renderAll(true); saveState(); updateSidebar(); });
+            document.getElementById('btn-clear-images').addEventListener('click', () => { boardData.items = boardData.items.filter(i => i.type !== 'image'); cleanOrphanLines(); clearSelection(); renderAll(true); saveState(); updateSidebar(); });
+            document.getElementById('btn-clear-nodes').addEventListener('click', () => { boardData.items = boardData.items.filter(i => i.type !== 'node'); cleanOrphanLines(); clearSelection(); renderAll(true); saveState(); updateSidebar(); });
+            document.getElementById('btn-clear-videos').addEventListener('click', () => { boardData.items = boardData.items.filter(i => i.type !== 'youtube'); cleanOrphanLines(); clearSelection(); renderAll(true); saveState(); updateSidebar(); });
             document.getElementById('btn-clear-lines').addEventListener('click', () => { boardData.connections = []; clearSelection(); renderAll(); saveState(); });
             document.getElementById('btn-clear-drawings').addEventListener('click', () => { boardData.drawings = []; renderAll(); saveState(); });
 
@@ -916,7 +937,7 @@
                 };
                 try { localStorage.setItem(getActiveBoardStorageKey(), snap); } catch (e) {}
                 clearSelection();
-                renderAll();
+                renderAll(true);
                 updateSidebar();
                 updateUndoRedoButtons();
                 if (window.collabSyncLocalToYjs) window.collabSyncLocalToYjs();
@@ -1126,10 +1147,30 @@
 
         function clearBoard() {
             boardData = { items: [], connections: [], drawings: [] };
-            clearSelection(); renderAll(); updateSidebar(); saveState();
+            clearSelection(); renderAll(true); updateSidebar(); saveState();
         }
 
-        function renderAll() {
+        let moveConnAnimRaf = null;
+        function renderAll(animateChanges = false) {
+            const prevRects = new Map();
+            const removedEls = [];
+            if (animateChanges) {
+                const nextIds = new Set(boardData.items.map(i => i.id));
+                domItems.forEach((el, id) => {
+                    if (!el || el.classList.contains('anim-exit')) return;
+                    if (nextIds.has(id)) {
+                        prevRects.set(id, {
+                            left: parseFloat(el.style.left) || 0,
+                            top: parseFloat(el.style.top) || 0,
+                            width: el.offsetWidth,
+                            height: el.offsetHeight
+                        });
+                    } else {
+                        removedEls.push(el);
+                    }
+                });
+            }
+
             nodesLayer.innerHTML = '';
             connectionsLayer.innerHTML = '';
             drawingsLayer.innerHTML = '';
@@ -1141,6 +1182,69 @@
                 if (a.type !== 'frame' && b.type === 'frame') return 1;
                 return (a.zIndex || 10) - (b.zIndex || 10);
             }).forEach(renderItem);
+
+            if (animateChanges) {
+                let hasMoved = false;
+                boardData.items.forEach(item => {
+                    const el = domItems.get(item.id);
+                    if (!el) return;
+                    const prev = prevRects.get(item.id);
+                    if (!prev) {
+                        el.classList.add('anim-enter');
+                        setTimeout(() => el.classList.remove('anim-enter'), 240);
+                    } else {
+                        const newW = el.offsetWidth;
+                        const newH = el.offsetHeight;
+                        const moved = Math.abs(prev.left - item.x) > 0.5 || Math.abs(prev.top - item.y) > 0.5;
+                        const resized = Math.abs(prev.width - newW) > 0.5 || Math.abs(prev.height - newH) > 0.5;
+                        if (moved || resized) {
+                            hasMoved = true;
+                            el.style.left = `${prev.left}px`;
+                            el.style.top = `${prev.top}px`;
+                            if (resized) {
+                                el.style.width = `${prev.width}px`;
+                                el.style.height = `${prev.height}px`;
+                            }
+                            void el.offsetWidth;
+                            el.classList.add('anim-move');
+                            el.style.left = `${item.x}px`;
+                            el.style.top = `${item.y}px`;
+                            if (resized) {
+                                el.style.width = `${item.width || newW}px`;
+                                el.style.height = `${item.height || newH}px`;
+                            }
+                            setTimeout(() => {
+                                el.classList.remove('anim-move');
+                                if (resized) {
+                                    if (!item.width) el.style.width = '';
+                                    if (!item.height) el.style.height = '';
+                                }
+                            }, 260);
+                        }
+                    }
+                });
+
+                removedEls.forEach(oldEl => {
+                    oldEl.classList.remove('selected', 'multi-selected', 'anim-enter', 'anim-move');
+                    oldEl.classList.add('anim-exit');
+                    nodesLayer.appendChild(oldEl);
+                    setTimeout(() => oldEl.remove(), 190);
+                });
+
+                if (hasMoved) {
+                    if (moveConnAnimRaf) cancelAnimationFrame(moveConnAnimRaf);
+                    const startTs = performance.now();
+                    const stepConns = (now) => {
+                        updateConnections();
+                        if (now - startTs < 260) {
+                            moveConnAnimRaf = requestAnimationFrame(stepConns);
+                        } else {
+                            moveConnAnimRaf = null;
+                        }
+                    };
+                    moveConnAnimRaf = requestAnimationFrame(stepConns);
+                }
+            }
             
             boardData.connections.forEach(renderConnection);
             boardData.drawings.forEach(renderDrawing);
@@ -1698,7 +1802,7 @@
             });
             state.selectedItemIds = new Set(newIds);
             state.selectedLineIds.clear();
-            renderAll();
+            renderAll(true);
             updateSelectionVisuals();
             saveState();
             updateSidebar();
@@ -2824,7 +2928,7 @@
                 });
             }
 
-            renderAll();
+            renderAll(true);
             saveState();
             updateSidebar();
         }
@@ -2848,7 +2952,7 @@
 
             boardData.items.push(item);
             // Completely re-render so that frames are pushed to the back correctly
-            renderAll(); 
+            renderAll(true); 
             saveState(); 
             updateSidebar();
         }
@@ -2964,7 +3068,7 @@
                 boardData.connections = boardData.connections.filter(c => c.id !== id);
             });
             
-            clearSelection(); hideMenus(); state.contextTargetId = null; renderAll(); saveState(); updateSidebar();
+            clearSelection(); hideMenus(); state.contextTargetId = null; renderAll(true); saveState(); updateSidebar();
         }
 
         function handleKeyDown(e) {
@@ -3421,7 +3525,7 @@
                     pendingRemoteRender = true;
                     return;
                 }
-                renderAll();
+                renderAll(true);
                 updateSidebar();
             } finally {
                 isApplyingRemote = false;
@@ -3433,7 +3537,7 @@
                 pendingRemoteRender = false;
                 setTimeout(() => {
                     if (!document.activeElement || !document.activeElement.isContentEditable) {
-                        renderAll();
+                        renderAll(true);
                         updateSidebar();
                     }
                 }, 50);
