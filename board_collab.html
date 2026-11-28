@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="en-US">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -4020,8 +4020,25 @@
             };
 
             const onConnOpen = () => {
+                conn._lastSeen = Date.now();
                 console.info('[Collab] conn open with', conn.peer, 'isHost=', isHost);
                 setCollabStatus('online');
+                if (conn.peerConnection) {
+                    const pc = conn.peerConnection;
+                    const checkIce = () => {
+                        const st = pc.iceConnectionState;
+                        if (st === 'failed' || st === 'closed') {
+                            handlePeerDisconnect();
+                        } else if (st === 'disconnected') {
+                            setTimeout(() => {
+                                if (pc.iceConnectionState === 'disconnected' || pc.iceConnectionState === 'failed' || pc.iceConnectionState === 'closed') {
+                                    handlePeerDisconnect();
+                                }
+                            }, 2000);
+                        }
+                    };
+                    pc.addEventListener('iceconnectionstatechange', checkIce);
+                }
                 if (isHost) {
                     if (!peerMeta.has(conn.peer)) {
                         peerMeta.set(conn.peer, { name: 'Peer', clientId: '', ip: null, viewOnly: false });
@@ -4049,8 +4066,15 @@
             else conn.on('open', onConnOpen);
 
             conn.on('data', (msg) => {
+                conn._lastSeen = Date.now();
                 if (!msg || !msg.type) return;
-                if (msg.type === 'hello') {
+                if (msg.type === 'ping') {
+                    return;
+                } else if (msg.type === 'bye') {
+                    handlePeerDisconnect();
+                    try { conn.close(); } catch (e) {}
+                    return;
+                } else if (msg.type === 'hello') {
                     if (isHost) {
                         const prevPm = peerMeta.get(conn.peer) || { ip: null, viewOnly: false };
                         const pm = {
@@ -4135,6 +4159,8 @@
             });
 
             const handlePeerDisconnect = () => {
+                if (conn._disconnectedHandled) return;
+                conn._disconnectedHandled = true;
                 const hadConn = dataConns.delete(conn.peer);
                 remotePeers.delete(conn.peer);
                 peerMeta.delete(conn.peer);
@@ -4145,6 +4171,7 @@
                     broadcastMsg({ type: 'peer-left', id: conn.peer });
                 }
             };
+            conn._forceDisconnect = handlePeerDisconnect;
 
             conn.on('close', handlePeerDisconnect);
             conn.on('error', handlePeerDisconnect);
@@ -4350,6 +4377,32 @@
                 setTimeout(() => sendLocalCursorOrCaret(true), 0);
             }
         });
+
+        const sendByeOnUnload = () => {
+            if (!peer) return;
+            dataConns.forEach((c) => {
+                if (isConnReady(c)) {
+                    try { c.send({ type: 'bye', id: peer.id }); } catch (e) {}
+                }
+            });
+            try { peer.destroy(); } catch (e) {}
+        };
+        window.addEventListener('pagehide', sendByeOnUnload);
+        window.addEventListener('beforeunload', sendByeOnUnload);
+
+        setInterval(() => {
+            if (!peer || dataConns.size === 0) return;
+            const now = Date.now();
+            dataConns.forEach((c) => {
+                if (isConnReady(c)) {
+                    try { c.send({ type: 'ping' }); } catch (e) {}
+                }
+                if (c._lastSeen && now - c._lastSeen > 10000 && c._forceDisconnect) {
+                    c._forceDisconnect();
+                    try { c.close(); } catch (e) {}
+                }
+            });
+        }, 3000);
 
         if (urlRoom) {
             window.addEventListener('load', () => {
