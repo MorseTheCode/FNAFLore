@@ -39,22 +39,22 @@
         .theory-node:active { cursor: grabbing; }
         .theory-node:not(.frame-node).selected, .theory-node:not(.frame-node):hover { border-color: #4ade80; box-shadow: 0 0 15px rgba(74, 222, 128, 0.15); z-index: 100 !important; }
         @keyframes nodePopIn {
-            0% { opacity: 0; transform: scale(0.86) translateY(8px); }
-            100% { opacity: 1; transform: scale(1) translateY(0); }
+            0% { opacity: 0; scale: 0.86; }
+            100% { opacity: 1; scale: 1; }
         }
         @keyframes nodePopOut {
-            0% { opacity: 1; transform: scale(1); }
-            100% { opacity: 0; transform: scale(0.84); }
+            0% { opacity: 1; scale: 1; }
+            100% { opacity: 0; scale: 0.84; }
         }
         .theory-node.anim-enter {
-            animation: nodePopIn 0.22s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+            animation: nodePopIn 0.22s cubic-bezier(0.22, 1, 0.36, 1);
         }
         .theory-node.anim-exit {
             animation: nodePopOut 0.18s cubic-bezier(0.4, 0, 1, 1) forwards;
             pointer-events: none !important;
         }
         .theory-node.anim-move {
-            transition: left 0.24s cubic-bezier(0.22, 1, 0.36, 1), top 0.24s cubic-bezier(0.22, 1, 0.36, 1), width 0.24s cubic-bezier(0.22, 1, 0.36, 1), height 0.24s cubic-bezier(0.22, 1, 0.36, 1), border-color 0.2s ease, box-shadow 0.2s ease;
+            transition: transform 0.24s cubic-bezier(0.22, 1, 0.36, 1), width 0.24s cubic-bezier(0.22, 1, 0.36, 1), height 0.24s cubic-bezier(0.22, 1, 0.36, 1), border-color 0.2s ease, box-shadow 0.2s ease;
         }
         body.dragging-mode .theory-node.anim-move {
             transition: border-color 0.2s ease, box-shadow 0.2s ease;
@@ -1159,9 +1159,10 @@
                 domItems.forEach((el, id) => {
                     if (!el || el.classList.contains('anim-exit')) return;
                     if (nextIds.has(id)) {
+                        const m = (el.style.transform || '').match(/translate\(\s*([-\d.]+)px\s*,\s*([-\d.]+)px\s*\)/);
                         prevRects.set(id, {
-                            left: parseFloat(el.style.left) || 0,
-                            top: parseFloat(el.style.top) || 0,
+                            left: m ? parseFloat(m[1]) : 0,
+                            top: m ? parseFloat(m[2]) : 0,
                             width: el.offsetWidth,
                             height: el.offsetHeight
                         });
@@ -1199,16 +1200,14 @@
                         const resized = Math.abs(prev.width - newW) > 0.5 || Math.abs(prev.height - newH) > 0.5;
                         if (moved || resized) {
                             hasMoved = true;
-                            el.style.left = `${prev.left}px`;
-                            el.style.top = `${prev.top}px`;
+                            el.style.transform = `translate(${prev.left}px, ${prev.top}px)`;
                             if (resized) {
                                 el.style.width = `${prev.width}px`;
                                 el.style.height = `${prev.height}px`;
                             }
                             void el.offsetWidth;
                             el.classList.add('anim-move');
-                            el.style.left = `${item.x}px`;
-                            el.style.top = `${item.y}px`;
+                            el.style.transform = `translate(${item.x}px, ${item.y}px)`;
                             if (resized) {
                                 el.style.width = `${item.width || newW}px`;
                                 el.style.height = `${item.height || newH}px`;
