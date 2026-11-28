@@ -3355,28 +3355,74 @@
         function renderRemoteCursors() {
             if (!cursorsLayer) return;
             cursorsLayer.innerHTML = '';
+            const w = cursorsLayer.clientWidth || window.innerWidth;
+            const h = cursorsLayer.clientHeight || window.innerHeight;
+            const cx = w / 2;
+            const cy = h / 2;
+            const pad = 22;
+            const halfW = Math.max(1, cx - pad);
+            const halfH = Math.max(1, cy - pad);
+
             remotePeers.forEach((st) => {
                 if (!st || typeof st.x !== 'number') return;
+                const color = escapeHtml(st.color || '#22d3ee');
+                const name = escapeHtml(st.name || 'Peer');
                 const sx = st.x * state.scale + state.panX;
                 const sy = st.y * state.scale + state.panY;
                 const el = document.createElement('div');
                 el.style.position = 'absolute';
-                el.style.left = `${sx}px`;
-                el.style.top = `${sy}px`;
                 el.style.pointerEvents = 'none';
-                el.style.transform = 'translate(-2px, -2px)';
-                el.style.display = 'flex';
-                el.style.alignItems = 'flex-start';
-                el.innerHTML = `
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="${escapeHtml(st.color || '#22d3ee')}" stroke="#0a0a0a" stroke-width="2.2" style="filter: drop-shadow(0 1px 3px rgba(0,0,0,0.75)); flex-shrink:0;">
-                        <polygon points="3 3 10 21 13 13 21 10 3 3"></polygon>
-                    </svg>
-                    <span style="background:${escapeHtml(st.color || '#22d3ee')}; color:#0a0a0a; font-size:11px; font-weight:700; line-height:1.2; padding:2px 6px; border-radius:4px; margin-left:4px; margin-top:12px; white-space:nowrap; font-family:'Space Mono',monospace; box-shadow: 0 2px 6px rgba(0,0,0,0.65); border: 1px solid rgba(0,0,0,0.35);">${escapeHtml(st.name || 'Peer')}</span>
-                `;
+
+                if (sx >= 0 && sx <= w && sy >= 0 && sy <= h) {
+                    el.style.left = `${sx}px`;
+                    el.style.top = `${sy}px`;
+                    el.style.transform = 'translate(-2px, -2px)';
+                    el.style.display = 'flex';
+                    el.style.alignItems = 'flex-start';
+                    el.innerHTML = `
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="${color}" stroke="#0a0a0a" stroke-width="2.2" style="filter: drop-shadow(0 1px 3px rgba(0,0,0,0.75)); flex-shrink:0;">
+                            <polygon points="3 3 10 21 13 13 21 10 3 3"></polygon>
+                        </svg>
+                        <span style="background:${color}; color:#0a0a0a; font-size:11px; font-weight:700; line-height:1.2; padding:2px 6px; border-radius:4px; margin-left:4px; margin-top:12px; white-space:nowrap; font-family:'Space Mono',monospace; box-shadow: 0 2px 6px rgba(0,0,0,0.65); border: 1px solid rgba(0,0,0,0.35);">${name}</span>
+                    `;
+                } else {
+                    const dx = sx - cx;
+                    const dy = sy - cy;
+                    const angleDeg = Math.atan2(dy, dx) * (180 / Math.PI);
+                    const scaleX = dx !== 0 ? halfW / Math.abs(dx) : Infinity;
+                    const scaleY = dy !== 0 ? halfH / Math.abs(dy) : Infinity;
+                    const t = Math.min(scaleX, scaleY);
+                    const ex = cx + dx * t;
+                    const ey = cy + dy * t;
+
+                    el.style.left = `${ex}px`;
+                    el.style.top = `${ey}px`;
+                    el.style.transform = 'translate(-50%, -50%)';
+
+                    const labelPos = [];
+                    if (ex > w * 0.7) labelPos.push('right:24px');
+                    else if (ex < w * 0.3) labelPos.push('left:24px');
+                    else labelPos.push('left:50%; transform:translateX(-50%)');
+
+                    if (ey > h * 0.75) labelPos.push('bottom:22px');
+                    else if (ey < h * 0.25) labelPos.push('top:22px');
+                    else if (ex >= w * 0.3 && ex <= w * 0.7) labelPos.push('top:22px');
+                    else labelPos.push('top:50%; transform:translateY(-50%)');
+
+                    el.innerHTML = `
+                        <div style="position:relative; width:20px; height:20px;">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="${color}" stroke="#0a0a0a" stroke-width="2.2" style="transform: rotate(${angleDeg.toFixed(1)}deg); filter: drop-shadow(0 2px 4px rgba(0,0,0,0.8));">
+                                <polygon points="22 12 5 4 9 12 5 20 22 12"></polygon>
+                            </svg>
+                            <span style="position:absolute; ${labelPos.join('; ')}; background:${color}; color:#0a0a0a; font-size:11px; font-weight:700; line-height:1.2; padding:2px 6px; border-radius:4px; white-space:nowrap; font-family:'Space Mono',monospace; box-shadow: 0 2px 6px rgba(0,0,0,0.7); border: 1px solid rgba(0,0,0,0.35);">${name}</span>
+                        </div>
+                    `;
+                }
                 cursorsLayer.appendChild(el);
             });
         }
         window.collabRenderCursors = renderRemoteCursors;
+        window.addEventListener('resize', renderRemoteCursors);
 
         let pendingChunks = new Map(); // transferId -> { msgType, total, parts, count }
 
