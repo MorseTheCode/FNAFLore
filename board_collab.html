@@ -3800,22 +3800,28 @@
                         renderRemoteCursors();
                     }
                     if (isHost) broadcastMsg(msg, conn.peer);
+                } else if (msg.type === 'peer-left') {
+                    if (msg.id) {
+                        remotePeers.delete(msg.id);
+                        peerAssignedColors.delete(msg.id);
+                        renderRemoteCursors();
+                    }
                 }
             });
 
-            conn.on('close', () => {
-                dataConns.delete(conn.peer);
+            const handlePeerDisconnect = () => {
+                const hadConn = dataConns.delete(conn.peer);
                 remotePeers.delete(conn.peer);
+                peerAssignedColors.delete(conn.peer);
                 setCollabStatus('online');
                 renderRemoteCursors();
-            });
+                if (isHost && hadConn) {
+                    broadcastMsg({ type: 'peer-left', id: conn.peer });
+                }
+            };
 
-            conn.on('error', () => {
-                dataConns.delete(conn.peer);
-                remotePeers.delete(conn.peer);
-                setCollabStatus('online');
-                renderRemoteCursors();
-            });
+            conn.on('close', handlePeerDisconnect);
+            conn.on('error', handlePeerDisconnect);
         }
 
         function connectRoom(roomId) {
