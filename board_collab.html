@@ -3214,7 +3214,7 @@
     </script>
     <script type="module">
         import * as Y from 'https://esm.sh/yjs@13.6.19';
-        import { WebrtcProvider } from 'https://esm.sh/y-webrtc@10.3.0?deps=yjs@13.6.19';
+        import { Peer } from 'https://esm.sh/peerjs@1.5.4';
 
         const PEER_COLORS = ['#22d3ee', '#f472b6', '#facc15', '#a78bfa', '#fb923c', '#34d399'];
         const myColor = PEER_COLORS[Math.floor(Math.random() * PEER_COLORS.length)];
@@ -3229,9 +3229,6 @@
         nameInput.value = savedName;
         nameInput.addEventListener('input', () => {
             localStorage.setItem('theory_board_peer_name', nameInput.value);
-            if (provider && provider.awareness) {
-                provider.awareness.setLocalStateField('user', { name: nameInput.value.trim() || 'Anonymous', color: myColor });
-            }
         });
 
         const urlParams = new URLSearchParams(window.location.search);
@@ -3239,7 +3236,10 @@
         roomInput.value = urlRoom || ('fnaf-' + Math.random().toString(36).slice(2, 7));
 
         let ydoc = null;
-        let provider = null;
+        let peer = null;
+        let isHost = false;
+        let dataConns = new Map(); // peerId -> DataConnection
+        let remotePeers = new Map(); // peerId -> { name, color, x, y }
         let yItems = null;
         let yConns = null;
         let yDraws = null;
@@ -3247,14 +3247,19 @@
         let pendingRemoteRender = false;
         let lastCursorSent = 0;
 
-        function setCollabStatus(connected, peerCount = 1) {
-            if (!connected) {
+        function setCollabStatus(mode, peerCount = 1) {
+            if (mode === 'offline') {
                 statusEl.textContent = '● OFFLINE';
                 statusEl.className = 'text-[10px] mono font-bold px-1.5 py-0.5 rounded bg-zinc-800 text-zinc-400 border border-zinc-700';
                 toggleBtn.textContent = 'Connect';
+            } else if (mode === 'connecting') {
+                statusEl.textContent = '● CONNECTING...';
+                statusEl.className = 'text-[10px] mono font-bold px-1.5 py-0.5 rounded bg-yellow-950/60 text-yellow-400 border border-yellow-800';
+                toggleBtn.textContent = 'Disconnect';
             } else {
-                const others = Math.max(0, peerCount - 1);
-                statusEl.textContent = others > 0 ? `● ${peerCount} ONLINE` : '● READY (1)';
+                const others = dataConns.size;
+                const role = isHost ? 'HOST' : 'PEER';
+                statusEl.textContent = others > 0 ? `● ${others + 1} ONLINE` : `● ${role} READY`;
                 statusEl.className = others > 0
                     ? 'text-[10px] mono font-bold px-1.5 py-0.5 rounded bg-green-900/50 text-green-400 border border-green-700'
                     : 'text-[10px] mono font-bold px-1.5 py-0.5 rounded bg-cyan-950/60 text-cyan-400 border border-cyan-800';
@@ -3280,7 +3285,7 @@
         }
 
         window.collabSyncLocalToYjs = function() {
-            if (!ydoc || !provider || isApplyingRemote) return;
+            if (!ydoc || !peer || isApplyingRemote) return;
             ydoc.transact(() => {
                 syncMapDiff(yItems, boardData.items);
                 syncMapDiff(yConns, boardData.connections);
@@ -3323,28 +3328,73 @@
         });
 
         function renderRemoteCursors() {
-            if (!provider || !provider.awareness || !cursorsLayer) return;
+            if (!cursorsLayer) return;
             cursorsLayer.innerHTML = '';
-            const myClientId = ydoc.clientID;
-            const states = provider.awareness.getStates();
-            setCollabStatus(true, states.size);
-
-            states.forEach((st, clientId) => {
-                if (clientId === myClientId || !st || !st.cursor) return;
-                const user = st.user || { name: 'Peer', color: '#22d3ee' };
+            remotePeers.forEach((st) => {
+                if (!st || typeof st.x !== 'number') return;
                 const el = document.createElement('div');
                 el.style.position = 'absolute';
-                el.style.left = `${st.cursor.x}px`;
-                el.style.top = `${st.cursor.y}px`;
+                el.style.left = `${st.x}px`;
+                el.style.top = `${st.y}px`;
                 el.style.pointerEvents = 'none';
                 el.style.transform = 'translate(-2px, -2px)';
                 el.innerHTML = `
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="${escapeHtml(user.color)}" stroke="#0a0a0a" stroke-width="2">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="${escapeHtml(st.color || '#22d3ee')}" stroke="#0a0a0a" stroke-width="2">
                         <polygon points="3 3 10 21 13 13 21 10 3 3"></polygon>
                     </svg>
-                    <span style="background:${escapeHtml(user.color)}; color:#0a0a0a; font-size:10px; font-weight:700; padding:1px 5px; border-radius:4px; margin-left:10px; white-space:nowrap; font-family:'Space Mono',monospace;">${escapeHtml(user.name)}</span>
+                    <span style="background:${escapeHtml(st.color || '#22d3ee')}; color:#0a0a0a; font-size:10px; font-weight:700; padding:1px 5px; border-radius:4px; margin-left:10px; white-space:nowrap; font-family:'Space Mono',monospace;">${escapeHtml(st.name || 'Peer')}</span>
                 `;
                 cursorsLayer.appendChild(el);
+            });
+        }
+
+        function broadcastMsg(msg, excludePeerId = null) {
+            dataConns.forEach((c, pid) => {
+                if (pid !== excludePeerId && c.open) {
+                    try { c.send(msg); } catch (e) {}
+                }
+            });
+        }
+
+        function setupDataConn(conn) {
+            dataConns.set(conn.peer, conn);
+
+            conn.on('open', () => {
+                setCollabStatus('online');
+                if (ydoc) {
+                    conn.send({ type: 'yjs-sync', data: Array.from(Y.encodeStateAsUpdate(ydoc)) });
+                }
+            });
+
+            conn.on('data', (msg) => {
+                if (!msg || !msg.type) return;
+                if (msg.type === 'yjs-sync' || msg.type === 'yjs-update') {
+                    if (ydoc && msg.data) {
+                        Y.applyUpdate(ydoc, new Uint8Array(msg.data), 'remote');
+                        if (isHost) broadcastMsg(msg, conn.peer);
+                    }
+                } else if (msg.type === 'cursor') {
+                    const senderId = msg.id || conn.peer;
+                    if (!peer || senderId !== peer.id) {
+                        remotePeers.set(senderId, { name: msg.name, color: msg.color, x: msg.x, y: msg.y });
+                        renderRemoteCursors();
+                    }
+                    if (isHost) broadcastMsg(msg, conn.peer);
+                }
+            });
+
+            conn.on('close', () => {
+                dataConns.delete(conn.peer);
+                remotePeers.delete(conn.peer);
+                setCollabStatus('online');
+                renderRemoteCursors();
+            });
+
+            conn.on('error', () => {
+                dataConns.delete(conn.peer);
+                remotePeers.delete(conn.peer);
+                setCollabStatus('online');
+                renderRemoteCursors();
             });
         }
 
@@ -3361,23 +3411,12 @@
             newUrl.searchParams.set('room', cleanRoom);
             window.history.replaceState({}, '', newUrl.toString());
 
+            setCollabStatus('connecting');
+
             ydoc = new Y.Doc();
             yItems = ydoc.getMap('items');
             yConns = ydoc.getMap('connections');
             yDraws = ydoc.getMap('drawings');
-
-            provider = new WebrtcProvider('fnaflore-board-' + cleanRoom, ydoc, {
-                signaling: [
-                    'wss://signaling.yjs.dev',
-                    'wss://y-webrtc-signaling-eu.herokuapp.com',
-                    'wss://y-webrtc-signaling-us.herokuapp.com'
-                ]
-            });
-
-            provider.awareness.setLocalStateField('user', {
-                name: nameInput.value.trim() || 'Anonymous',
-                color: myColor
-            });
 
             const onRemoteChange = (event) => {
                 if (event.transaction.origin === 'local') return;
@@ -3387,45 +3426,71 @@
             yConns.observe(onRemoteChange);
             yDraws.observe(onRemoteChange);
 
-            provider.awareness.on('change', renderRemoteCursors);
-            provider.on('peers', () => renderRemoteCursors());
+            ydoc.on('update', (update, origin) => {
+                if (origin === 'remote') return;
+                broadcastMsg({ type: 'yjs-update', data: Array.from(update) });
+            });
 
-            // Seed local items if room is empty after initial sync window
-            setTimeout(() => {
-                if (!ydoc || !provider) return;
-                if (yItems.size === 0 && yConns.size === 0 && yDraws.size === 0 && (boardData.items.length > 0 || boardData.drawings.length > 0)) {
-                    window.collabSyncLocalToYjs();
-                } else if (yItems.size > 0 || yConns.size > 0 || yDraws.size > 0) {
-                    applyRemoteToBoard();
+            const hostPeerId = 'fnaflore-room-' + cleanRoom;
+
+            const startAsGuest = () => {
+                isHost = false;
+                peer = new Peer();
+                peer.on('open', () => {
+                    setCollabStatus('online');
+                    const conn = peer.connect(hostPeerId, { reliable: true });
+                    setupDataConn(conn);
+                });
+                peer.on('error', (err) => {
+                    console.warn('PeerJS guest error:', err);
+                });
+            };
+
+            isHost = true;
+            peer = new Peer(hostPeerId);
+            peer.on('open', () => {
+                // Seed Yjs with current local board so joining guests receive it immediately
+                window.collabSyncLocalToYjs();
+                setCollabStatus('online');
+            });
+            peer.on('connection', (conn) => {
+                setupDataConn(conn);
+            });
+            peer.on('error', (err) => {
+                if (err && err.type === 'unavailable-id') {
+                    try { peer.destroy(); } catch (e) {}
+                    startAsGuest();
+                } else {
+                    console.warn('PeerJS host error:', err);
                 }
-                renderRemoteCursors();
-            }, 600);
-
-            setCollabStatus(true, 1);
+            });
         }
 
         function disconnectRoom() {
-            if (provider) {
-                try { provider.destroy(); } catch (e) {}
-                provider = null;
+            dataConns.forEach(c => { try { c.close(); } catch (e) {} });
+            dataConns.clear();
+            remotePeers.clear();
+            if (peer) {
+                try { peer.destroy(); } catch (e) {}
+                peer = null;
             }
             if (ydoc) {
                 try { ydoc.destroy(); } catch (e) {}
                 ydoc = null;
             }
             if (cursorsLayer) cursorsLayer.innerHTML = '';
-            setCollabStatus(false, 0);
+            setCollabStatus('offline');
         }
 
         toggleBtn.addEventListener('click', () => {
-            if (provider) disconnectRoom();
+            if (peer) disconnectRoom();
             else connectRoom(roomInput.value);
         });
 
         copyBtn.addEventListener('click', () => {
             const cleanRoom = (roomInput.value || '').trim().replace(/[^a-zA-Z0-9_-]/g, '-');
             if (!cleanRoom) return;
-            if (!provider) connectRoom(cleanRoom);
+            if (!peer) connectRoom(cleanRoom);
             const inviteUrl = new URL(window.location.href);
             inviteUrl.searchParams.set('room', cleanRoom);
             navigator.clipboard.writeText(inviteUrl.toString()).then(() => {
@@ -3438,16 +3503,25 @@
         });
 
         window.addEventListener('mousemove', (e) => {
-            if (!provider || !provider.awareness) return;
+            if (!peer || dataConns.size === 0) return;
             const now = Date.now();
             if (now - lastCursorSent < 40) return;
             lastCursorSent = now;
             const pos = screenToWorld(e.clientX, e.clientY);
-            provider.awareness.setLocalStateField('cursor', { x: pos.x, y: pos.y });
+            broadcastMsg({
+                type: 'cursor',
+                id: peer.id,
+                name: nameInput.value.trim() || 'Anonymous',
+                color: myColor,
+                x: pos.x,
+                y: pos.y
+            });
         });
 
         if (urlRoom) {
-            connectRoom(urlRoom);
+            window.addEventListener('load', () => {
+                setTimeout(() => connectRoom(urlRoom), 100);
+            });
         }
     </script>
 </body>
