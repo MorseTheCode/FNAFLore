@@ -1235,10 +1235,11 @@
                     const startTs = performance.now();
                     const stepConns = (now) => {
                         updateConnections();
-                        if (now - startTs < 260) {
+                        if (now - startTs < 280) {
                             moveConnAnimRaf = requestAnimationFrame(stepConns);
                         } else {
                             moveConnAnimRaf = null;
+                            updateConnections();
                         }
                     };
                     moveConnAnimRaf = requestAnimationFrame(stepConns);
@@ -2133,10 +2134,22 @@
                 const sH = sourceEl.offsetHeight;
                 const tW = targetEl.offsetWidth;
                 const tH = targetEl.offsetHeight;
-                const x1 = sNode.x + sW / 2 + 10000;
-                const y1 = sNode.y + sH / 2 + 10000;
-                const x2 = tNode.x + tW / 2 + 10000;
-                const y2 = tNode.y + tH / 2 + 10000;
+                const getVisualNodePos = (el, nodeData) => {
+                    if (el && el.classList.contains('anim-move')) {
+                        const tf = window.getComputedStyle(el).transform;
+                        if (tf && tf !== 'none') {
+                            const m = new DOMMatrixReadOnly(tf);
+                            return { x: m.m41, y: m.m42 };
+                        }
+                    }
+                    return { x: nodeData.x, y: nodeData.y };
+                };
+                const sPos = getVisualNodePos(sourceEl, sNode);
+                const tPos = getVisualNodePos(targetEl, tNode);
+                const x1 = sPos.x + sW / 2 + 10000;
+                const y1 = sPos.y + sH / 2 + 10000;
+                const x2 = tPos.x + tW / 2 + 10000;
+                const y2 = tPos.y + tH / 2 + 10000;
                 const cpX1 = x1 + (x2 - x1) / 2;
                 const cpY1 = y1 + (y2 - y1) / 2;
                 const cx1 = connData.mirrored ? x1 : cpX1;
