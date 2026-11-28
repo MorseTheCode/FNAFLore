@@ -3584,6 +3584,7 @@
         let yDraws = null;
         let yMeta = null;
         let isApplyingRemote = false;
+        let hasInitialSync = false;
         let pendingRemoteRender = false;
         let lastCursorSent = 0;
 
@@ -3773,7 +3774,7 @@
         }
 
         window.collabSyncLocalToYjs = function() {
-            if (!ydoc || !peer || isApplyingRemote) return;
+            if (!ydoc || !peer || !hasInitialSync || isApplyingRemote) return;
             ydoc.transact(() => {
                 syncMapDiff(yItems, boardData.items);
                 syncMapDiff(yConns, boardData.connections);
@@ -3794,17 +3795,26 @@
                 boardData.drawings = Array.from(yDraws.values()).map(v => JSON.parse(JSON.stringify(v)));
                 const remoteName = yMeta ? yMeta.get('boardName') : null;
                 if (remoteName && typeof remoteName === 'string') {
-                    const meta = getBoardsMeta();
-                    const curr = meta.boards.find(b => b.id === meta.activeId);
-                    if (curr && curr.name !== remoteName) {
-                        curr.name = remoteName;
-                        saveBoardsMeta(meta);
-                        renderBoardSelector();
+                    if (isHost) {
+                        const meta = getBoardsMeta();
+                        const curr = meta.boards.find(b => b.id === meta.activeId);
+                        if (curr && curr.name !== remoteName) {
+                            curr.name = remoteName;
+                            saveBoardsMeta(meta);
+                            renderBoardSelector();
+                        }
+                    } else {
+                        const sel = document.getElementById('board-selector');
+                        if (sel && sel.selectedOptions && sel.selectedOptions[0]) {
+                            sel.selectedOptions[0].textContent = remoteName;
+                        }
                     }
                 }
-                try {
-                    localStorage.setItem(getActiveBoardStorageKey(), JSON.stringify(boardData));
-                } catch (e) {}
+                if (isHost) {
+                    try {
+                        localStorage.setItem(getActiveBoardStorageKey(), JSON.stringify(boardData));
+                    } catch (e) {}
+                }
 
                 if (document.activeElement && document.activeElement.isContentEditable) {
                     pendingRemoteRender = true;
@@ -3995,8 +4005,11 @@
             });
         }
 
-        function handleIncomingYjsBytes(u8, fromPeerId) {
+        function handleIncomingYjsBytes(u8, fromPeerId, msgType = 'yjs-update') {
             if (!ydoc) return;
+            if (!isHost && msgType === 'yjs-sync') {
+                hasInitialSync = true;
+            }
             try {
                 console.info('[Collab] applying remote bytes:', u8.length, 'from', fromPeerId);
                 Y.applyUpdate(ydoc, u8, 'remote');
@@ -4104,16 +4117,18 @@
                     if (isHost) {
                         const pm = peerMeta.get(conn.peer);
                         if (pm && pm.viewOnly) return;
+                        if (msg.type === 'yjs-sync' || !sentInitialSync) return;
                     }
                     if (msg.b64) {
-                        handleIncomingYjsBytes(base64ToUint8(msg.b64), conn.peer);
+                        handleIncomingYjsBytes(base64ToUint8(msg.b64), conn.peer, msg.type);
                     } else if (msg.data) {
-                        handleIncomingYjsBytes(new Uint8Array(msg.data), conn.peer);
+                        handleIncomingYjsBytes(new Uint8Array(msg.data), conn.peer, msg.type);
                     }
                 } else if (msg.type === 'yjs-chunk') {
                     if (isHost) {
                         const pm = peerMeta.get(conn.peer);
                         if (pm && pm.viewOnly) return;
+                        if (msg.msgType === 'yjs-sync' || !sentInitialSync) return;
                     }
                     let entry = pendingChunks.get(msg.transferId);
                     if (!entry) {
@@ -4126,7 +4141,7 @@
                     }
                     if (entry.count === entry.total) {
                         pendingChunks.delete(msg.transferId);
-                        handleIncomingYjsBytes(base64ToUint8(entry.parts.join('')), conn.peer);
+                        handleIncomingYjsBytes(base64ToUint8(entry.parts.join('')), conn.peer, entry.msgType);
                     }
                 } else if (msg.type === 'cursor') {
                     const senderId = msg.id || conn.peer;
@@ -4192,24 +4207,32 @@
 
             setCollabStatus('connecting');
 
-            ydoc = new Y.Doc();
-            yItems = ydoc.getMap('items');
-            yConns = ydoc.getMap('connections');
-            yDraws = ydoc.getMap('drawings');
-            yMeta = ydoc.getMap('meta');
-
-            ydoc.on('update', (update, origin) => {
-                if (origin === 'remote') {
-                    applyRemoteToBoard();
-                    return;
+            const initYdoc = () => {
+                if (ydoc) {
+                    try { ydoc.destroy(); } catch (e) {}
                 }
-                broadcastYjsBytes('yjs-update', update);
-            });
+                ydoc = new Y.Doc();
+                yItems = ydoc.getMap('items');
+                yConns = ydoc.getMap('connections');
+                yDraws = ydoc.getMap('drawings');
+                yMeta = ydoc.getMap('meta');
+
+                ydoc.on('update', (update, origin) => {
+                    if (origin === 'remote') {
+                        applyRemoteToBoard();
+                        return;
+                    }
+                    if (!hasInitialSync) return;
+                    broadcastYjsBytes('yjs-update', update);
+                });
+            };
 
             const hostPeerId = 'fnaflore-room-' + cleanRoom;
 
             const startAsGuest = () => {
                 isHost = false;
+                hasInitialSync = false;
+                initYdoc();
                 peer = new Peer();
                 peer.on('open', () => {
                     setCollabStatus('online');
@@ -4222,8 +4245,11 @@
             };
 
             isHost = true;
+            hasInitialSync = false;
             peer = new Peer(hostPeerId);
             peer.on('open', () => {
+                initYdoc();
+                hasInitialSync = true;
                 // Seed Yjs with current local board so joining guests receive it immediately
                 window.collabSyncLocalToYjs();
                 setCollabStatus('online');
@@ -4248,6 +4274,7 @@
             peerMeta.clear();
             peerAssignedColors.clear();
             pendingChunks.clear();
+            hasInitialSync = false;
             setViewOnlyMode(false);
             if (peersModal) peersModal.style.display = 'none';
             if (peer) {
@@ -4390,19 +4417,28 @@
         window.addEventListener('pagehide', sendByeOnUnload);
         window.addEventListener('beforeunload', sendByeOnUnload);
 
+        document.addEventListener('visibilitychange', () => {
+            if (document.visibilityState === 'visible' && peer && dataConns.size > 0) {
+                dataConns.forEach((c) => {
+                    if (isConnReady(c)) {
+                        try { c.send({ type: 'ping' }); } catch (e) {}
+                    }
+                });
+            }
+        });
+
+        // Keep WebRTC NAT bindings warm without disconnecting backgrounded/throttled tabs
         setInterval(() => {
             if (!peer || dataConns.size === 0) return;
-            const now = Date.now();
             dataConns.forEach((c) => {
                 if (isConnReady(c)) {
                     try { c.send({ type: 'ping' }); } catch (e) {}
-                }
-                if (c._lastSeen && now - c._lastSeen > 10000 && c._forceDisconnect) {
+                } else if (c.peerConnection && (c.peerConnection.iceConnectionState === 'failed' || c.peerConnection.iceConnectionState === 'closed') && c._forceDisconnect) {
                     c._forceDisconnect();
                     try { c.close(); } catch (e) {}
                 }
             });
-        }, 3000);
+        }, 15000);
 
         if (urlRoom) {
             window.addEventListener('load', () => {
